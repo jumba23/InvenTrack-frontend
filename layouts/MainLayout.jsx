@@ -12,7 +12,7 @@ const MainLayout = ({ children }) => {
         <div style={{ flexGrow: 1 }} className="PageContent">
           {children}
         </div>
-        <Footer style={{ height: "8.33%" }} />
+        <Footer />
       </div>
     </div>
   );

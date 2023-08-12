@@ -1,7 +1,7 @@
 import React from "react";
-
+import MainLayout from "@/layouts/MainLayout";
 const InventoryPage = () => {
-  return <h1>HELLO, welcome to Inventory Page</h1>;
+  return <MainLayout>Inventory</MainLayout>;
 };
 
 export default InventoryPage;

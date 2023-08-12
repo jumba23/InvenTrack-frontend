@@ -1,7 +1,21 @@
 import React from "react";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import Footer from "@/components/Footer";
 
-const MainLayout = () => {
-  return <div>Main Layout</div>;
+const MainLayout = ({ children }) => {
+  return (
+    <div className="flex flex-row h-screen Layout">
+      <Sidebar />
+      <div className="flex flex-col w-full h-full">
+        <Header />
+        <div style={{ flexGrow: 1 }} className="PageContent">
+          {children}
+        </div>
+        <Footer style={{ height: "8.33%" }} />
+      </div>
+    </div>
+  );
 };
 
 export default MainLayout;

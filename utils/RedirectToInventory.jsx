@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export default function RedirectToInventory() {
   const router = useRouter();
 
-  // You can use the useEffect hook to navigate after the component mounts
+  //  use the useEffect hook to navigate after the component mounts
   useEffect(() => {
     router.push("/inventory");
   }, [router]);

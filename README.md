@@ -16,19 +16,60 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## File structure
 
-## Learn More
+- app/
 
-To learn more about Next.js, take a look at the following resources:
+  - page.js: Default Home page.
+  - dashboard/
+    - page.js: Dashboard page.
+    - layout.js: Layout for dashboard.
+  - layout.js: Root layout.
+  - template.js: Template file.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- components/
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+  - Header.js
+  - Footer.js
+  - Sidebar.js
+  - Form/
+    - InventoryForm.js
+    - SupplierForm.js
 
-## Deploy on Vercel
+- layouts/
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  - MainLayout.js: Layout for pages like Inventory, Reports, Suppliers, Orders.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- utils/
+
+  - auth.js: Authentication-related functions.
+  - api.js: Functions for API calls.
+
+- styles/
+
+  - globals.css: Global styles.
+
+- public/
+
+  - images/: Images like splash image.
+
+- **tests**/
+  - components/: Tests for your components.
+  - pages/: Tests for your pages.
+
+```
+
+**Explanation:**
+
+- **app/**: This is where Next.js 13 specific routing, pages, layouts, and templates are defined.
+- **components/**: Common reusable components.
+- **layouts/**: Custom layout files, if needed outside Next.js 13's built-in layout system.
+- **utils/** or **services/**: Functions related to API calls, authentication, utility functions, etc.
+- **styles/**: Directory for organizing CSS or SCSS files.
+- **public/**: For static assets like images, fonts, etc. They are served as-is and accessible via root URL.
+- **__tests__/**: Test files for the application components and pages.
+
+
+
+
+```

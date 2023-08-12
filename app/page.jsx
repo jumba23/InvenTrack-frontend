@@ -1,3 +1,5 @@
+import RedirectToInventory from "./RedirectToInventory";
+
 export default function Home() {
-  return <main>Home Page</main>;
+  return <RedirectToInventory />;
 }

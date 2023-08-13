@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.PageContent {
+  background-color: #dddddd; /* or any color you want */
+  flex-grow: 1;
+}

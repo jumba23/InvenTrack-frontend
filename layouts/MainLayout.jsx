@@ -9,9 +9,7 @@ const MainLayout = ({ children }) => {
       <Sidebar />
       <div className="flex flex-col w-full h-full">
         <Header />
-        <div style={{ flexGrow: 1 }} className="PageContent">
-          {children}
-        </div>
+        <div className="PageContent">{children}</div>
         <Footer />
       </div>
     </div>

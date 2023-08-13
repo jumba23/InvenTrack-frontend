@@ -62,7 +62,7 @@ const Sidebar = () => {
           <div>Reports</div>
         </div>
       </div>
-      <div className="flex flex-row pb-5 pl-12 text-xl cursor-pointer hover:text-blue-500">
+      <div className="flex flex-row pb-8 pl-12 text-xl cursor-pointer hover:text-blue-500">
         <Image
           src="/images/logout.png"
           alt="Logout picture"

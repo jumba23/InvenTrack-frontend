@@ -5,6 +5,10 @@
 .PageContent {
   background-color: #dddddd; /* or any color you want */
   flex-grow: 1;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 5rem;
+  padding-top: 1rem;
 }
 
 .icon-hover:hover {

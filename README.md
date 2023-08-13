@@ -42,6 +42,7 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 - utils/
 
+  - hooks/ - useRedirectToInventory - TEMP re-routing to/inventory/pages.js
   - auth.js: Authentication-related functions.
   - api.js: Functions for API calls.
 

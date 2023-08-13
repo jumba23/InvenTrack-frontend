@@ -20,12 +20,14 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 - app/
 
-  - page.js: Default Home page.
+  - page.js: Default Home page. \*\*\* currently re-routes to /inventory
   - dashboard/
     - page.js: Dashboard page.
     - layout.js: Layout for dashboard.
+  - inventory/
+    - page.js: Inventory page.
   - layout.js: Root layout.
-  - template.js: Template file.
+  - global.css: Tailwind styles.
 
 - components/
 
@@ -46,10 +48,6 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
   - auth.js: Authentication-related functions.
   - api.js: Functions for API calls.
 
-- styles/
-
-  - globals.css: Global styles.
-
 - public/
 
   - images/: Images like splash image.
@@ -66,7 +64,6 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 - **components/**: Common reusable components.
 - **layouts/**: Custom layout files, if needed outside Next.js 13's built-in layout system.
 - **utils/** or **services/**: Functions related to API calls, authentication, utility functions, etc.
-- **styles/**: Directory for organizing CSS or SCSS files.
 - **public/**: For static assets like images, fonts, etc. They are served as-is and accessible via root URL.
 - **__tests__/**: Test files for the application components and pages.
 

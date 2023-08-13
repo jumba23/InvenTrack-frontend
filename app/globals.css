@@ -6,3 +6,7 @@
   background-color: #dddddd; /* or any color you want */
   flex-grow: 1;
 }
+
+.icon-hover:hover {
+  stroke: #6d6d6d; /* You can choose the desired color for the hover effect */
+}

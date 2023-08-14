@@ -81,8 +81,13 @@ const InventoryPage = () => {
       });
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  const inventoryLevelColor = (level) => {
+    if (level === "Low Stock") return "text-yellow-500 font-semibold";
+    if (level === "Out of Stock") return "text-red-500 font-semibold";
+    return "text-green-500 font-semibold";
+  };
 
+  if (loading) return <div>Loading...</div>;
   return (
     <MainLayout>
       <div className="container h-full mx-auto">
@@ -115,13 +120,17 @@ const InventoryPage = () => {
                 {products.map((item) => (
                   <tr
                     key={item.product}
-                    className="transition duration-300 ease-in-out border-b hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-200"
+                    className="text-lg font-normal transition duration-300 ease-in-out border-b hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-200"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.supplier}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td
+                      className={`px-6 py-4 whitespace-nowrap ${inventoryLevelColor(
+                        item.levels
+                      )}`}
+                    >
                       {item.levels}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

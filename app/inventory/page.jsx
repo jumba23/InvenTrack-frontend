@@ -1,67 +1,88 @@
+"use client";
 import React from "react";
 import MainLayout from "@/layouts/MainLayout";
 
+import { useEffect, useState } from "react";
+import { fetchProducts } from "../../utils/apiService";
+
 // sample data
-const medicalSpaInventory = [
-  {
-    product: "Facial Cleanser",
-    supplier: "BeautyCorp",
-    levels: 50,
-    value: "$10.99",
-    lastOrdered: "2021-07-20",
-  },
-  {
-    product: "Anti-Aging Cream",
-    supplier: "SkinCarePlus",
-    levels: 30,
-    value: "$29.99",
-    lastOrdered: "2021-07-15",
-  },
-  {
-    product: "Massage Oil",
-    supplier: "Relaxation Inc.",
-    levels: 100,
-    value: "$15.50",
-    lastOrdered: "2021-07-10",
-  },
-  {
-    product: "Hair Removal Laser",
-    supplier: "TechMed Solutions",
-    levels: 5,
-    value: "$999.00",
-    lastOrdered: "2021-06-30",
-  },
-  {
-    product: "Body Scrub",
-    supplier: "NatureCare",
-    levels: 40,
-    value: "$8.99",
-    lastOrdered: "2021-07-05",
-  },
-  {
-    product: "Aromatherapy Diffuser",
-    supplier: "AromaMist",
-    levels: 25,
-    value: "$39.95",
-    lastOrdered: "2021-07-25",
-  },
-  {
-    product: "Collagen Face Mask",
-    supplier: "SkinRevive",
-    levels: 60,
-    value: "$7.50",
-    lastOrdered: "2021-07-18",
-  },
-  {
-    product: "Therapeutic Foot Bath",
-    supplier: "WellnessTech",
-    levels: 10,
-    value: "$120.00",
-    lastOrdered: "2021-06-20",
-  },
-];
+// const medicalSpaInventory = [
+//   {
+//     product: "Facial Cleanser",
+//     supplier: "BeautyCorp",
+//     levels: 50,
+//     value: "$10.99",
+//     lastOrdered: "2021-07-20",
+//   },
+//   {
+//     product: "Anti-Aging Cream",
+//     supplier: "SkinCarePlus",
+//     levels: 30,
+//     value: "$29.99",
+//     lastOrdered: "2021-07-15",
+//   },
+//   {
+//     product: "Massage Oil",
+//     supplier: "Relaxation Inc.",
+//     levels: 100,
+//     value: "$15.50",
+//     lastOrdered: "2021-07-10",
+//   },
+//   {
+//     product: "Hair Removal Laser",
+//     supplier: "TechMed Solutions",
+//     levels: 5,
+//     value: "$999.00",
+//     lastOrdered: "2021-06-30",
+//   },
+//   {
+//     product: "Body Scrub",
+//     supplier: "NatureCare",
+//     levels: 40,
+//     value: "$8.99",
+//     lastOrdered: "2021-07-05",
+//   },
+//   {
+//     product: "Aromatherapy Diffuser",
+//     supplier: "AromaMist",
+//     levels: 25,
+//     value: "$39.95",
+//     lastOrdered: "2021-07-25",
+//   },
+//   {
+//     product: "Collagen Face Mask",
+//     supplier: "SkinRevive",
+//     levels: 60,
+//     value: "$7.50",
+//     lastOrdered: "2021-07-18",
+//   },
+//   {
+//     product: "Therapeutic Foot Bath",
+//     supplier: "WellnessTech",
+//     levels: 10,
+//     value: "$120.00",
+//     lastOrdered: "2021-06-20",
+//   },
+// ];
 
 const InventoryPage = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts()
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <MainLayout>
       <div className="container h-full mx-auto">
@@ -91,14 +112,12 @@ const InventoryPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {medicalSpaInventory.map((item) => (
+                {products.map((item) => (
                   <tr
                     key={item.product}
                     className="transition duration-300 ease-in-out border-b hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-200"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {item.product}
-                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.supplier}
                     </td>
@@ -109,7 +128,7 @@ const InventoryPage = () => {
                       {item.value}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {item.lastOrdered}
+                      {item.last_ordered}
                     </td>
                   </tr>
                 ))}

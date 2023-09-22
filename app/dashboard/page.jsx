@@ -1,7 +1,12 @@
+import MainLayout from "@/layouts/MainLayout";
 import React from "react";
 
-const page = () => {
-  return <div>Dashboard Page</div>;
+const DashboardPage = () => {
+  return (
+    <MainLayout>
+      <div>Dashboard Page ... under construction</div>
+    </MainLayout>
+  );
 };
 
-export default page;
+export default DashboardPage;

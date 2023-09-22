@@ -68,7 +68,12 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 - **public/**: For static assets like images, fonts, etc. They are served as-is and accessible via root URL.
 - **__tests__/**: Test files for the application components and pages.
 
+###AUTHENTICATION
 
+supabase package is used for authentication. It is a wrapper around the supabase API.
 
+```
+
+```
 
 ```

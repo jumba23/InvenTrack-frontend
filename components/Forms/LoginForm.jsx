@@ -1,17 +1,15 @@
-import React from "react";
+// import supabase from "../../utils/supabaseClient";
+// import { Auth } from "@supabase/auth-ui-react";
+// import { ThemeSupa } from "@supabase/auth-ui-shared";
 
-const LoginForm = ({ onSubmit, error }) => {
-  return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input type="text" name="username" />
-        <input type="password" name="password" />
-        <button type="submit">Submit</button>
-      </form>
+// const LoginForm = () => {
+//   return (
+//     <Auth
+//       supabaseClient={supabase}
+//       appearance={{ theme: ThemeSupa }}
+//       providers={["google", "facebook", "twitter"]}
+//     />
+//   );
+// };
 
-      {error && <div className="error">{error}</div>}
-    </div>
-  );
-};
-
-export default LoginForm;
+// export default LoginForm;

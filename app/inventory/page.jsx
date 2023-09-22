@@ -3,7 +3,7 @@ import React from "react";
 import MainLayout from "@/layouts/MainLayout";
 
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../../utils/apiService";
+import { fetchProducts } from "../../utils/api/apiService";
 
 // sample data
 // const medicalSpaInventory = [

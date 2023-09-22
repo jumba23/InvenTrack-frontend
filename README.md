@@ -23,7 +23,6 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
   - page.js: Default Home page. \*\*\* currently re-routes to /inventory
   - dashboard/
     - page.js: Dashboard page.
-    - layout.js: Layout for dashboard.
   - inventory/
     - page.js: Inventory page.
   - layout.js: Root layout.
@@ -35,6 +34,7 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
   - Footer.js
   - Sidebar.js
   - Form/
+    - LoginForm.js
     - InventoryForm.js
     - SupplierForm.js
 

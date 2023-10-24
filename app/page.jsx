@@ -9,5 +9,5 @@ export default function Home() {
   //this is temporary redirect to inventory page
   // useRedirectToInventory("/inventory"); // Redirects to /inventory
 
-  return <LoginForm />;
+  return <InventoryPage />;
 }

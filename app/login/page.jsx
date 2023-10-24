@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import axiosClient from "../../utils/api/axiosClient";
 // import supabaseClient from "../../utils/authentication/supabaseClient";
 
 const LoginForm = () => {
@@ -9,9 +10,11 @@ const LoginForm = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log("username", username);
+    console.log("password", password);
 
     // crete axios request with try/catch
-    const response = await axios.post("/api/login", {
+    const response = await axiosClient.post("/user/login", {
       username,
       password,
     });
@@ -20,7 +23,7 @@ const LoginForm = () => {
     localStorage.setItem("token", response.data.token);
 
     // redirect to inventory page using next router
-    Router.push("/inventory");
+    // Router.push("/inventory");
   };
 
   return (

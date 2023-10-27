@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { userLogin } from "@/utils/api/apiService";
-import { handleApiError } from "@/utils/api/errorHandeling";
+import { handleApiError } from "@/utils/api/errorHandling";
 import { useRouter } from "next/navigation";
 
 const LoginForm = () => {

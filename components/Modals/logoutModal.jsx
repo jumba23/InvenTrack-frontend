@@ -8,13 +8,13 @@ export const logoutModal = ({ show, onClose }) => {
         <div className="flex justify-between">
           <button
             className="p-2 text-white bg-red-500 rounded"
-            onClick={onClose(true)}
+            onClick={() => onClose(true)}
           >
             Yes
           </button>
           <button
             className="p-2 text-black bg-gray-300 rounded"
-            onClick={onClose(false)}
+            onClick={() => onClose(false)}
           >
             No
           </button>

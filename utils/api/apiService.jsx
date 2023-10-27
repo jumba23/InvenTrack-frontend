@@ -47,3 +47,15 @@ export const userSignUp = async (
     throw error;
   }
 };
+
+// User Logout
+
+export const userLogout = async () => {
+  try {
+    const response = await axiosClient.post("/user/logout", { logout: true });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

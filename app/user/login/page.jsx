@@ -4,9 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { userLogin } from "@/utils/api/apiService";
 import { handleApiError } from "@/utils/api/errorHandeling";
-// import supabaseClient from "../../utils/authentication/supabaseClient";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
@@ -15,6 +16,7 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       const data = await userLogin(email, password);
+      console.log("data", data);
       localStorage.setItem("token", data.token);
       router.push("/inventory");
     } catch (error) {

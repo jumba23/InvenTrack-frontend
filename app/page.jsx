@@ -3,7 +3,7 @@ import MainLayout from "@/layouts/MainLayout";
 import { useRedirectToInventory } from "@/utils/hooks/useRedirectToInventory";
 import InventoryPage from "./inventory/page";
 import DashboardPage from "./dashboard/page";
-import LoginForm from "./login/page";
+import LoginForm from "./user/login/page";
 
 export default function Home() {
   //this is temporary redirect to inventory page

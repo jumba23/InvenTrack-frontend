@@ -7,14 +7,14 @@ import { handleApiError } from "@/utils/api/errorHandeling";
 // import supabaseClient from "../../utils/authentication/supabaseClient";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const data = await userLogin(username, password);
+      const data = await userLogin(email, password);
       localStorage.setItem("token", data.token);
       router.push("/inventory");
     } catch (error) {
@@ -30,9 +30,9 @@ const LoginForm = () => {
           <div className="mb-4">
             <input
               type="text"
-              placeholder="Type your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Type your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
             />
           </div>

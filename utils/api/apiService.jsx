@@ -12,10 +12,10 @@ export const fetchProducts = async () => {
 };
 
 // User Login
-export const userLogin = async (username, password) => {
+export const userLogin = async (email, password) => {
   try {
     const response = await axiosClient.post("/user/login", {
-      username,
+      email,
       password,
     });
     return response.data;

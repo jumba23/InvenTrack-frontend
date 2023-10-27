@@ -2,6 +2,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { logoutModal as Modal } from "./Modals/logoutModal";
+import { userLogout } from "@/utils/api/apiService";
 
 const Sidebar = () => {
   const [showModal, setShowModal] = useState(false);

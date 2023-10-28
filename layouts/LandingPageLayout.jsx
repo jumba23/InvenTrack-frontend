@@ -5,11 +5,11 @@ import React from "react";
 
 const LandingPageLayout = () => {
   return (
-    <>
-      <LandingHeader />;
-      <LandingMain />;
-      <Footer />;
-    </>
+    <div className="flex flex-col min-h-screen">
+      <LandingHeader />
+      <LandingMain />
+      <Footer />
+    </div>
   );
 };
 

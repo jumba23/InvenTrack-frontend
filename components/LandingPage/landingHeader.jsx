@@ -1,12 +1,14 @@
 import Image from "next/image";
 import React from "react";
 
-const LandingHeader = () => {
+const LandingHeader = ({ className }) => {
   return (
-    <div className="flex items-center justify-between h-[25%]">
+    <div
+      className={`flex items-center justify-between ${className} pr-12 border-y-2`}
+    >
       <div className="flex items-center justify-start h-24 pl-8 ">
         <Image
-          src="/images/Logo.png"
+          src="/images/logo.png"
           alt="InvenTrack Logo"
           width={60}
           height={60}

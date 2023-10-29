@@ -21,9 +21,9 @@ import React from "react";
 //   );
 // };
 
-const LandingMain = () => {
+const LandingMain = ({ className }) => {
   return (
-    <div className="flex items-center flex-grow overflow-hidden">
+    <div className={`flex items-center ${className} p-12`}>
       <div className="relative w-1/2">
         <Image
           src="/images/landing-page.png"

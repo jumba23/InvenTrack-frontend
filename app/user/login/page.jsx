@@ -63,7 +63,7 @@ const LoginForm = () => {
           <Link href="/forgot-password" passHref>
             Forgot your password?
           </Link>
-          <Link href="/signup" passHref>
+          <Link href="/user/signup" passHref>
             Don't have an account? Sign up
           </Link>
         </div>

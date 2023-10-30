@@ -4,6 +4,7 @@ import MainLayout from "@/layouts/MainLayout";
 
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../../utils/api/apiService";
+import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 
 // sample data
 // const medicalSpaInventory = [
@@ -66,6 +67,7 @@ import { fetchProducts } from "../../utils/api/apiService";
 // ];
 
 const InventoryPage = () => {
+  useRequireAuth("/");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 

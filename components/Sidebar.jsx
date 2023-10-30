@@ -15,7 +15,7 @@ const Sidebar = () => {
         await userLogout();
 
         localStorage.removeItem("token");
-        router.push("/user/login");
+        router.push("/");
       } catch (error) {
         console.error("Failed to logout:", error);
       }

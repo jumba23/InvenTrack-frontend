@@ -1,7 +1,10 @@
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const LandingHeader = ({ className }) => {
+  const route = useRouter();
+
   return (
     <div
       className={`flex items-center justify-between ${className} pr-12 border-y-2`}
@@ -18,10 +21,16 @@ const LandingHeader = ({ className }) => {
         </div>
       </div>
       <div className="space-x-4">
-        <button className="px-4 py-2 text-white bg-blue-600 rounded">
+        <button
+          className="px-4 py-2 text-white bg-blue-600 rounded"
+          onClick={() => route.push("/user/login")}
+        >
           Login
         </button>
-        <button className="px-4 py-2 text-white bg-blue-600 rounded">
+        <button
+          className="px-4 py-2 text-white bg-blue-600 rounded"
+          onClick={() => route.push("/user/signup")}
+        >
           Sign Up
         </button>
       </div>

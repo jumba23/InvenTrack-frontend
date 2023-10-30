@@ -17,9 +17,16 @@ const SignUpForm = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      await userSignUp(firstName, lastName, cellNumber, email, password);
+      const response = await userSignUp(
+        firstName,
+        lastName,
+        cellNumber,
+        email,
+        password
+      );
+      console.log("Sign up form - response", response);
 
-      router.push("/login");
+      router.push("/user/login");
     } catch (error) {
       handleApiError(error, setErrorMsg);
     }

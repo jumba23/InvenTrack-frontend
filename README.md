@@ -38,12 +38,16 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
       - SignUpForm.js: Sign Up form.
       - AddProductsForm.js: Form to add a new product
       - AddSupplierFrom.js: Form to add a new supplier
+    - LandingPage/
+      - landingHeader.js: Header structure with "Sign up" and "Login" buttons.
+      - landingMain.js: Page with images and tex about the application.
     - Footer.js: Footer style and structure
     - Header.js: Header style and structure
     - Sidebar.js: Sidebar style and structure
 
 - layouts/
   - MainLayout.js: Layout for pages like Inventory, Reports, Suppliers, Orders.
+  - LandingPageLayout.js: Layout page will render if there is no "token" in localStorage .
 - utils/
 
   - api/
@@ -55,16 +59,12 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
   - images/: Images like splash image.
 
-- **tests**/
-  - components/: Tests for your components.
-  - pages/: Tests for your pages.
-
 ```
 
 **Explanation:**
 
 - **app/**: This is where Next.js 13.5 specific routing, pages, layouts, and templates are defined.
-- **components/**: Common reusable components.
+- **components/**: Common reusable components. page.js is the entry point to the app.
 - **layouts/**: Custom layout files, if needed outside Next.js 13's built-in layout system.
 - **utils/** or **services/**: Functions related to API calls, authentication, utility functions, etc.
 - **public/**: For static assets like images, fonts, etc. They are served as-is and accessible via root URL.

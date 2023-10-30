@@ -17,14 +17,7 @@ const SignUpForm = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await userSignUp(
-        firstName,
-        lastName,
-        cellNumber,
-        email,
-        password
-      );
-      console.log("Sign up form - response", response);
+      await userSignUp(firstName, lastName, cellNumber, email, password);
 
       router.push("/user/login");
     } catch (error) {

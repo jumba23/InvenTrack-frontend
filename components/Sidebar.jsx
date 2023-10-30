@@ -42,7 +42,10 @@ const Sidebar = () => {
           </div>
         </div>
         <div className="items-center flex-grow pt-10 pl-12 space-y-10 overflow-y-auto text-xl h-80">
-          <div className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500">
+          <div
+            className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500"
+            onClick={() => router.push("/dashboard")}
+          >
             <Image
               src="/images/home.png"
               alt="Home picture"
@@ -51,7 +54,10 @@ const Sidebar = () => {
             />
             <div>Dashboard</div>
           </div>
-          <div className="flex flex-row space-x-3 text-blue-600 underline cursor-pointer hover:text-blue-500">
+          <div
+            className="flex flex-row space-x-3 text-blue-600 underline cursor-pointer hover:text-blue-500"
+            onClick={() => router.push("/inventory")}
+          >
             <Image
               src="/images/inventory.png"
               alt="Inventory picture"
@@ -60,7 +66,10 @@ const Sidebar = () => {
             />
             <div>Inventory</div>
           </div>
-          <div className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500">
+          <div
+            className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500 "
+            onClick={() => router.push("/suppliers")}
+          >
             <Image
               src="/images/supplier.png"
               alt="Sales picture"
@@ -69,7 +78,10 @@ const Sidebar = () => {
             />
             <div>Suppliers</div>
           </div>
-          <div className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500">
+          <div
+            className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500"
+            onClick={() => router.push("/orders")}
+          >
             <Image
               src="/images/orders.png"
               alt="Orders picture"
@@ -78,7 +90,10 @@ const Sidebar = () => {
             />
             <div>Orders</div>
           </div>
-          <div className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500">
+          <div
+            className="flex flex-row space-x-3 cursor-pointer hover:text-blue-500"
+            onClick={() => router.push("/reports")}
+          >
             <Image
               src="/images/reports.png"
               alt="Reports picture"

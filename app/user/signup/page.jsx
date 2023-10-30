@@ -1,8 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { userSignUp } from "@/utils/api/apiService";
+import { handleApiError } from "@/utils/api/errorHandling";
+import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
+  const router = useRouter();
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [cellNumber, setCellNumber] = useState("");
@@ -14,7 +18,8 @@ const SignUpForm = () => {
     e.preventDefault();
     try {
       await userSignUp(firstName, lastName, cellNumber, email, password);
-      router.push("user/login");
+
+      router.push("/login");
     } catch (error) {
       handleApiError(error, setErrorMsg);
     }

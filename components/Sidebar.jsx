@@ -57,14 +57,6 @@ const Sidebar = () => {
         </div>
         <div className="items-center flex-grow pt-10 pl-12 space-y-10 overflow-y-auto text-xl h-80">
           {navItems.map((item, index) => {
-            console.log(
-              "Current route: ",
-              router.pathname,
-              "Check route: ",
-              item.path,
-              "Is match:",
-              isCurrentRoute(item.path)
-            );
             return (
               <div
                 key={index}

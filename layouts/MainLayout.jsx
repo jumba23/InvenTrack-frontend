@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 const MainLayout = ({ children }) => {
   return (
-    <div className="flex flex-row h-screen Layout">
+    <div className="flex flex-row h-screen ">
       <Sidebar />
       <div className="flex flex-col w-full h-full">
         <Header />

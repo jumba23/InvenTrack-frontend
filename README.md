@@ -25,12 +25,19 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
     - page.js: Dashboard page.
   - inventory/
     - page.js: Inventory page.
+  - orders/
+    - page.js: Orders page.
+  - suppliers/
+    - page.js: Suppliers page.
+  - reports/
+    - page.js: Reports page.
   - user/
     - signup/
       - page.js: Sign Up form.
     - login/
       - page.js: Login form.
   - page.js: app entry point file.
+  - layout.js: Root layout file for rendering {children}
   - global.css: Tailwind styles.
   - components/
     - Forms/
@@ -41,6 +48,8 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
     - LandingPage/
       - landingHeader.js: Header structure with "Sign up" and "Login" buttons.
       - landingMain.js: Page with images and tex about the application.
+    - Modal/
+      - logoutModal.js: Confirm the intention to logout with "YES" and "NO" button options.
     - Footer.js: Footer style and structure
     - Header.js: Header style and structure
     - Sidebar.js: Sidebar style and structure
@@ -53,10 +62,11 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
   - api/
     - axiosClient.js: Base URL for server - AXIOS.
     - apiService.js: Authentication, Products and Suppliers related functions.
-  - hooks/ - useRedirectToInventory - TEMP re-routing to/inventory/pages.js
+  - hooks/
+    - useRedirectToInventory - TEMP re-routing to/inventory/pages.js
+    - useRequireAuth - check if there is a "token" in localStorage
 
 - public/
-
   - images/: Images like splash image.
 
 ```

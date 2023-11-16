@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 .PageContent {
   background-color: #dddddd; /* or any color you want */
@@ -13,4 +13,17 @@
 
 .icon-hover:hover {
   stroke: #6d6d6d; /* You can choose the desired color for the hover effect */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }

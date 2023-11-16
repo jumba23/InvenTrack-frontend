@@ -5,6 +5,7 @@ import MainLayout from "@/layouts/MainLayout";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../../utils/api/apiService";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
+import Spinner from "@/components/Spinner";
 
 // sample data
 // const medicalSpaInventory = [
@@ -89,7 +90,7 @@ const InventoryPage = () => {
     return "text-green-500 font-semibold";
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Spinner />;
   return (
     <MainLayout>
       <div className="container h-full mx-auto">

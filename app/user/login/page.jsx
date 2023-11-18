@@ -17,7 +17,7 @@ const LoginForm = () => {
     try {
       const data = await userLogin(email, password);
       console.log("data", data);
-      localStorage.setItem("token", data.token);
+
       router.push("/inventory");
     } catch (error) {
       handleApiError(error, setErrorMsg);

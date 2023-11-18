@@ -59,3 +59,16 @@ export const userLogout = async () => {
     throw error;
   }
 };
+
+//Validate user
+export const validateUser = async () => {
+  try {
+    const response = await axiosClient.get("/user/validate-token", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

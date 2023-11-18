@@ -66,9 +66,11 @@ export const validateUser = async () => {
     const response = await axiosClient.get("/user/validate-token", {
       withCredentials: true,
     });
+    console.log("validateUser", response.data);
     return response.data;
   } catch (error) {
-    console.error(error);
+    // 401 server response will be in this part of if statement
+    // console.error(error);
     throw error;
   }
 };

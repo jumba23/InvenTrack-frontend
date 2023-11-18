@@ -1,26 +1,6 @@
 import Image from "next/image";
 import React from "react";
 
-// const LandingMain = () => {
-//   return (
-//     <div className="flex items-center">
-//       <Image
-//         src="/images/landing-page.png"
-//         alt="Image of people keeping track of their inventory"
-//         // objectFit="cover"
-//         // layout="responsive"
-//         width={800}
-//         height={800}
-//         className="flex-1 rounded-lg"
-//       />
-//       <div className="flex-1 p-10 text-4xl italic text-gray-700 bg-gray-100 font-merriweather">
-//         Interact seamlessly with your inventory. Stay ahead effortlessly. Dive
-//         into efficiency with InvenTrack.
-//       </div>
-//     </div>
-//   );
-// };
-
 const LandingMain = ({ className }) => {
   return (
     <div className={`flex items-center ${className} p-12`}>

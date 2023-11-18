@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import LandingPageLayout from "@/layouts/LandingPageLayout";
+import { validateUser } from "@/utils/api/apiService";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);

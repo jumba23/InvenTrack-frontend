@@ -4,7 +4,7 @@ import React from "react";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 
 const OrdersPage = () => {
-  useRequireAuth("/");
+  useRequireAuth("/orders");
   return (
     <MainLayout>
       <div>Orders Page ... under construction</div>

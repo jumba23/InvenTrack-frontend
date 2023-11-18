@@ -5,7 +5,7 @@ import React from "react";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 
 const DashboardPage = () => {
-  useRequireAuth("/");
+  useRequireAuth("/dashboard");
   return (
     <MainLayout>
       {/* Parent div that fills space of its parent */}

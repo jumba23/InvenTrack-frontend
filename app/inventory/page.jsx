@@ -68,7 +68,7 @@ import Spinner from "@/components/Spinner";
 // ];
 
 const InventoryPage = () => {
-  useRequireAuth("/");
+  useRequireAuth("/inventory");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 

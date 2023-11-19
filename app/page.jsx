@@ -26,7 +26,7 @@ export default function Home() {
           a;
         }
       } catch (error) {
-        console.error("Authentication check failed", error);
+        // console.error("Authentication check failed - Application level", error);
         setIsAuthenticated(false);
       }
     };

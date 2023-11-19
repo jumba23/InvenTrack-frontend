@@ -25,7 +25,7 @@ export const useRequireAuth = (redirectUrl) => {
         }
       } catch (error) {
         // If authentication fails, redirect to the home page.
-        console.error("Authentication check failed", error);
+        // console.error("Authentication check failed - Protected route", error);
         // Handle not authenticated scenario, like redirect to login
         router.push("/");
       }

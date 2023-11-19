@@ -1,5 +1,13 @@
 import axiosClient from "./axiosClient";
 
+// ------------------------------------------------------
+// This file contains functions for making API requests related to user management
+// and product fetching. Each function uses axiosClient to communicate with the backend,
+// handling tasks like fetching products, user authentication (login, signup), and logout.
+// These functions abstract and centralize the API interaction logic, making them reusable
+// across the application.
+// ------------------------------------------------------
+
 // Fetch products
 export const fetchProducts = async () => {
   try {

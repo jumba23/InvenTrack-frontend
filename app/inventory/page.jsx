@@ -90,7 +90,6 @@ const InventoryPage = () => {
     return "text-green-500 font-semibold";
   };
 
-  if (loading) return <Spinner />;
   return (
     <MainLayout>
       <div className="container h-full mx-auto">
@@ -98,6 +97,7 @@ const InventoryPage = () => {
           <h1 className="text-2xl font-semibold">Overall Inventory</h1>
         </div>
         <div className="px-5 pt-3 bg-white rounded-lg h-4/5">
+          {loading && <Spinner />}
           <div className="overflow-x-auto">
             <table className="w-full min-w-full text-sm font-light text-left">
               <thead className="font-medium border-b dark:border-neutral-500">

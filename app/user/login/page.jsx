@@ -16,7 +16,6 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       const data = await userLogin(email, password);
-      console.log("data", data);
 
       router.push("/inventory");
     } catch (error) {

@@ -11,6 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import Image from "next/image";
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -27,13 +28,22 @@ export default function AccountMenu() {
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
-            size="small"
+            size="medium"
             sx={{ ml: 2 }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 48, height: 48 }}>
+              <Image
+                src="/images/sample_user.jpg"
+                alt="Your Image Description"
+                width={48}
+                height={48}
+                className="rounded-full cursor-pointer hover:opacity-75"
+                style={{ width: "auto", height: "auto" }}
+              />
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>

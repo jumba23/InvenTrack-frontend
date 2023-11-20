@@ -1,11 +1,4 @@
 "use client";
-import React from "react";
-import MainLayout from "@/layouts/MainLayout";
-
-import { useEffect, useState } from "react";
-import { fetchProducts } from "../../utils/api/apiService";
-import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
-import Spinner from "@/components/Spinner";
 
 // sample data
 // const medicalSpaInventory = [
@@ -66,6 +59,13 @@ import Spinner from "@/components/Spinner";
 //     lastOrdered: "2021-06-20",
 //   },
 // ];
+// ... existing imports
+import React, { useEffect, useState } from "react";
+import MainLayout from "@/layouts/MainLayout";
+import { fetchProducts } from "../../utils/api/apiService";
+import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
+import Spinner from "@/components/Spinner";
+import { DataGrid } from "@mui/x-data-grid";
 
 const InventoryPage = () => {
   useRequireAuth("/inventory");
@@ -84,11 +84,20 @@ const InventoryPage = () => {
       });
   }, []);
 
-  const inventoryLevelColor = (level) => {
-    if (level === "Low Stock") return "text-yellow-500 font-semibold";
-    if (level === "Out of Stock") return "text-red-500 font-semibold";
-    return "text-green-500 font-semibold";
-  };
+  // Define columns for DataGrid
+  const columns = [
+    { field: "name", headerName: "Product", width: 150 },
+    { field: "supplier", headerName: "Supplier", width: 150 },
+    { field: "levels", headerName: "Levels", width: 120 },
+    { field: "value", headerName: "Value", width: 120 },
+    { field: "last_ordered", headerName: "Last Ordered", width: 150 },
+  ];
+
+  // Convert products data to the format expected by DataGrid
+  const rows = products.map((product, index) => ({
+    id: index,
+    ...product,
+  }));
 
   return (
     <MainLayout>
@@ -97,56 +106,17 @@ const InventoryPage = () => {
           <h1 className="text-2xl font-semibold">Overall Inventory</h1>
         </div>
         <div className="px-5 pt-3 bg-white rounded-lg h-4/5">
-          {loading && <Spinner />}
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-full text-sm font-light text-left">
-              <thead className="font-medium border-b dark:border-neutral-500">
-                <tr>
-                  <th scope="col" className="px-6 py-4">
-                    Product
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Supplier
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Levels
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Value
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Last Ordered
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((item) => (
-                  <tr
-                    key={item.product}
-                    className="text-lg font-normal transition duration-300 ease-in-out border-b hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-200"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {item.supplier}
-                    </td>
-                    <td
-                      className={`px-6 py-4 whitespace-nowrap ${inventoryLevelColor(
-                        item.levels
-                      )}`}
-                    >
-                      {item.levels}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {item.value}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {item.last_ordered}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {loading ? (
+            <Spinner />
+          ) : (
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5, 10]}
+              checkboxSelection
+            />
+          )}
         </div>
       </div>
     </MainLayout>

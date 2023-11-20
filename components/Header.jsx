@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import AccountMenu from "./AccountMenu/accountMenu";
 // import sampleUserImage from "../../public/images/sample_user.jpg";
 
 const Header = () => {
@@ -53,6 +54,7 @@ const Header = () => {
             style={{ width: "auto", height: "auto" }}
           />
         </div>
+        <AccountMenu />
       </div>
     </div>
   );

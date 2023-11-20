@@ -114,7 +114,7 @@ const InventoryPage = () => {
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5, 10]}
-              checkboxSelection
+              // checkboxSelection
             />
           )}
         </div>

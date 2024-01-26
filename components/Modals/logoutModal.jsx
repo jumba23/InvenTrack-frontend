@@ -1,5 +1,7 @@
-export const logoutModal = ({ show, onClose }) => {
-  if (!show) return null;
+import { useAuth } from "../../context/AuthContext";
+
+export const logoutModal = () => {
+  const { toggleLogoutModal, logout } = useAuth();
 
   return (
     <div className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
@@ -8,13 +10,13 @@ export const logoutModal = ({ show, onClose }) => {
         <div className="flex justify-evenly">
           <button
             className="w-20 p-2 text-white bg-red-500 rounded"
-            onClick={() => onClose(true)}
+            onClick={logout}
           >
             Yes
           </button>
           <button
             className="w-20 p-2 text-black bg-gray-300 rounded"
-            onClick={() => onClose(false)}
+            onClick={toggleLogoutModal}
           >
             No
           </button>

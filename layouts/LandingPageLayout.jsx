@@ -2,6 +2,7 @@ import Footer from "@/components/Footer";
 import LandingHeader from "@/components/LandingPage/landingHeader";
 import LandingMain from "@/components/LandingPage/landingMain";
 import React from "react";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 
 const LandingPageLayout = () => {
   return (

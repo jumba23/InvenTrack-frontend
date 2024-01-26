@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { logoutModal as Modal } from "./Modals/logoutModal";
-import { userLogout } from "@/utils/api/apiService";
 import classNames from "classnames";
+import { useAuth } from "@/context/AuthContext";
 
 const Sidebar = () => {
-  const [showModal, setShowModal] = useState(false);
+  const { toggleLogoutModal } = useAuth();
+  console.log("Sidebar toggleLogoutModal", toggleLogoutModal);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -23,23 +23,11 @@ const Sidebar = () => {
     { label: "Reports", path: "/reports", icon: "/images/reports.png" },
   ];
 
-  const handleLogout = async (shouldLogout) => {
-    setShowModal(false);
-    if (shouldLogout) {
-      try {
-        await userLogout();
-
-        router.push("/");
-      } catch (error) {
-        console.error("Failed to logout:", error);
-      }
-    }
+  // Function to handle logout modal
+  const handleOpenLogoutModal = () => {
+    toggleLogoutModal();
   };
 
-  // Function to show the modal
-  const triggerModal = () => {
-    setShowModal(true);
-  };
   return (
     <>
       <div className="flex flex-col h-screen bg-white border-r w-72 ">
@@ -87,12 +75,11 @@ const Sidebar = () => {
             width={30}
             height={30}
           />
-          <div className="ml-2" onClick={triggerModal}>
+          <div className="ml-2" onClick={toggleLogoutModal}>
             Logout
           </div>
         </div>
       </div>
-      <Modal show={showModal} onClose={handleLogout} />
     </>
   );
 };

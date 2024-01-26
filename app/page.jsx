@@ -1,38 +1,31 @@
 "use client";
 
-import React, { useEffect } from "react";
-import MainLayout from "@/layouts/MainLayout";
-import LandingPageLayout from "@/layouts/LandingPageLayout";
-import { validateUser } from "@/utils/api/apiService";
+import React from "react";
+import IndexLayout from "../layouts/IndexLayout";
+import { AuthProvider } from "../context/AuthContext";
 
 //------------------------------------------------------
-// The Home component acts as the primary entry point for the application.
-// It determines whether to display the MainLayout (for authenticated users)
-// or the LandingPageLayout (for unauthenticated visitors). This decision is
-// based on the user's authentication status, verified through an API call to
-// the backend using the validateUser function from apiService.
+// Home Component: Entry Point of the Application
+// Functionality:
+// - Serves as the primary entry point for the InvenTrack application.
+// - Utilizes the React useEffect hook to determine the user's authentication status
+//   upon component mounting.
+// - Makes an API call using the validateUser function from apiService to check
+//   if the user is authenticated.
+// - Based on the authentication status, it conditionally renders either the MainLayout
+//   (for authenticated users) or the LandingPageLayout (for unauthenticated visitors).
+// - Wraps the rendered layout components within the AuthProvider context to provide
+//   authentication-related state and functionalities to child components.
+//
+// Usage:
+// - This component is automatically rendered as the default page due to Next.js's
+//   file-based routing system, representing the root of the application.
 //------------------------------------------------------
 
 export default function Home() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-
-  useEffect(() => {
-    // useEffect hook to check the authentication status when the component mounts.
-    const checkAuthStatus = async () => {
-      try {
-        const response = await validateUser();
-        if (response === "Authenticated") {
-          setIsAuthenticated(true);
-          a;
-        }
-      } catch (error) {
-        // console.error("Authentication check failed - Application level", error);
-        setIsAuthenticated(false);
-      }
-    };
-    checkAuthStatus();
-  }, []);
-
-  // Conditionally render MainLayout or LandingPageLayout based on the user's authentication status.
-  return isAuthenticated ? <MainLayout /> : <LandingPageLayout />;
+  return (
+    <AuthProvider>
+      <IndexLayout />
+    </AuthProvider>
+  );
 }

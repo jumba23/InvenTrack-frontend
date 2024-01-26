@@ -13,9 +13,18 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import Image from "next/image";
 
-export default function AccountMenu() {
+export default function AccountMenu({ toggleLogoutModal }) {
+  //local state
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   const open = Boolean(anchorEl);
+
+  // Similar to Sidebar, use this function to show the logout modal
+  const handleOpenLogoutModal = () => {
+    toggleLogoutModal();
+    handleClose();
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -101,7 +110,7 @@ export default function AccountMenu() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleOpenLogoutModal}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

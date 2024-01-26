@@ -7,8 +7,8 @@ import { useAuth } from "../context/AuthContext";
 
 const MainLayout = ({ children }) => {
   const { showLogoutModal } = useAuth();
-  const context = useAuth();
-  console.log("MainLayout: context", context);
+  // const context = useAuth();
+  // console.log("MainLayout: context", context);
 
   return (
     <>

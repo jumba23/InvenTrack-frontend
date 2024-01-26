@@ -2,7 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { userLogout, validateUser } from "@/utils/api/apiService";
 import { useRouter } from "next/navigation";
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+  isAuthenticated: false,
+  setIsAuthenticated: () => {},
+  logout: () => {},
+  showLogoutModal: false,
+  toggleLogoutModal: () => {},
+  loading: true,
+});
 
 export function useAuth() {
   return useContext(AuthContext);

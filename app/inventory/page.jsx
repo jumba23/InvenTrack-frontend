@@ -71,6 +71,7 @@ const InventoryPage = () => {
   useRequireAuth("/inventory");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchProducts()
@@ -79,7 +80,7 @@ const InventoryPage = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
+        setError("Failed to load products. Please try again later.");
         setLoading(false);
       });
   }, []);

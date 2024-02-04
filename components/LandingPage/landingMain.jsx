@@ -8,11 +8,10 @@ const LandingMain = ({ className }) => {
         <Image
           src="/images/landing-page.png"
           alt="Image of people keeping track of their inventory"
-          // objectFit="contain"
-          // layout="responsive"
           width={800}
           height={800}
           className="rounded-lg"
+          priority={true}
         />
       </div>
       <div className="w-1/2 p-6 pl-10 overflow-hidden text-3xl italic bg-blue-100 font-open-sans">

@@ -1,14 +1,15 @@
+"use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { userLogout, validateUser } from "@/utils/api/apiService";
 import { useRouter } from "next/navigation";
 
 const AuthContext = createContext({
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
-  logout: () => {},
   showLogoutModal: false,
-  toggleLogoutModal: () => {},
   loading: true,
+  logout: () => {},
+  toggleLogoutModal: () => {},
+  router: null,
 });
 
 export function useAuth() {
@@ -17,17 +18,15 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     // Perform the authentication check when the component mounts.
     const checkAuthStatus = async () => {
-      console.log("AuthProvider: checkAuthStatus");
       try {
         const response = await validateUser();
-        console.log("AuthProvider: validateUser response", response);
         setIsAuthenticated(response === "Authenticated");
       } catch (error) {
         console.error("Authentication check failed", error);
@@ -53,18 +52,17 @@ export function AuthProvider({ children }) {
 
   // toggle logout modal
   const toggleLogoutModal = () => {
-    console.log("AuthProvider: toggleLogoutModal");
     setShowLogoutModal(!showLogoutModal);
   };
 
   // value object to be passed to the AuthContext.Provider
   const value = {
     isAuthenticated,
-    setIsAuthenticated,
-    logout,
     showLogoutModal,
+    logout,
     toggleLogoutModal,
     loading,
+    router,
   };
 
   console.log("AuthProvider: Value", value);

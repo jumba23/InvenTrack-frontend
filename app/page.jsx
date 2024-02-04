@@ -2,7 +2,6 @@
 
 import React from "react";
 import IndexLayout from "../layouts/IndexLayout";
-import { AuthProvider } from "../context/AuthContext";
 
 //------------------------------------------------------
 // Home Component: Entry Point of the Application
@@ -17,9 +16,5 @@ import { AuthProvider } from "../context/AuthContext";
 //------------------------------------------------------
 
 export default function Home() {
-  return (
-    <AuthProvider>
-      <IndexLayout />
-    </AuthProvider>
-  );
+  return <IndexLayout />;
 }

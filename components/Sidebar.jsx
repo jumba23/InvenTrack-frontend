@@ -1,13 +1,12 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import classNames from "classnames";
 import { useAuth } from "@/context/AuthContext";
 
 const Sidebar = () => {
   const { toggleLogoutModal } = useAuth();
-  console.log("Sidebar toggleLogoutModal", toggleLogoutModal);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -75,7 +74,7 @@ const Sidebar = () => {
             width={30}
             height={30}
           />
-          <div className="ml-2" onClick={toggleLogoutModal}>
+          <div className="ml-2" onClick={handleOpenLogoutModal}>
             Logout
           </div>
         </div>

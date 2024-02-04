@@ -15,8 +15,9 @@ const LoginForm = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      //api axios call 
+      //api axios call
       const data = await userLogin(email, password);
+      console.log("Login response", data);
 
       router.push("/inventory");
     } catch (error) {

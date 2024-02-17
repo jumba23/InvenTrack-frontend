@@ -4,7 +4,6 @@ import React from "react";
 import IndexLayout from "../layouts/IndexLayout";
 
 //------------------------------------------------------
-// Home Component: Entry Point of the Application
 // Functionality:
 // - Serves as the primary entry point for the InvenTrack application.
 // - Wraps the rendered layout components within the AuthProvider context to provide

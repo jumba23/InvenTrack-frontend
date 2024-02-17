@@ -17,7 +17,7 @@ const LoginForm = () => {
     try {
       //api axios call
       const data = await userLogin(email, password);
-      console.log("Login response", data);
+      // console.log("Login response", data);
 
       router.push("/inventory");
     } catch (error) {

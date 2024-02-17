@@ -83,5 +83,7 @@ export function AuthProvider({ children }) {
     router,
   };
 
+  console.log("AuthContext value", value);
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

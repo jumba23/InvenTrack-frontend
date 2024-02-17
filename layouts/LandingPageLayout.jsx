@@ -2,7 +2,7 @@ import React from "react";
 import Footer from "@/components/Footer";
 import LandingHeader from "@/components/LandingPage/landingHeader";
 import LandingMain from "@/components/LandingPage/landingMain";
-/**
+/** ======================================== SUMMARY ========================================
  * LandingPageLayout is designed to structure the layout of the landing page for non-authenticated users.
  * It presents a welcoming interface that typically includes a header, main content area, and footer.
  * This layout is part of the public-facing portion of the application, aimed at users who have not logged in.
@@ -23,7 +23,7 @@ import LandingMain from "@/components/LandingPage/landingMain";
  *   users and encourage them to sign up or log in.
  * - The height proportions of the header, main, and footer sections are adjustable based on design
  *   requirements but are set here to maintain a balanced appearance.
- */
+ * ==========================================================================================*/
 const LandingPageLayout = () => {
   return (
     <div className="flex flex-col justify-between h-screen">

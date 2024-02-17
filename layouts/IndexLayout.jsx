@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext"; // Import the useAuth hook for 
 import LandingPageLayout from "./LandingPageLayout"; // Import layout for non-authenticated users
 import MainLayout from "./MainLayout"; // Import layout for authenticated users
 
-/**
+/** ======================================== SUMMARY ========================================
  * IndexLayout serves as a dynamic layout selector based on the user's authentication status.
  * It determines which layout to render (MainLayout or LandingPageLayout) by checking the user's
  * authentication status provided by the useAuth hook from the global AuthContext.
@@ -21,7 +21,7 @@ import MainLayout from "./MainLayout"; // Import layout for authenticated users
  * Usage:
  * - Place IndexLayout at the root of your application's component tree where it can decide on
  *   rendering the appropriate layout for the entire app based on authentication status.
- */
+ * ==========================================================================================*/
 const IndexLayout = () => {
   const { isAuthenticated } = useAuth();
 

@@ -4,7 +4,8 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import { logoutModal as LogoutModal } from "@/components/Modals/logoutModal";
-/**
+
+/** ======================================== SUMMARY ========================================
  * MainLayout serves as the primary layout component for authenticated users.
  * It structures the main user interface of the application, including a header, sidebar, main content area, and footer.
  * This layout is displayed once a user is authenticated, providing access to the application's core features and content.
@@ -28,7 +29,8 @@ import { logoutModal as LogoutModal } from "@/components/Modals/logoutModal";
  *   in appearance and functionality across the user's session.
  * - The `children` prop allows for flexibility in rendering different components or pages within this unified layout,
  *   facilitating a cohesive user experience.
- */
+ * ==========================================================================================*/
+
 const MainLayout = ({ children }) => {
   const { showLogoutModal } = useAuth();
   return (

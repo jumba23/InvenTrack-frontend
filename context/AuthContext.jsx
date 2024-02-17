@@ -5,6 +5,26 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { userLogout, validateUser } from "@/utils/api/apiService";
 import { useRouter } from "next/navigation";
 
+/** ======================================== SUMMARY ========================================
+ * AuthProvider acts as the context provider for the application's authentication state.
+ * It initializes and manages the state related to user authentication, including the user's
+ * authentication status, loading state during authentication checks, and visibility of a logout modal.
+ * The component also encapsulates the logic for validating user sessions and handling user logout actions.
+ *
+ * Functionality:
+ * - Upon mounting, it performs a check to validate the user's session, updating the authentication status accordingly.
+ * - It provides a 'logout' function to log the user out and redirect to the home page.
+ * - It controls the visibility of a logout modal through the 'toggleLogoutModal' function.
+ * - It makes the authentication state and functions available to the entire application via the AuthContext.Provider.
+ *
+ * The AuthProvider is crucial for maintaining a secure and consistent authentication experience throughout the application.
+ * It leverages React's Context API to allow child components to consume authentication state and functionalities easily.
+ *
+ * Usage:
+ * - Wrap the application's component tree with AuthProvider to provide a global authentication context.
+ * - Access the authentication state and functions using the 'useAuth' hook within any child component.
+ */
+
 // Creation of AuthContext with default values. This context will manage the authentication state
 // throughout the application.
 const AuthContext = createContext({

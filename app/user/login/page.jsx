@@ -30,7 +30,7 @@ const Copyright = (props) => {
       <span color="inherit" href="#">
         Soft Solutions
       </span>{" "}
-      {new Date().getFullYear()}
+      {currentYear}
       {"."}
     </Typography>
   );
@@ -39,9 +39,9 @@ const Copyright = (props) => {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#1976d2", // Light blue
-      dark: "#00008B", // Dark blue
-      contrastText: "#fff", // Ensures text color is white for legibility
+      main: "#1976d2",
+      dark: "#00008B",
+      contrastText: "#fff",
     },
   },
 });
@@ -72,7 +72,16 @@ const LoginForm = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <CssBaseline />
         <Box
           sx={{
@@ -80,6 +89,7 @@ const LoginForm = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            flexGrow: 1,
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

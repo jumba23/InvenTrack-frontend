@@ -1,5 +1,15 @@
 "use client";
 
+// ======================= SUMMARY =======================
+// This page component represents the inventory page of the application.
+// It fetches the inventory data from the API and displays it in a tabular format using the DataGrid component.
+// The useRequireAuth hook ensures that only authenticated users can access this page.
+// ======================================================
+// Usage:
+// - Place this component inside the pages directory to create the inventory page.
+// - The useRequireAuth hook ensures that only authenticated users can access this page.
+// ======================================================
+
 // sample data
 // const medicalSpaInventory = [
 //   {

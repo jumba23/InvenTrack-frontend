@@ -4,6 +4,17 @@ import MainLayout from "@/layouts/MainLayout";
 import React from "react";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 
+// ======================= SUMMARY =======================
+// This page component represents the dashboard page of the application.
+// It uses the useRequireAuth hook to ensure that only authenticated users
+// can access the dashboard content. If the user is not authenticated,
+// they are redirected to the login page.
+// ======================================================
+// Usage:
+// - Place this component inside the pages directory to create the dashboard page.
+// - The useRequireAuth hook ensures that only authenticated users can access this page.
+// ======================================================
+
 const DashboardPage = () => {
   useRequireAuth("/dashboard");
   return (

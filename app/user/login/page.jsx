@@ -17,6 +17,16 @@ import { handleApiError } from "@/utils/api/errorHandling";
 import { userLogin } from "@/utils/api/apiService";
 import { useRouter } from "next/navigation";
 
+// ========================= SUMMARY =========================
+// This component is a login form that allows users to sign in
+// to the application. It uses the userLogin function to send
+// a login request to the API and handles any errors that occur.
+// ==========================================================
+// Usage:
+// - Place this component inside the pages directory to create
+//   the login page.
+// ==========================================================
+
 const Copyright = (props) => {
   const currentYear = new Date().getFullYear();
   return (

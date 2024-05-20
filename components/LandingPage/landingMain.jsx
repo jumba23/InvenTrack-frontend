@@ -1,6 +1,16 @@
 import Image from "next/image";
 import React from "react";
 
+//========================== SUMMARY ===========================
+// This component is the main section of the landing page.
+// It contains an image and a text section that describes
+// the features of the application.
+// ==============================================================
+// Usage:
+// - Place this component inside the LandingPage directory
+//   to display the main section of the landing page.
+// ==============================================================
+
 const LandingMain = ({ className }) => {
   return (
     <div className={`flex items-center ${className} p-12`}>

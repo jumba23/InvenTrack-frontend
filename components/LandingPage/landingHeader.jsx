@@ -2,6 +2,12 @@ import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/navigation";
 
+// ====================== SUMMARY ======================
+// This component is a header for the landing page.
+// It contains the InvenTrack logo and two buttons for
+// Login and Sign Up.
+// =====================================================
+
 const LandingHeader = ({ className }) => {
   const route = useRouter();
 

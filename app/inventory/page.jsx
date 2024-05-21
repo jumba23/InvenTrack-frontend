@@ -168,12 +168,12 @@ const InventoryPage = () => {
 
   return (
     <MainLayout>
-      <div className="container h-full mx-auto">
-        <div className="flex items-center justify-center mb-4 bg-white rounded-lg h-1/4">
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-center p-4 mt-2 mb-4 bg-white rounded-lg h-1/4">
           <h1 className="text-2xl font-semibold">Overall Inventory</h1>
         </div>
 
-        <div className="px-5 pt-3 bg-white rounded-lg h-4/5">
+        <div className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg">
           <div className="flex justify-between mb-4">
             <div>
               <button
@@ -207,13 +207,14 @@ const InventoryPage = () => {
           {loading ? (
             <Spinner />
           ) : (
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5, 10]}
-              // checkboxSelection
-            />
+            <div className="flex-grow overflow-auto">
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10]}
+              />
+            </div>
           )}
         </div>
       </div>

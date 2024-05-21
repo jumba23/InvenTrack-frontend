@@ -72,7 +72,7 @@
 // ... existing imports
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { fetchProducts } from "../../utils/api/apiService";
+import { fetchProducts } from "@/utils/api/apiService";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 import Spinner from "@/components/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
@@ -95,6 +95,18 @@ const InventoryPage = () => {
       });
   }, []);
 
+  const handleEdit = (id) => {
+    // Logic to handle editing a product
+    console.log("Edit product with ID:", id);
+    // Redirect to the edit product page or open an edit modal
+  };
+
+  const handleDelete = (id) => {
+    // Logic to handle deleting a product
+    console.log("Delete product with ID:", id);
+    // Make an API call to delete the product and update the products state
+  };
+
   // Define columns for DataGrid
   const columns = [
     { field: "name", headerName: "Product", width: 150 },
@@ -102,6 +114,27 @@ const InventoryPage = () => {
     { field: "levels", headerName: "Levels", width: 120 },
     { field: "value", headerName: "Value", width: 120 },
     { field: "last_ordered", headerName: "Last Ordered", width: 150 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      renderCell: (params) => (
+        <>
+          <button
+            className="px-2 py-1 mr-2 text-white bg-blue-500 rounded"
+            onClick={() => handleEdit(params.row.id)}
+          >
+            Edit
+          </button>
+          <button
+            className="px-2 py-1 text-white bg-red-500 rounded"
+            onClick={() => handleDelete(params.row.id)}
+          >
+            Delete
+          </button>
+        </>
+      ),
+    },
   ];
 
   // Convert products data to the format expected by DataGrid

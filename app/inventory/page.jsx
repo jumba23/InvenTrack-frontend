@@ -107,6 +107,12 @@ const InventoryPage = () => {
     // Make an API call to delete the product and update the products state
   };
 
+  const handleAddProduct = () => {
+    // Logic to handle adding a new product
+    console.log("Add new product");
+    // Redirect to the add product page or open an add product modal
+  };
+
   // Define columns for DataGrid
   const columns = [
     { field: "name", headerName: "Product", width: 150 },
@@ -148,6 +154,12 @@ const InventoryPage = () => {
       <div className="container h-full mx-auto">
         <div className="flex items-center justify-center mb-4 bg-white rounded-lg h-1/4">
           <h1 className="text-2xl font-semibold">Overall Inventory</h1>
+          <button
+            className="px-4 py-2 text-white bg-green-500 rounded"
+            onClick={handleAddProduct}
+          >
+            NEW ITEM
+          </button>
         </div>
         <div className="px-5 pt-3 bg-white rounded-lg h-4/5">
           {loading ? (

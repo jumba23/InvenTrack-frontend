@@ -1,7 +1,7 @@
 import React from "react";
 import Footer from "@/components/Footer";
-import LandingHeader from "@/components/LandingPage/landingHeader";
-import LandingMain from "@/components/LandingPage/landingMain";
+import LandingHeader from "@/components/LandingPage/LandingHeader";
+import LandingMain from "@/components/LandingPage/LandingMain";
 /** ======================================== SUMMARY ========================================
  * LandingPageLayout is designed to structure the layout of the landing page for non-authenticated users.
  * It presents a welcoming interface that typically includes a header, main content area, and footer.

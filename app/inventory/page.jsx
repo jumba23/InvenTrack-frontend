@@ -82,6 +82,7 @@ const InventoryPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Service");
 
   useEffect(() => {
     fetchProducts()
@@ -123,6 +124,10 @@ const InventoryPage = () => {
     // Logic to handle retails
     console.log("Retails");
     // Redirect to the retails page or open a retails modal
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
   };
 
   // Define columns for DataGrid
@@ -169,24 +174,34 @@ const InventoryPage = () => {
         </div>
 
         <div className="px-5 pt-3 bg-white rounded-lg h-4/5">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-between mb-4">
+            <div>
+              <button
+                className={`px-4 py-2 mr-2 rounded ${
+                  selectedCategory === "Service"
+                    ? "text-white bg-blue-500"
+                    : "text-blue-500 bg-white border border-blue-500"
+                }`}
+                onClick={() => handleCategoryChange("Service")}
+              >
+                Service
+              </button>
+              <button
+                className={`px-4 py-2 rounded ${
+                  selectedCategory === "Retail"
+                    ? "text-white bg-blue-500"
+                    : "text-blue-500 bg-white border border-blue-500"
+                }`}
+                onClick={() => handleCategoryChange("Retail")}
+              >
+                Retail
+              </button>
+            </div>
             <button
-              className="px-4 py-2 mr-2 text-white bg-green-500 rounded"
+              className="px-4 py-2 text-white bg-green-500 rounded"
               onClick={handleAddProduct}
             >
               New Item
-            </button>
-            <button
-              className="px-4 py-2 mr-2 text-white bg-blue-500 rounded"
-              onClick={handleService}
-            >
-              Service
-            </button>
-            <button
-              className="px-4 py-2 text-white bg-orange-500 rounded"
-              onClick={handleRetails}
-            >
-              Retails
             </button>
           </div>
           {loading ? (

@@ -40,7 +40,7 @@ const MainLayout = ({ children }) => {
         <Sidebar />
         <div className="flex flex-col w-full h-full">
           <Header />
-          <div className="PageContent">{children}</div>
+          <div className="flex-grow overflow-auto PageContent">{children}</div>
           <Footer />
         </div>
       </div>

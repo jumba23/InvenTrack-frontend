@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import AccountMenu from "./AccountSettings/accountMenu";
+import AccountMenu from "./AccountSettings/AccountMenu";
 // import sampleUserImage from "../../public/images/sample_user.jpg";
 
 const Header = () => {

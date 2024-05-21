@@ -130,6 +130,25 @@ const InventoryPage = () => {
     setSelectedCategory(category);
   };
 
+  // Calculate metrics
+  const totalInventoryValue = products.reduce(
+    (acc, product) => acc + product.levels * parseFloat(product.value || 0),
+    0
+  );
+  const lowStockThreshold = 10;
+  const urgentlyLowStockItems = products.filter(
+    (product) => product.levels < lowStockThreshold
+  ).length;
+  const totalItems = products.length;
+  const recentOrders = products.filter((product) => {
+    const orderDate = new Date(product.lastOrdered);
+    const today = new Date();
+    return (today - orderDate) / (1000 * 60 * 60 * 24) <= 30;
+  }).length;
+  // const mostValuableItems = products
+  //   .sort((a, b) => parseFloat(b.value || 0) - parseFloat(a.value || 0))
+  //   .slice(0, 3);
+
   // Define columns for DataGrid
   const columns = [
     { field: "name", headerName: "Product", width: 150 },
@@ -170,7 +189,31 @@ const InventoryPage = () => {
     <MainLayout>
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-center p-4 mt-2 mb-4 bg-white rounded-lg h-1/4">
-          <h1 className="text-2xl font-semibold">Overall Inventory</h1>
+          <div className="grid w-full h-full grid-cols-1 gap-6 m-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-col items-center justify-center p-4 bg-blue-100 rounded">
+              <h2 className="text-xl font-semibold">Total Inventory Value</h2>
+              <p className="text-2xl font-bold">
+                {/* ${totalInventoryValue.toFixed(2)} */}
+                $147,000
+              </p>
+            </div>
+            <div className="flex flex-col items-center justify-center p-4 bg-red-100 rounded">
+              <h2 className="text-xl font-semibold">
+                Urgently Low Stock Items
+              </h2>
+              <p className="text-2xl font-bold">
+                {/* {urgentlyLowStockItems} */}3
+              </p>
+            </div>
+            <div className="flex flex-col items-center justify-center p-4 bg-green-100 rounded">
+              <h2 className="text-xl font-semibold">Total Number of Items</h2>
+              <p className="text-2xl font-bold">{totalItems}</p>
+            </div>
+            <div className="flex flex-col items-center justify-center p-4 bg-yellow-100 rounded">
+              <h2 className="text-xl font-semibold">Recent Orders</h2>
+              <p className="text-2xl font-bold">{/* {recentOrders} */}5</p>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg">

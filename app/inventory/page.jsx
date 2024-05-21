@@ -113,6 +113,18 @@ const InventoryPage = () => {
     // Redirect to the add product page or open an add product modal
   };
 
+  const handleService = () => {
+    // Logic to handle service
+    console.log("Service");
+    // Redirect to the service page or open a service modal
+  };
+
+  const handleRetails = () => {
+    // Logic to handle retails
+    console.log("Retails");
+    // Redirect to the retails page or open a retails modal
+  };
+
   // Define columns for DataGrid
   const columns = [
     { field: "name", headerName: "Product", width: 150 },
@@ -154,14 +166,29 @@ const InventoryPage = () => {
       <div className="container h-full mx-auto">
         <div className="flex items-center justify-center mb-4 bg-white rounded-lg h-1/4">
           <h1 className="text-2xl font-semibold">Overall Inventory</h1>
-          <button
-            className="px-4 py-2 text-white bg-green-500 rounded"
-            onClick={handleAddProduct}
-          >
-            NEW ITEM
-          </button>
         </div>
+
         <div className="px-5 pt-3 bg-white rounded-lg h-4/5">
+          <div className="flex justify-end mb-4">
+            <button
+              className="px-4 py-2 mr-2 text-white bg-green-500 rounded"
+              onClick={handleAddProduct}
+            >
+              New Item
+            </button>
+            <button
+              className="px-4 py-2 mr-2 text-white bg-blue-500 rounded"
+              onClick={handleService}
+            >
+              Service
+            </button>
+            <button
+              className="px-4 py-2 text-white bg-orange-500 rounded"
+              onClick={handleRetails}
+            >
+              Retails
+            </button>
+          </div>
           {loading ? (
             <Spinner />
           ) : (

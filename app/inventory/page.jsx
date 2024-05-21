@@ -10,65 +10,6 @@
 // - The useRequireAuth hook ensures that only authenticated users can access this page.
 // ======================================================
 
-// sample data
-// const medicalSpaInventory = [
-//   {
-//     product: "Facial Cleanser",
-//     supplier: "BeautyCorp",
-//     levels: 50,
-//     value: "$10.99",
-//     lastOrdered: "2021-07-20",
-//   },
-//   {
-//     product: "Anti-Aging Cream",
-//     supplier: "SkinCarePlus",
-//     levels: 30,
-//     value: "$29.99",
-//     lastOrdered: "2021-07-15",
-//   },
-//   {
-//     product: "Massage Oil",
-//     supplier: "Relaxation Inc.",
-//     levels: 100,
-//     value: "$15.50",
-//     lastOrdered: "2021-07-10",
-//   },
-//   {
-//     product: "Hair Removal Laser",
-//     supplier: "TechMed Solutions",
-//     levels: 5,
-//     value: "$999.00",
-//     lastOrdered: "2021-06-30",
-//   },
-//   {
-//     product: "Body Scrub",
-//     supplier: "NatureCare",
-//     levels: 40,
-//     value: "$8.99",
-//     lastOrdered: "2021-07-05",
-//   },
-//   {
-//     product: "Aromatherapy Diffuser",
-//     supplier: "AromaMist",
-//     levels: 25,
-//     value: "$39.95",
-//     lastOrdered: "2021-07-25",
-//   },
-//   {
-//     product: "Collagen Face Mask",
-//     supplier: "SkinRevive",
-//     levels: 60,
-//     value: "$7.50",
-//     lastOrdered: "2021-07-18",
-//   },
-//   {
-//     product: "Therapeutic Foot Bath",
-//     supplier: "WellnessTech",
-//     levels: 10,
-//     value: "$120.00",
-//     lastOrdered: "2021-06-20",
-//   },
-// ];
 // ... existing imports
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
@@ -76,9 +17,12 @@ import { fetchProducts } from "@/utils/api/apiService";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 import Spinner from "@/components/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
-
+import { useRouter } from "next/navigation";
+import { Router } from "next/router";
 const InventoryPage = () => {
   useRequireAuth("/inventory");
+  const router = useRouter();
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -109,9 +53,9 @@ const InventoryPage = () => {
   };
 
   const handleAddProduct = () => {
-    // Logic to handle adding a new product
     console.log("Add new product");
-    // Redirect to the add product page or open an add product modal
+    // Redirect to inventory/new-product page
+    router.push("/inventory/add-new-product");
   };
 
   const handleService = () => {

@@ -18,7 +18,8 @@ import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 import Spinner from "@/components/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import { Router } from "next/router";
+import ProductForm from "@/components/Forms/ProductForm";
+
 const InventoryPage = () => {
   useRequireAuth("/inventory");
   const router = useRouter();
@@ -27,6 +28,7 @@ const InventoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Service");
+  const [renderForm, setRenderForm] = useState(false);
 
   useEffect(() => {
     fetchProducts()
@@ -54,8 +56,7 @@ const InventoryPage = () => {
 
   const handleAddProduct = () => {
     console.log("Add new product");
-    // Redirect to inventory/new-product page
-    router.push("/inventory/add-new-product");
+    setRenderForm(true);
   };
 
   const handleService = () => {
@@ -132,78 +133,93 @@ const InventoryPage = () => {
   return (
     <MainLayout>
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-center p-4 mt-2 mb-4 bg-white rounded-lg h-1/4">
-          <div className="grid w-full h-full grid-cols-1 gap-6 m-4 md:grid-cols-2 lg:grid-cols-4">
-            <div className="flex flex-col items-center justify-center p-4 bg-blue-100 rounded">
-              <h2 className="text-xl font-semibold">Total Inventory Value</h2>
-              <p className="text-2xl font-bold">
-                {/* ${totalInventoryValue.toFixed(2)} */}
-                $147,000
-              </p>
-            </div>
-            <div className="flex flex-col items-center justify-center p-4 bg-red-100 rounded">
-              <h2 className="text-xl font-semibold">
-                Urgently Low Stock Items
-              </h2>
-              <p className="text-2xl font-bold">
-                {/* {urgentlyLowStockItems} */}3
-              </p>
-            </div>
-            <div className="flex flex-col items-center justify-center p-4 bg-green-100 rounded">
-              <h2 className="text-xl font-semibold">Total Number of Items</h2>
-              <p className="text-2xl font-bold">{totalItems}</p>
-            </div>
-            <div className="flex flex-col items-center justify-center p-4 bg-yellow-100 rounded">
-              <h2 className="text-xl font-semibold">Recent Orders</h2>
-              <p className="text-2xl font-bold">{/* {recentOrders} */}5</p>
-            </div>
-          </div>
-        </div>
+        {renderForm && (
+          <ProductForm
+            setRenderForm={setRenderForm}
+            setProducts={setProducts}
+          />
+        )}
 
-        <div className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg">
-          <div className="flex justify-between mb-4">
-            <div>
-              <button
-                className={`px-4 py-2 mr-2 rounded ${
-                  selectedCategory === "Service"
-                    ? "text-white bg-blue-500"
-                    : "text-blue-500 bg-white border border-blue-500"
-                }`}
-                onClick={() => handleCategoryChange("Service")}
-              >
-                Service
-              </button>
-              <button
-                className={`px-4 py-2 rounded ${
-                  selectedCategory === "Retail"
-                    ? "text-white bg-blue-500"
-                    : "text-blue-500 bg-white border border-blue-500"
-                }`}
-                onClick={() => handleCategoryChange("Retail")}
-              >
-                Retail
-              </button>
+        {!renderForm && (
+          <>
+            <div className="flex items-center justify-center p-4 mt-2 mb-4 bg-white rounded-lg h-1/4">
+              <div className="grid w-full h-full grid-cols-1 gap-6 m-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="flex flex-col items-center justify-center p-4 bg-blue-100 rounded">
+                  <h2 className="text-xl font-semibold">
+                    Total Inventory Value
+                  </h2>
+                  <p className="text-2xl font-bold">
+                    {/* ${totalInventoryValue.toFixed(2)} */}
+                    $147,000
+                  </p>
+                </div>
+                <div className="flex flex-col items-center justify-center p-4 bg-red-100 rounded">
+                  <h2 className="text-xl font-semibold">
+                    Urgently Low Stock Items
+                  </h2>
+                  <p className="text-2xl font-bold">
+                    {/* {urgentlyLowStockItems} */}3
+                  </p>
+                </div>
+                <div className="flex flex-col items-center justify-center p-4 bg-green-100 rounded">
+                  <h2 className="text-xl font-semibold">
+                    Total Number of Items
+                  </h2>
+                  <p className="text-2xl font-bold">{totalItems}</p>
+                </div>
+                <div className="flex flex-col items-center justify-center p-4 bg-yellow-100 rounded">
+                  <h2 className="text-xl font-semibold">Recent Orders</h2>
+                  <p className="text-2xl font-bold">{/* {recentOrders} */}5</p>
+                </div>
+              </div>
             </div>
-            <button
-              className="px-4 py-2 text-white bg-green-500 rounded"
-              onClick={handleAddProduct}
-            >
-              New Item
-            </button>
-          </div>
-          {loading ? (
-            <Spinner />
-          ) : (
-            <div className="flex-grow overflow-auto">
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5, 10]}
-              />
+
+            <div className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg">
+              <div className="flex justify-between mb-4">
+                <div>
+                  <button
+                    className={`px-4 py-2 mr-2 rounded ${
+                      selectedCategory === "Service"
+                        ? "text-white bg-blue-500"
+                        : "text-blue-500 bg-white border border-blue-500"
+                    }`}
+                    onClick={() => handleCategoryChange("Service")}
+                  >
+                    Service
+                  </button>
+                  <button
+                    className={`px-4 py-2 rounded ${
+                      selectedCategory === "Retail"
+                        ? "text-white bg-blue-500"
+                        : "text-blue-500 bg-white border border-blue-500"
+                    }`}
+                    onClick={() => handleCategoryChange("Retail")}
+                  >
+                    Retail
+                  </button>
+                </div>
+                <button
+                  className="px-4 py-2 text-white bg-green-500 rounded"
+                  onClick={handleAddProduct}
+                >
+                  New Item
+                </button>
+              </div>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <div className="flex-grow overflow-auto">
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10]}
+                  />
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </MainLayout>
   );

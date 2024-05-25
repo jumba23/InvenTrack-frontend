@@ -28,7 +28,10 @@ const ProductForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg"
+    >
       <div>
         <label htmlFor="name">Name</label>
         <input type="text" id="name" {...register("name")} />

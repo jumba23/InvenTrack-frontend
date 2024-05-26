@@ -80,7 +80,6 @@ const ProductForm = () => {
                 <Select {...field} error={!!errors.type}>
                   <MenuItem value="Type1">Retail</MenuItem>
                   <MenuItem value="Type2">Service</MenuItem>
-                  {/* <MenuItem value="Type3">Type 3</MenuItem> */}
                 </Select>
               </FormControl>
             )}
@@ -150,6 +149,17 @@ const ProductForm = () => {
                 error={!!errors.lowLevels}
                 helperText={errors.lowLevels?.message}
               />
+            )}
+          />
+        </Grid>
+        {/* Add one more field "Notes" */}
+        <Grid item xs={12}>
+          <Controller
+            name="notes"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField {...field} label="Notes" fullWidth />
             )}
           />
         </Grid>

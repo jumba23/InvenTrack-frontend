@@ -78,9 +78,9 @@ const ProductForm = () => {
               <FormControl fullWidth>
                 <InputLabel>Type</InputLabel>
                 <Select {...field} error={!!errors.type}>
-                  <MenuItem value="Type1">Type 1</MenuItem>
-                  <MenuItem value="Type2">Type 2</MenuItem>
-                  <MenuItem value="Type3">Type 3</MenuItem>
+                  <MenuItem value="Type1">Retail</MenuItem>
+                  <MenuItem value="Type2">Service</MenuItem>
+                  {/* <MenuItem value="Type3">Type 3</MenuItem> */}
                 </Select>
               </FormControl>
             )}
@@ -154,9 +154,20 @@ const ProductForm = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Submit
-          </Button>
+          {/* Add Submit button and cancel buttons on the same line */}
+          <div className="flex justify-end gap-6">
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+            <Button
+              type="button"
+              variant="contained"
+              color="secondary"
+              onClick={() => reset()}
+            >
+              Cancel
+            </Button>
+          </div>
         </Grid>
       </Grid>
     </form>

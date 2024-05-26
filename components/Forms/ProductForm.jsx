@@ -33,6 +33,7 @@ const ProductForm = () => {
       className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg"
     >
       <div>
+        <h1 className="flex align-middle">Add New Product</h1>
         <label htmlFor="name">Name</label>
         <input type="text" id="name" {...register("name")} />
         {errors.name && <span>{errors.name.message}</span>}

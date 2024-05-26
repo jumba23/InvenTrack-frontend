@@ -1,19 +1,36 @@
 "use client";
-
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Typography,
+  Grid,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 
 const newItemSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  price: z.number().positive("Price must be a positive number"),
+  type: z.string().min(1, "Type is required"),
+  purchasePrice: z
+    .number()
+    .positive("Purchase price must be a positive number"),
   quantity: z.number().int().positive("Quantity must be a positive integer"),
+  salesRep: z.string().min(1, "Sales Rep is required"),
+  lowLevels: z
+    .number()
+    .int()
+    .nonnegative("Low Levels must be a non-negative integer"),
 });
 
 const ProductForm = () => {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -32,23 +49,116 @@ const ProductForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg"
     >
-      <h1 className="flex align-middle">Add New Product</h1>
-      <div>
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" {...register("name")} />
-        {errors.name && <span>{errors.name.message}</span>}
-      </div>
-      <div>
-        <label htmlFor="price">Price</label>
-        <input type="number" id="price" {...register("price")} />
-        {errors.price && <span>{errors.price.message}</span>}
-      </div>
-      <div>
-        <label htmlFor="quantity">Quantity</label>
-        <input type="number" id="quantity" {...register("quantity")} />
-        {errors.quantity && <span>{errors.quantity.message}</span>}
-      </div>
-      <button type="submit">Submit</button>
+      <Typography variant="h5" align="center" gutterBottom>
+        Add New Product
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Controller
+            name="name"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Name"
+                fullWidth
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="type"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel>Type</InputLabel>
+                <Select {...field} error={!!errors.type}>
+                  <MenuItem value="Type1">Type 1</MenuItem>
+                  <MenuItem value="Type2">Type 2</MenuItem>
+                  <MenuItem value="Type3">Type 3</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            name="purchasePrice"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Purchase Price"
+                type="number"
+                fullWidth
+                error={!!errors.purchasePrice}
+                helperText={errors.purchasePrice?.message}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            name="quantity"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Quantity"
+                type="number"
+                fullWidth
+                error={!!errors.quantity}
+                helperText={errors.quantity?.message}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            name="salesRep"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Sales Rep"
+                fullWidth
+                error={!!errors.salesRep}
+                helperText={errors.salesRep?.message}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            name="lowLevels"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Low Levels"
+                type="number"
+                fullWidth
+                error={!!errors.lowLevels}
+                helperText={errors.lowLevels?.message}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Submit
+          </Button>
+        </Grid>
+      </Grid>
     </form>
   );
 };

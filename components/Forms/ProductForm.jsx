@@ -13,6 +13,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import { Box } from "@mui/material";
 
 const newItemSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -45,141 +46,149 @@ const ProductForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg"
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="80vh"
     >
-      <Typography variant="h5" align="center" gutterBottom>
-        Add New Product
-      </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Controller
-            name="name"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Name"
-                fullWidth
-                error={!!errors.name}
-                helperText={errors.name?.message}
-              />
-            )}
-          />
+      <Box maxWidth="sm"></Box>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg"
+      >
+        <Typography variant="h5" align="center" gutterBottom>
+          Add New Product
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Controller
+              name="name"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Name"
+                  fullWidth
+                  error={!!errors.name}
+                  helperText={errors.name?.message}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="type"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <FormControl fullWidth>
+                  <InputLabel>Type</InputLabel>
+                  <Select {...field} error={!!errors.type}>
+                    <MenuItem value="Type1">Retail</MenuItem>
+                    <MenuItem value="Type2">Service</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="purchasePrice"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Purchase Price"
+                  type="number"
+                  fullWidth
+                  error={!!errors.purchasePrice}
+                  helperText={errors.purchasePrice?.message}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="quantity"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Quantity"
+                  type="number"
+                  fullWidth
+                  error={!!errors.quantity}
+                  helperText={errors.quantity?.message}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="salesRep"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Sales Rep"
+                  fullWidth
+                  error={!!errors.salesRep}
+                  helperText={errors.salesRep?.message}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="lowLevels"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Low Levels"
+                  type="number"
+                  fullWidth
+                  error={!!errors.lowLevels}
+                  helperText={errors.lowLevels?.message}
+                />
+              )}
+            />
+          </Grid>
+          {/* Add one more field "Notes" */}
+          <Grid item xs={12}>
+            <Controller
+              name="notes"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField {...field} label="Notes" fullWidth />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <div className="flex justify-end gap-6">
+              <Button type="submit" color="primary" variant="outlined">
+                Submit
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                onClick={() => reset()}
+              >
+                Cancel
+              </Button>
+            </div>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Controller
-            name="type"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel>Type</InputLabel>
-                <Select {...field} error={!!errors.type}>
-                  <MenuItem value="Type1">Retail</MenuItem>
-                  <MenuItem value="Type2">Service</MenuItem>
-                </Select>
-              </FormControl>
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="purchasePrice"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Purchase Price"
-                type="number"
-                fullWidth
-                error={!!errors.purchasePrice}
-                helperText={errors.purchasePrice?.message}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="quantity"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Quantity"
-                type="number"
-                fullWidth
-                error={!!errors.quantity}
-                helperText={errors.quantity?.message}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="salesRep"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Sales Rep"
-                fullWidth
-                error={!!errors.salesRep}
-                helperText={errors.salesRep?.message}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="lowLevels"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Low Levels"
-                type="number"
-                fullWidth
-                error={!!errors.lowLevels}
-                helperText={errors.lowLevels?.message}
-              />
-            )}
-          />
-        </Grid>
-        {/* Add one more field "Notes" */}
-        <Grid item xs={12}>
-          <Controller
-            name="notes"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField {...field} label="Notes" fullWidth />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <div className="flex justify-end gap-6">
-            <Button type="submit" color="primary" variant="outlined">
-              Submit
-            </Button>
-            <Button
-              type="button"
-              variant="outlined"
-              color="secondary"
-              onClick={() => reset()}
-            >
-              Cancel
-            </Button>
-          </div>
-        </Grid>
-      </Grid>
-    </form>
+      </form>
+    </Box>
   );
 };
 

@@ -156,12 +156,12 @@ const ProductForm = () => {
         <Grid item xs={12}>
           {/* Add Submit button and cancel buttons on the same line */}
           <div className="flex justify-end gap-6">
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" color="primary" variant="outlined">
               Submit
             </Button>
             <Button
               type="button"
-              variant="contained"
+              variant="outlined"
               color="secondary"
               onClick={() => reset()}
             >

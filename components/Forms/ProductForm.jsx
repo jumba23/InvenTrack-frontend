@@ -45,6 +45,12 @@ const ProductForm = () => {
     reset();
   };
 
+  const handleCancel = () => {
+    // Handle form cancel
+    console.log("Cancel form submission");
+    reset();
+  };
+
   return (
     <Box
       display="flex"
@@ -180,7 +186,7 @@ const ProductForm = () => {
                 type="button"
                 variant="outlined"
                 color="secondary"
-                onClick={() => reset()}
+                onClick={() => handleCancel()}
               >
                 Cancel
               </Button>

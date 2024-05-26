@@ -154,7 +154,6 @@ const ProductForm = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          {/* Add Submit button and cancel buttons on the same line */}
           <div className="flex justify-end gap-6">
             <Button type="submit" color="primary" variant="outlined">
               Submit

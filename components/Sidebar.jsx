@@ -58,8 +58,8 @@ const Sidebar = () => {
                 <Image
                   src={item.icon}
                   alt={`${item.label} picture`}
-                  width={30}
-                  height={30}
+                  width={20}
+                  height={20}
                 />
                 <div>{item.label}</div>
               </div>
@@ -71,8 +71,8 @@ const Sidebar = () => {
           <Image
             src="/images/logout.png"
             alt="Logout picture"
-            width={30}
-            height={30}
+            width={20}
+            height={20}
           />
           <div className="ml-2" onClick={handleOpenLogoutModal}>
             Logout

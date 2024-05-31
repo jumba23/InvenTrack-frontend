@@ -6,7 +6,25 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { fetchProducts } from "@/utils/api/apiService";
 
-// /** ======================================== SUMMARY ========================================
+/** ======================================== SUMMARY ========================================
+  * ProductProvider acts as the context provider for the application's product state.
+  * It initializes and manages the state related to products, including the product data,
+  * loading state during data fetching, and the selected product category.
+  * The component also encapsulates the logic for fetching products and setting the selected category.
+  
+  * Functionality:
+  * - Upon mounting, it fetches the product data from the API and updates the product state.
+  * - It provides functions to set the product data, loading state, error state, and selected category.
+  * - It makes the product state and functions available to the entire application via the ProductContext.Provider.
+  * 
+  * The ProductProvider is crucial for maintaining a consistent product experience throughout the application.
+  * It leverages React's Context API to allow child components to consume product state and functionalities easily.
+  * 
+  * Usage:
+  * - Wrap the application's component tree with ProductProvider to provide a global product context.
+  * - Access the product state and functions using the 'useProduct' hook within any child component.
+  * ===========================================================================================
+ */
 
 // Create product provider context that keeps track of the product state
 const ProductContext = createContext({
@@ -22,10 +40,12 @@ const ProductContext = createContext({
   setRenderForm: () => {},
 });
 
+// Custom hook to access the product context
 export function useProduct() {
   return useContext(ProductContext);
 }
 
+// Product provider component that wraps the application to provide product context
 export function ProductProvider({ children }) {
   const router = useRouter();
 
@@ -60,7 +80,7 @@ export function ProductProvider({ children }) {
     setRenderForm,
   };
 
-  console.log("ProductProvider value: ", value);
+  // console.log("ProductProvider value: ", value);
 
   return (
     <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

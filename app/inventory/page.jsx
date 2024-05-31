@@ -13,34 +13,46 @@
 // ... existing imports
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { fetchProducts } from "@/utils/api/apiService";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 import Spinner from "@/components/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import ProductForm from "@/components/Forms/ProductForm";
+import { useProduct } from "@/context/ProductContext";
 
 const InventoryPage = () => {
   useRequireAuth("/inventory");
   const router = useRouter();
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Service");
-  const [renderForm, setRenderForm] = useState(false);
+  console.log("useProduct: ", useProduct());
 
-  useEffect(() => {
-    fetchProducts()
-      .then((data) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError("Failed to load products. Please try again later.");
-        setLoading(false);
-      });
-  }, []);
+  const {
+    products,
+    setProducts,
+    loading,
+    error,
+    selectedCategory,
+    renderForm,
+    setRenderForm,
+  } = useProduct();
+
+  // const [products, setProducts] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState("");
+  // const [selectedCategory, setSelectedCategory] = useState("Service");
+  // const [renderForm, setRenderForm] = useState(false);
+
+  // useEffect(() => {
+  //   fetchProducts()
+  //     .then((data) => {
+  //       setProducts(data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setError("Failed to load products. Please try again later.");
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   const handleEdit = (id) => {
     // Logic to handle editing a product

@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 import { useRouter } from "next/navigation";
 import { fetchProducts } from "@/utils/api/apiService";
+import { set } from "react-hook-form";
 
 /** ======================================== SUMMARY ========================================
   * ProductProvider acts as the context provider for the application's product state.
@@ -50,6 +51,7 @@ export function ProductProvider({ children }) {
   const router = useRouter();
 
   const [products, setProducts] = useState([]);
+  const [isNewProduct, setIsNewProduct] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Service");
@@ -73,11 +75,13 @@ export function ProductProvider({ children }) {
     error,
     selectedCategory,
     renderForm,
+    isNewProduct,
     setProducts,
     setLoading,
     setError,
     setSelectedCategory,
     setRenderForm,
+    setIsNewProduct,
   };
 
   console.log("ProductProvider value: ", value);

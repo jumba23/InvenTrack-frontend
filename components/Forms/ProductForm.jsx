@@ -16,6 +16,8 @@ import {
 import { Box } from "@mui/material";
 import { useProduct } from "@/context/ProductContext";
 
+const formTitleOptions = ["Add New Product", "Edit Product"];
+
 const newItemSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   type: z.string().min(1, "Type is required"),
@@ -31,7 +33,7 @@ const newItemSchema = z.object({
 });
 
 const ProductForm = () => {
-  const { setRenderForm } = useProduct();
+  const { setRenderForm, isNewProduct } = useProduct();
 
   const {
     control,
@@ -68,7 +70,7 @@ const ProductForm = () => {
         className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg"
       >
         <Typography variant="h5" align="center" gutterBottom>
-          Add New Product
+          {isNewProduct ? formTitleOptions[0] : formTitleOptions[1]}
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>

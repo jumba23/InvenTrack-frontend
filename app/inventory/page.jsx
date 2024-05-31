@@ -33,12 +33,15 @@ const InventoryPage = () => {
     selectedCategory,
     renderForm,
     setRenderForm,
+    isNewProduct,
+    setIsNewProduct,
   } = useProduct();
 
   const handleEdit = (id) => {
     // Logic to handle editing a product
     console.log("Edit product with ID:", id);
-    // Redirect to the edit product page or open an edit modal
+    setIsNewProduct(false);
+    setRenderForm(true);
   };
 
   const handleDelete = (id) => {

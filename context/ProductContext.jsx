@@ -80,7 +80,7 @@ export function ProductProvider({ children }) {
     setRenderForm,
   };
 
-  // console.log("ProductProvider value: ", value);
+  console.log("ProductProvider value: ", value);
 
   return (
     <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

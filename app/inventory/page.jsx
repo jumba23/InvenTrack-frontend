@@ -24,8 +24,7 @@ const InventoryPage = () => {
   useRequireAuth("/inventory");
   const router = useRouter();
 
-  console.log("useProduct: ", useProduct());
-
+  // Destructure the product context values
   const {
     products,
     setProducts,
@@ -35,24 +34,6 @@ const InventoryPage = () => {
     renderForm,
     setRenderForm,
   } = useProduct();
-
-  // const [products, setProducts] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState("");
-  // const [selectedCategory, setSelectedCategory] = useState("Service");
-  // const [renderForm, setRenderForm] = useState(false);
-
-  // useEffect(() => {
-  //   fetchProducts()
-  //     .then((data) => {
-  //       setProducts(data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       setError("Failed to load products. Please try again later.");
-  //       setLoading(false);
-  //     });
-  // }, []);
 
   const handleEdit = (id) => {
     // Logic to handle editing a product

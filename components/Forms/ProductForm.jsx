@@ -14,6 +14,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { Box } from "@mui/material";
+import { useProduct } from "@/context/ProductContext";
 
 const newItemSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -30,6 +31,16 @@ const newItemSchema = z.object({
 });
 
 const ProductForm = () => {
+  const {
+    products,
+    setProducts,
+    loading,
+    error,
+    selectedCategory,
+    renderForm,
+    setRenderForm,
+  } = useProduct();
+
   const {
     control,
     handleSubmit,
@@ -48,6 +59,7 @@ const ProductForm = () => {
   const handleCancel = () => {
     // Handle form cancel
     console.log("Cancel form submission");
+    setRenderForm(false);
     reset();
   };
 

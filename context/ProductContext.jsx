@@ -4,29 +4,30 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 import { useRouter } from "next/navigation";
+import { fetchProducts } from "@/utils/api/apiService";
 
 // /** ======================================== SUMMARY ========================================
 
-export function useAuth() {
-  return useContext(ProductProvider);
+// Create product provider context that keeps track of the product state
+const ProductContext = createContext({
+  products: [],
+  loading: true,
+  error: "",
+  selectedCategory: "Service",
+  renderForm: false,
+  setProducts: () => {},
+  setLoading: () => {},
+  setError: () => {},
+  setSelectedCategory: () => {},
+  setRenderForm: () => {},
+});
+
+export function useProduct() {
+  return useContext(ProductContext);
 }
 
 export function ProductProvider({ children }) {
   const router = useRouter();
-
-  // Create product provider context that keeps track of the product state
-  const ProductContext = createContext({
-    products: [],
-    loading: true,
-    error: "",
-    selectedCategory: "Service",
-    renderForm: false,
-    setProducts: () => {},
-    setLoading: () => {},
-    setError: () => {},
-    setSelectedCategory: () => {},
-    setRenderForm: () => {},
-  });
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +59,8 @@ export function ProductProvider({ children }) {
     setSelectedCategory,
     setRenderForm,
   };
+
+  console.log("ProductProvider value: ", value);
 
   return (
     <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

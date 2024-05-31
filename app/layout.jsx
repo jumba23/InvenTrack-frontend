@@ -1,3 +1,4 @@
+import { ProductProvider } from "@/context/ProductContext";
 import { AuthProvider } from "../context/AuthContext"; // Ensure this path is correct
 import "./globals.css";
 
@@ -31,9 +32,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <AuthProvider>
-      <html lang="en">
-        <body>{children}</body>
-      </html>
+      <ProductProvider>
+        <html lang="en">
+          <body>{children}</body>
+        </html>
+      </ProductProvider>
     </AuthProvider>
   );
 }

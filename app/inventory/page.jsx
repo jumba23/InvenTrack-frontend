@@ -40,7 +40,7 @@ const InventoryPage = () => {
   const handleEdit = (id) => {
     // Logic to handle editing a product
     console.log("Edit product with ID:", id);
-    setIsNewProduct(false);
+    setIsNewProduct(false); // This state will set the title of the form to "Edit Product"
     setRenderForm(true);
   };
 

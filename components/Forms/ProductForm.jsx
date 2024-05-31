@@ -31,15 +31,7 @@ const newItemSchema = z.object({
 });
 
 const ProductForm = () => {
-  const {
-    products,
-    setProducts,
-    loading,
-    error,
-    selectedCategory,
-    renderForm,
-    setRenderForm,
-  } = useProduct();
+  const { setRenderForm } = useProduct();
 
   const {
     control,

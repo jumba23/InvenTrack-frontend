@@ -141,33 +141,33 @@ const ProductForm = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="salesRep"
+              name="supplier"
               control={control}
               defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Sales Rep"
+                  label="Supplier"
                   fullWidth
-                  error={!!errors.salesRep}
-                  helperText={errors.salesRep?.message}
+                  error={!!errors.supplier}
+                  helperText={errors.supplier?.message}
                 />
               )}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="lowLevels"
+              name="lowLevel"
               control={control}
               defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Low Levels"
+                  label="Low Level"
                   type="number"
                   fullWidth
-                  error={!!errors.lowLevels}
-                  helperText={errors.lowLevels?.message}
+                  error={!!errors.lowLevel}
+                  helperText={errors.lowLevel?.message}
                 />
               )}
             />
@@ -175,11 +175,11 @@ const ProductForm = () => {
           {/* Add one more field "Notes" */}
           <Grid item xs={12}>
             <Controller
-              name="notes"
+              name="description"
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField {...field} label="Notes" fullWidth />
+                <TextField {...field} label="Description" fullWidth />
               )}
             />
           </Grid>

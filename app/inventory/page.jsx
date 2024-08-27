@@ -55,31 +55,31 @@ const InventoryPage = () => {
     setRenderForm(true);
   };
 
-  const handleService = () => {
-    // Logic to handle service
-    console.log("Service");
-    // Redirect to the service page or open a service modal
-  };
+  // const handleService = () => {
+  //   // Logic to handle service
+  //   console.log("Service");
+  //   // Redirect to the service page or open a service modal
+  // };
 
-  const handleRetails = () => {
-    // Logic to handle retails
-    console.log("Retails");
-    // Redirect to the retails page or open a retails modal
-  };
+  // const handleRetails = () => {
+  //   // Logic to handle retails
+  //   console.log("Retails");
+  //   // Redirect to the retails page or open a retails modal
+  // };
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
   // Calculate metrics
-  const totalInventoryValue = products.reduce(
-    (acc, product) => acc + product.levels * parseFloat(product.value || 0),
-    0
-  );
+  // const totalInventoryValue = products.reduce(
+  //   (acc, product) => acc + product.levels * parseFloat(product.value || 0),
+  //   0
+  // );
   const lowStockThreshold = 10;
-  const urgentlyLowStockItems = products.filter(
-    (product) => product.levels < lowStockThreshold
-  ).length;
+  // const urgentlyLowStockItems = products.filter(
+  //   (product) => product.levels < lowStockThreshold
+  // ).length;
   const totalItems = products.length;
   const recentOrders = products.filter((product) => {
     const orderDate = new Date(product.lastOrdered);

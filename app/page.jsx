@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import IndexLayout from "../layouts/IndexLayout";
 import LandingPageLayout from "@/layouts/LandingPageLayout";
 import MainLayout from "@/layouts/MainLayout";
 import { useAuth } from "@/context/AuthContext";

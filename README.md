@@ -68,7 +68,6 @@ frontend/
 │   ├── AuthContext.jsx
 │   └── ProductContext.jsx
 ├── layouts/
-│   ├── IndexLayout.jsx
 │   ├── LandingPageLayout.jsx
 │   └── MainLayout.jsx
 ├── public/

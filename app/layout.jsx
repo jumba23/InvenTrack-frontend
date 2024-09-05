@@ -1,5 +1,5 @@
 import { ProductProvider } from "@/context/ProductContext";
-import { AuthProvider } from "../context/AuthContext"; // Ensure this path is correct
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 // Metadata for the application.
@@ -8,35 +8,44 @@ export const metadata = {
   description: "Inventory Tracking System",
 };
 
-/** ======================================== SUMMARY ========================================
- * RootLayout serves as the foundational layout component for the InvenTrack application, integrating
- * the AuthProvider to ensure authentication context is available throughout the application. It provides
- * a consistent structural foundation for the pages of the application, encapsulating children components
- * within the global authentication context established by AuthProvider.
+/**
+ * ======================================== SUMMARY ========================================
+ * RootLayout serves as the foundational layout component for the InvenTrack application
+ * built with Next.js 14. It integrates AuthProvider and ProductProvider to ensure
+ * authentication and product contexts are available throughout the application.
  *
  * Functionality:
- * - Wraps child components with the AuthProvider, granting them access to authentication-related state
- *   and functions. This enables components deep in the component tree to react to changes in authentication state.
- * - Defines the root HTML structure with a consistent layout for different pages, facilitating a cohesive look and feel.
+ * - Utilizes Next.js 14's app router and layout system.
+ * - Wraps child components with AuthProvider and ProductProvider, providing access to
+ *   authentication and product-related state and functions.
+ * - Defines the root HTML structure, ensuring a consistent layout across all pages.
+ * - Applies global styles through the import of globals.css.
+ *
+ * Key Next.js 14 Features Used:
+ * - App Router: This layout is part of the app directory structure.
+ * - Metadata API: Uses the metadata export for SEO optimization.
+ * - Server Components: By default, this is a Server Component unless explicitly set to "use client".
  *
  * Usage:
- * - Employed at the top level of the application's component hierarchy, typically within the custom App component
- *   in Next.js or as part of the `app` directory's layout pattern, to wrap page content.
- * - By using AuthProvider at this level, it ensures that authentication state is universally accessible,
- *   providing a seamless experience for authenticated user interactions across the entire application.
+ * - Serves as the top-level layout in the Next.js 14 app directory structure.
+ * - Ensures authentication and product states are accessible throughout the app,
+ *   facilitating a seamless user experience.
  *
- * This setup is integral for maintaining a secure and user-responsive application, as it manages user
- * authentication state centrally and efficiently.
- *  ===================================================================================================*/
+ * Note:
+ * - If any client-side functionality is needed in this layout, consider adding "use client"
+ *   at the top of the file and handling any server/client differences appropriately.
+ *
+ * ===========================================================================================
+ */
 
 export default function RootLayout({ children }) {
   return (
-    <AuthProvider>
-      <ProductProvider>
-        <html lang="en">
-          <body>{children}</body>
-        </html>
-      </ProductProvider>
-    </AuthProvider>
+    <html lang="en">
+      <body>
+        <AuthProvider>
+          <ProductProvider>{children}</ProductProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }

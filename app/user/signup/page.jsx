@@ -1,80 +1,98 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { userSignUp } from "@/utils/api/apiService";
 import { handleApiError } from "@/utils/api/errorHandling";
 import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [cellNumber, setCellNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState(null);
-
-  const handleSignUp = async (e) => {
-    e.preventDefault();
+  // Handle form submission
+  const onSubmit = async (data) => {
     try {
-      await userSignUp(firstName, lastName, cellNumber, email, password);
-
+      await userSignUp(
+        data.firstName,
+        data.lastName,
+        data.cellNumber,
+        data.email,
+        data.password
+      );
       router.push("/user/login");
     } catch (error) {
-      handleApiError(error, setErrorMsg);
+      handleApiError(error, (msg) => setError("apiError", { message: msg }));
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="w-1/3 p-8 bg-white rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
         <h1 className="mb-4 text-2xl text-center">Sign Up</h1>
-        <form onSubmit={handleSignUp}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* First Name Input */}
           <div className="mb-4">
             <input
               type="text"
               placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              {...register("firstName", { required: "First Name is required" })}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.firstName && (
+              <p className="text-red-500">{errors.firstName.message}</p>
+            )}
           </div>
+          {/* Last Name Input */}
           <div className="mb-4">
             <input
               type="text"
               placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              {...register("lastName", { required: "Last Name is required" })}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.lastName && (
+              <p className="text-red-500">{errors.lastName.message}</p>
+            )}
           </div>
+          {/* Cell Number Input */}
           <div className="mb-4">
             <input
               type="tel"
               placeholder="Cell Number"
-              value={cellNumber}
-              onChange={(e) => setCellNumber(e.target.value)}
+              {...register("cellNumber")}
               className="w-full p-2 border border-gray-300 rounded"
             />
           </div>
+          {/* Email Input */}
           <div className="mb-4">
             <input
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email", { required: "Email is required" })}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
           </div>
+          {/* Password Input */}
           <div className="mb-4">
             <input
               type="password"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password", { required: "Password is required" })}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.password && (
+              <p className="text-red-500">{errors.password.message}</p>
+            )}
           </div>
+          {/* Submit Button */}
           <div className="mb-4">
             <button
               type="submit"
@@ -83,8 +101,11 @@ const SignUpForm = () => {
               Submit
             </button>
           </div>
-          {errorMsg && (
-            <div className="text-center text-red-500">{errorMsg}</div>
+          {/* Error Message */}
+          {errors.apiError && (
+            <div className="text-center text-red-500">
+              {errors.apiError.message}
+            </div>
           )}
         </form>
       </div>

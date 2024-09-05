@@ -1,8 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# InvenTrack Frontend
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app), utilizing Next.js 14.2.7.
+
+## Table of Contents
+
+1. [Getting Started](#getting-started)
+2. [Project Structure](#project-structure)
+3. [Key Features](#key-features)
+4. [Authentication](#authentication)
+5. [Development Practices](#development-practices)
+6. [Testing](#testing)
+7. [Deployment](#deployment)
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -12,79 +34,111 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. The application currently redirects to the `/inventory` page by default.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Project Structure
 
-## Folder and File structure (This folder follows the Next 13.5 folder structure)
-
-- app/
-
-  - page.js: Default Home page. \*\*\* currently re-routes to /inventory
-  - dashboard/
-    - page.js: Dashboard page.
-  - inventory/
-    - page.js: Inventory page.
-  - orders/
-    - page.js: Orders page.
-  - suppliers/
-    - page.js: Suppliers page.
-  - reports/
-    - page.js: Reports page.
-  - user/
-    - signup/
-      - page.js: Sign Up form.
-    - login/
-      - page.js: Login form.
-  - page.js: app entry point file.
-  - layout.js: Root layout file for rendering {children}
-  - global.css: Tailwind styles.
-  - components/
-    - Forms/
-      - LoginForm.js: Login form.
-      - SignUpForm.js: Sign Up form.
-      - AddProductsForm.js: Form to add a new product
-      - AddSupplierFrom.js: Form to add a new supplier
-    - LandingPage/
-      - landingHeader.js: Header structure with "Sign up" and "Login" buttons.
-      - landingMain.js: Page with images and tex about the application.
-    - Modal/
-      - logoutModal.js: Confirm the intention to logout with "YES" and "NO" button options.
-    - Footer.js: Footer style and structure
-    - Header.js: Header style and structure
-    - Sidebar.js: Sidebar style and structure
-
-- layouts/
-  - MainLayout.js: Layout for pages like Inventory, Reports, Suppliers, Orders.
-  - LandingPageLayout.js: Layout page will render if there is no "token" in localStorage .
-- utils/
-
-  - api/
-    - axiosClient.js: Base URL for server - AXIOS.
-    - apiService.js: Authentication, Products and Suppliers related functions.
-  - hooks/
-    - useRedirectToInventory - TEMP re-routing to/inventory/pages.js
-    - useRequireAuth - check if there is a "token" in localStorage
-
-- public/
-  - images/: Images like splash image.
+This project follows the Next.js 14.2.7 folder structure:
 
 ```
-
-**Explanation:**
-
-- **app/**: This is where Next.js 13.5 specific routing, pages, layouts, and templates are defined.
-- **components/**: Common reusable components. page.js is the entry point to the app.
-- **layouts/**: Custom layout files, if needed outside Next.js 13's built-in layout system.
-- **utils/** or **services/**: Functions related to API calls, authentication, utility functions, etc.
-- **public/**: For static assets like images, fonts, etc. They are served as-is and accessible via root URL.
-- **__tests__/**: Test files for the application components and pages.
-
-###AUTHENTICATION
-
-supabase package is used for authentication on the backend app(server). The frontend app only passes the user parameters
+frontend/
+├── app/
+│   ├── dashboard/
+│   ├── inventory/
+│   ├── orders/
+│   ├── reports/
+│   ├── suppliers/
+│   ├── user/
+│   │   ├── login/
+│   │   └── signup/
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.jsx
+│   └── page.jsx
+├── components/
+│   ├── AccountSettings/
+│   ├── Forms/
+│   ├── LandingPage/
+│   ├── Modals/
+│   ├── Footer.jsx
+│   ├── Header.jsx
+│   ├── Sidebar.jsx
+│   └── Spinner.jsx
+├── context/
+│   ├── AuthContext.jsx
+│   └── ProductContext.jsx
+├── layouts/
+│   ├── IndexLayout.jsx
+│   ├── LandingPageLayout.jsx
+│   └── MainLayout.jsx
+├── public/
+│   └── images/
+├── utils/
+│   ├── api/
+│   │   ├── apiService.jsx
+│   │   ├── axiosClient.jsx
+│   │   └── errorHandling.jsx
+│   ├── authentication/
+│   └── hooks/
+│       ├── useRedirectToInventory.jsx
+│       └── useRequireAuth.jsx
+├── .env.local
+├── .eslintrc.json
+├── next.config.js
+├── package.json
+├── postcss.config.js
+└── tailwind.config.js
 ```
 
-```
+### Key Directories and Files
 
-```
+- `app/`: Contains Next.js 14.2.7 pages and routing structure.
+- `components/`: Reusable React components.
+- `context/`: React Context providers for state management.
+- `layouts/`: Custom layout components.
+- `utils/`: Utility functions, API services, and custom hooks.
+- `public/`: Static assets.
+
+## Key Features
+
+1. **Inventory Management**: Track and manage product inventory.
+2. **Order Processing**: Handle and process customer orders.
+3. **Supplier Management**: Manage supplier information and orders.
+4. **Reporting**: Generate and view various business reports.
+5. **User Authentication**: Secure login and signup functionality.
+
+## Authentication
+
+The frontend application handles user authentication by passing user parameters to the backend. The backend utilizes the Supabase package for authentication services.
+
+Authentication flow:
+
+1. User enters credentials on the frontend.
+2. Frontend sends credentials to the backend API.
+3. Backend authenticates with Supabase and returns a token.
+4. Frontend stores the token (currently in localStorage) and uses it for subsequent authenticated requests.
+
+**Note**: Consider using more secure storage methods for tokens in future updates.
+
+## Development Practices
+
+1. **State Management**: Utilizes React Context API (see `context/` directory).
+2. **API Integration**: Axios is used for API calls, with a centralized service in `utils/api/apiService.jsx`.
+3. **Routing**: Leverages Next.js 14.2.7 App Router for file-system based routing.
+4. **Styling**: Uses Tailwind CSS for styling (see `tailwind.config.js` and `postcss.config.js`).
+5. **Code Quality**: ESLint is used for maintaining code quality (see `.eslintrc.json`).
+
+## Testing
+
+(Add information about your testing strategy and how to run tests once implemented)
+
+## Deployment
+
+(Add information about your deployment process and any relevant instructions)
+
+## Future Plans
+
+1. Migrate from JavaScript to TypeScript for improved type safety and developer experience.
+2. Implement comprehensive testing suite.
+3. Enhance security measures for token storage and management.
+4. Regularly update dependencies to leverage latest features and security patches.

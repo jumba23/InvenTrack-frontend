@@ -2,34 +2,45 @@ import React from "react";
 import Footer from "@/components/Footer";
 import LandingHeader from "@/components/LandingPage/LandingHeader";
 import LandingMain from "@/components/LandingPage/LandingMain";
-/** ======================================== SUMMARY ========================================
- * LandingPageLayout is designed to structure the layout of the landing page for non-authenticated users.
- * It presents a welcoming interface that typically includes a header, main content area, and footer.
- * This layout is part of the public-facing portion of the application, aimed at users who have not logged in.
+
+/**
+ * LandingPageLayout Component
+ *
+ * Purpose:
+ * Structures the layout of the landing page for non-authenticated users, providing a
+ * responsive and welcoming interface across various device sizes.
+ *
+ * @component
  *
  * Structure:
- * - The layout is organized as a vertical flex container to ensure that the header, main content,
- *   and footer are spaced out evenly and cover the entire height of the viewport.
- * - The LandingHeader component occupies the top portion of the layout, typically containing
- *   navigation links to login or register, as well as branding elements.
- * - The LandingMain component is designated as the primary content area, occupying the bulk of the
- *   screen space. It's intended for promotional material, information about the application, or calls to action.
- * - The Footer component sits at the bottom of the layout, providing additional information or links
- *   that are accessible from the landing page.
+ * - Uses a flex column layout to vertically stack components
+ * - Implements responsive design for mobile compatibility
+ *
+ * Components:
+ * - LandingHeader: Top section with navigation and branding
+ * - LandingMain: Primary content area with promotional material
+ * - Footer: Bottom section with additional links and information
+ *
+ * Responsiveness:
+ * - Uses min-height instead of fixed height for better mobile layout
+ * - Adjusts spacing and sizing for different screen sizes
  *
  * Usage:
- * - This component should be used in the application's root or index page to render the initial view
- *   for visitors who are not authenticated. It's a critical part of the user journey, designed to engage
- *   users and encourage them to sign up or log in.
- * - The height proportions of the header, main, and footer sections are adjustable based on design
- *   requirements but are set here to maintain a balanced appearance.
- * ==========================================================================================*/
+ * Render this component for the initial view of non-authenticated users.
+ * It's typically used in the application's root or index page.
+ *
+ * @example
+ * <LandingPageLayout />
+ *
+ * Performance Note:
+ * Consider lazy loading LandingMain content if it contains heavy media elements.
+ */
 const LandingPageLayout = () => {
   return (
-    <div className="flex flex-col justify-between h-screen">
-      <LandingHeader className="h-[20vh]" />
-      <LandingMain className="h-[60vh]" />
-      <Footer className="h-[20vh]" />
+    <div className="flex flex-col justify-between min-h-screen">
+      <LandingHeader className="py-4 md:py-6" />
+      <LandingMain className="flex-grow py-8 md:py-12" />
+      <Footer className="py-1 md:py-2" />
     </div>
   );
 };

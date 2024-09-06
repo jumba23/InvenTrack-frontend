@@ -1,39 +1,65 @@
+/**
+ * apiService.js
+ *
+ * This module provides a centralized interface for making API requests to the backend.
+ * It includes functions for user authentication, product management, and token validation.
+ *
+ * Key features:
+ * - Uses axiosClient for consistent API communication
+ * - Handles user authentication (login, signup, logout)
+ * - Manages product fetching
+ * - Performs token validation for maintaining user sessions
+ * - Implements consistent error handling and logging
+ *
+ * Usage:
+ * Import the required functions and use them in your components or other services.
+ * Example: import { userLogin, fetchProducts } from './apiService';
+ */
+
 import axiosClient from "./axiosClient";
 
-// ------------------------------------------------------
-// This file contains functions for making API requests related to user management
-// and product fetching. Each function uses axiosClient to communicate with the backend,
-// handling tasks like fetching products, user authentication (login, signup), and logout.
-// These functions abstract and centralize the API interaction logic, making them reusable
-// across the application.
-// ------------------------------------------------------
-
-// Fetch products
+/**
+ * Fetches products from the API.
+ * @returns {Promise<Array>} A promise that resolves to an array of products.
+ * @throws {Error} If the API request fails.
+ */
 export const fetchProducts = async () => {
   try {
     const response = await axiosClient.get("/products");
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching products:", error);
     throw error;
   }
 };
 
-// User Login
+/**
+ * Authenticates a user.
+ * @param {string} email - The user's email.
+ * @param {string} password - The user's password.
+ * @returns {Promise<Object>} A promise that resolves to the user data.
+ * @throws {Error} If the login fails.
+ */
 export const userLogin = async (email, password) => {
   try {
-    const response = await axiosClient.post("/user/login", {
-      email,
-      password,
-    });
+    const response = await axiosClient.post("/user/login", { email, password });
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     throw error;
   }
 };
 
-// User Signup
+/**
+ * Registers a new user.
+ * @param {string} firstName - The user's first name.
+ * @param {string} lastName - The user's last name.
+ * @param {string} cellNumber - The user's cell phone number.
+ * @param {string} email - The user's email.
+ * @param {string} password - The user's password.
+ * @returns {Promise<Object>} A promise that resolves to the new user data.
+ * @throws {Error} If the signup fails.
+ */
 export const userSignUp = async (
   firstName,
   lastName,
@@ -51,33 +77,39 @@ export const userSignUp = async (
     });
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error);
     throw error;
   }
 };
 
-// User Logout
-
+/**
+ * Logs out the current user.
+ * @returns {Promise<Object>} A promise that resolves to the logout response data.
+ * @throws {Error} If the logout fails.
+ */
 export const userLogout = async () => {
   try {
     const response = await axiosClient.post("/user/logout", { logout: true });
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Logout error:", error);
     throw error;
   }
 };
 
-//Validate user
+/**
+ * Validates the current user's token.
+ * @returns {Promise<string>} A promise that resolves to the validation response.
+ * @throws {Error} If the validation fails or the token is invalid.
+ */
 export const validateUser = async () => {
   try {
     const response = await axiosClient.get("/user/validate-token", {
       withCredentials: true,
     });
-
     return response.data;
   } catch (error) {
-    // 401 server response will be in this part of if statement
+    console.error("Token validation error:", error);
     throw error;
   }
 };

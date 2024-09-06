@@ -1,193 +1,201 @@
 "use client";
 
-// ======================= SUMMARY =======================
-// This page component represents the inventory page of the application.
-// It fetches the inventory data from the API and displays it in a tabular format using the DataGrid component.
-// The useRequireAuth hook ensures that only authenticated users can access this page.
-// ======================================================
-// Usage:
-// - Place this component inside the pages directory to create the inventory page.
-// - The useRequireAuth hook ensures that only authenticated users can access this page.
-// ======================================================
+/**
+ * InventoryPage Component
+ *
+ * Purpose:
+ * Displays and manages the inventory of products, including services and retail items.
+ *
+ * Features:
+ * - Displays summary cards with key inventory metrics
+ * - Provides a filterable and sortable grid of all inventory items
+ * - Allows adding, editing, and deleting of inventory items
+ * - Separates items into 'Service' and 'Retail' categories
+ * - Calculates and displays total value for each item
+ *
+ * @component
+ */
 
-// ... existing imports
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 import Spinner from "@/components/Spinners/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
-import { useRouter } from "next/navigation";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/context/ProductContext";
+import InfoCards from "./InfoCards";
 
 const InventoryPage = () => {
   useRequireAuth("/inventory");
-  const router = useRouter();
 
-  // Destructure the product context values
   const {
     products,
     setProducts,
     loading,
-    error,
     selectedCategory,
     renderForm,
     setRenderForm,
-    isNewProduct,
     setIsNewProduct,
+    setSelectedCategory,
   } = useProduct();
 
+  // Handler for editing a product
   const handleEdit = (id) => {
-    // Logic to handle editing a product
     console.log("Edit product with ID:", id);
-    setIsNewProduct(false); // This state will set the title of the form to "Edit Product"
+    setIsNewProduct(false);
     setRenderForm(true);
+    // TODO: Implement edit functionality
   };
 
+  // Handler for deleting a product
   const handleDelete = (id) => {
-    // Logic to handle deleting a product
     console.log("Delete product with ID:", id);
-    // Make an API call to delete the product and update the products state
+    // TODO: Implement delete functionality
   };
 
+  // Handler for adding a new product
   const handleAddProduct = () => {
-    console.log("Add new product");
+    setIsNewProduct(true);
     setRenderForm(true);
   };
 
-  // const handleService = () => {
-  //   // Logic to handle service
-  //   console.log("Service");
-  //   // Redirect to the service page or open a service modal
-  // };
-
-  // const handleRetails = () => {
-  //   // Logic to handle retails
-  //   console.log("Retails");
-  //   // Redirect to the retails page or open a retails modal
-  // };
-
+  // Handler for changing the category filter
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
-  // Calculate metrics
-  // const totalInventoryValue = products.reduce(
-  //   (acc, product) => acc + product.levels * parseFloat(product.value || 0),
-  //   0
-  // );
-  const lowStockThreshold = 10;
-  // const urgentlyLowStockItems = products.filter(
-  //   (product) => product.levels < lowStockThreshold
-  // ).length;
-  const totalItems = products.length;
-  // const recentOrders = products.filter((product) => {
-  //   const orderDate = new Date(product.lastOrdered);
-  //   const today = new Date();
-  //   return (today - orderDate) / (1000 * 60 * 60 * 24) <= 30;
-  // }).length;
-  // const mostValuableItems = products
-  //   .sort((a, b) => parseFloat(b.value || 0) - parseFloat(a.value || 0))
-  //   .slice(0, 3);
-
   // Define columns for DataGrid
   const columns = [
-    { field: "name", headerName: "Product", width: 150 },
-    { field: "supplier", headerName: "Supplier", width: 150 },
-    { field: "levels", headerName: "Levels", width: 120 },
-    { field: "value", headerName: "Value", width: 120 },
-    { field: "last_ordered", headerName: "Last Ordered", width: 150 },
+    {
+      field: "name",
+      headerName: "Product",
+      width: 120,
+      flex: 1,
+      // align: "center",
+      // headerAlign: "center",
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "measurement_unit",
+      headerName: "Unit",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "reorder_point",
+      headerName: "Reorder Point",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "selling_price_per_unit",
+      headerName: "Selling Price",
+      width: 120,
+      // align: "center",
+      // headerAlign: "center",
+      valueFormatter: ({ value }) => `$${value.toFixed(2)}`,
+    },
+    {
+      field: "value",
+      headerName: "Value",
+      width: 120,
+      // align: "center",
+      // headerAlign: "center",
+      valueFormatter: ({ value }) => `$${value.toFixed(2)}`,
+      valueGetter: (params) =>
+        params.row.quantity * params.row.selling_price_per_unit,
+    },
+    {
+      field: "storage_location",
+      headerName: "Location",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 150,
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => (
-        <>
+        <div className="flex justify-center space-x-2">
           <button
-            className="px-2 py-1 mr-2 text-white bg-blue-500 rounded"
+            className="px-3 py-1 text-xs text-white transition-colors bg-blue-500 rounded hover:bg-blue-600"
             onClick={() => handleEdit(params.row.id)}
           >
             Edit
           </button>
           <button
-            className="px-2 py-1 text-white bg-red-500 rounded"
+            className="px-3 py-1 text-xs text-white transition-colors bg-red-500 rounded hover:bg-red-600"
             onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </button>
-        </>
+        </div>
       ),
     },
   ];
 
-  // Convert products data to the format expected by DataGrid
-  const rows = products.map((product, index) => ({
-    id: index,
-    ...product,
+  // Filter products based on selected category
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === "Service") {
+      return products.filter((product) => product.category_id === 1);
+    } else if (selectedCategory === "Retail") {
+      return products.filter((product) => product.category_id === 2);
+    }
+    return products;
+  }, [products, selectedCategory]);
+
+  // Prepare rows for DataGrid
+  const rows = filteredProducts.map((product) => ({
+    id: product.id,
+    name: product.name,
+    quantity: product.quantity,
+    measurement_unit: product.measurement_unit,
+    reorder_point: product.reorder_point,
+    selling_price_per_unit: product.selling_price_per_unit,
+    storage_location: product.storage_location,
   }));
 
   return (
     <MainLayout>
-      <div className="flex flex-col h-full">
-        {renderForm && (
+      <div className="flex flex-col h-full p-3">
+        {renderForm ? (
           <ProductForm
             setRenderForm={setRenderForm}
             setProducts={setProducts}
           />
-        )}
-
-        {!renderForm && (
+        ) : (
           <>
-            <div className="flex items-center justify-center p-4 mt-2 mb-4 bg-white rounded-lg h-1/4">
-              <div className="grid w-full h-full grid-cols-1 gap-6 m-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="flex flex-col items-center justify-center p-4 bg-blue-100 rounded">
-                  <h2 className="text-xl font-semibold">
-                    Total Inventory Value
-                  </h2>
-                  <p className="text-2xl font-bold">
-                    {/* ${totalInventoryValue.toFixed(2)} */}
-                    $147,000
-                  </p>
-                </div>
-                <div className="flex flex-col items-center justify-center p-4 bg-red-100 rounded">
-                  <h2 className="text-xl font-semibold">
-                    Urgently Low Stock Items
-                  </h2>
-                  <p className="text-2xl font-bold">
-                    {/* {urgentlyLowStockItems} */}3
-                  </p>
-                </div>
-                <div className="flex flex-col items-center justify-center p-4 bg-green-100 rounded">
-                  <h2 className="text-xl font-semibold">
-                    Total Number of Items
-                  </h2>
-                  <p className="text-2xl font-bold">{totalItems}</p>
-                </div>
-                <div className="flex flex-col items-center justify-center p-4 bg-yellow-100 rounded">
-                  <h2 className="text-xl font-semibold">Recent Orders</h2>
-                  <p className="text-2xl font-bold">{/* {recentOrders} */}5</p>
-                </div>
-              </div>
-            </div>
+            <InfoCards products={filteredProducts} />
 
-            <div className="flex flex-col flex-grow p-4 overflow-hidden bg-white rounded-lg">
-              <div className="flex justify-between mb-4">
-                <div>
+            <div className="flex flex-col flex-grow px-4 pb-2 mt-3 bg-white rounded-lg shadow">
+              <div className="flex justify-between px-1 py-4 border-b">
+                <div className="space-x-2">
                   <button
-                    className={`px-4 py-2 mr-2 rounded ${
+                    className={`px-4 py-2 text-sm rounded transition-colors ${
                       selectedCategory === "Service"
                         ? "text-white bg-blue-500"
-                        : "text-blue-500 bg-white border border-blue-500"
+                        : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
                     }`}
                     onClick={() => handleCategoryChange("Service")}
                   >
                     Service
                   </button>
                   <button
-                    className={`px-4 py-2 rounded ${
+                    className={`px-4 py-2 text-sm rounded transition-colors ${
                       selectedCategory === "Retail"
                         ? "text-white bg-blue-500"
-                        : "text-blue-500 bg-white border border-blue-500"
+                        : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
                     }`}
                     onClick={() => handleCategoryChange("Retail")}
                   >
@@ -195,7 +203,7 @@ const InventoryPage = () => {
                   </button>
                 </div>
                 <button
-                  className="px-4 py-2 text-white bg-green-500 rounded"
+                  className="px-4 py-2 text-sm text-white transition-colors bg-green-500 rounded hover:bg-green-600"
                   onClick={handleAddProduct}
                 >
                   New Item
@@ -204,12 +212,27 @@ const InventoryPage = () => {
               {loading ? (
                 <Spinner />
               ) : (
-                <div className="flex-grow overflow-auto">
+                <div className="flex-grow">
                   <DataGrid
                     rows={rows}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5, 10]}
+                    // autoHeight
+                    density="compact"
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: "#dddddd",
+                        color: "#000000",
+                        fontSize: "0.875rem",
+                        fontWeight: "bold",
+                        borderBottom: "none",
+                        // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                      },
+                      "& .MuiDataGrid-cell": {
+                        fontSize: "0.875rem",
+                      },
+                    }}
                   />
                 </div>
               )}

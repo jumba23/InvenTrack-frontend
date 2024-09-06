@@ -81,11 +81,11 @@ const InventoryPage = () => {
   //   (product) => product.levels < lowStockThreshold
   // ).length;
   const totalItems = products.length;
-  const recentOrders = products.filter((product) => {
-    const orderDate = new Date(product.lastOrdered);
-    const today = new Date();
-    return (today - orderDate) / (1000 * 60 * 60 * 24) <= 30;
-  }).length;
+  // const recentOrders = products.filter((product) => {
+  //   const orderDate = new Date(product.lastOrdered);
+  //   const today = new Date();
+  //   return (today - orderDate) / (1000 * 60 * 60 * 24) <= 30;
+  // }).length;
   // const mostValuableItems = products
   //   .sort((a, b) => parseFloat(b.value || 0) - parseFloat(a.value || 0))
   //   .slice(0, 3);

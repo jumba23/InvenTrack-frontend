@@ -14,7 +14,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { handleApiError } from "@/utils/api/errorHandling";
-import { userLogin } from "@/utils/api/apiService";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth hook
 import { useRouter } from "next/navigation";
 
 // ========================= SUMMARY =========================
@@ -58,24 +58,25 @@ const theme = createTheme({
 
 const LoginForm = () => {
   const router = useRouter();
+  const { login, isAuthenticated } = useAuth();
   const [errorMsg, setErrorMsg] = React.useState(null);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      // redirect to dashboard if user is authenticated
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    // console.log({
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
     const email = data.get("email");
     const password = data.get("password");
     try {
-      //api axios call
-      const data = await userLogin(email, password);
-      console.log("Login response", data);
-
-      router.push("/inventory");
+      login(email, password);
     } catch (error) {
+      console.error("Login error:", error);
       handleApiError(error, setErrorMsg);
     }
   };

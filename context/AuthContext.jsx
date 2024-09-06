@@ -1,109 +1,137 @@
 "use client";
-// use client indicates this module is intended for client-side usage only.
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { userLogout, validateUser } from "@/utils/api/apiService";
-import { useRouter } from "next/navigation";
-
-/** ======================================== SUMMARY ========================================
- * AuthProvider acts as the context provider for the application's authentication state.
- * It initializes and manages the state related to user authentication, including the user's
- * authentication status, loading state during authentication checks, and visibility of a logout modal.
- * The component also encapsulates the logic for validating user sessions and handling user logout actions.
+/**
+ * AuthContext.js
  *
- * Functionality:
- * - Upon mounting, it performs a check to validate the user's session, updating the authentication status accordingly.
- * - It provides a 'logout' function to log the user out and redirect to the home page.
- * - It controls the visibility of a logout modal through the 'toggleLogoutModal' function.
- * - It makes the authentication state and functions available to the entire application via the AuthContext.Provider.
+ * This file defines the authentication context for the application.
+ * It provides authentication state and functions to manage user authentication.
  *
- * The AuthProvider is crucial for maintaining a secure and consistent authentication experience throughout the application.
- * It leverages React's Context API to allow child components to consume authentication state and functionalities easily.
+ * Key features:
+ * - Manages authentication state (isAuthenticated, loading)
+ * - Provides login and logout functionality
+ * - Handles initial authentication check on mount
+ * - Manages logout modal visibility
  *
  * Usage:
- * - Wrap the application's component tree with AuthProvider to provide a global authentication context.
- * - Access the authentication state and functions using the 'useAuth' hook within any child component.
+ * Wrap your app with <AuthProvider> and use the useAuth hook in child components
+ * to access authentication state and functions.
  */
 
-// Creation of AuthContext with default values. This context will manage the authentication state
-// throughout the application.
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { userLogout, validateUser, userLogin } from "@/utils/api/apiService";
+import { useRouter } from "next/navigation";
+
+// Define the shape of the context
 const AuthContext = createContext({
   isAuthenticated: false,
   showLogoutModal: false,
   loading: true,
+  login: () => {},
   logout: () => {},
   toggleLogoutModal: () => {},
   router: null,
 });
 
-/**
- * useAuth is a custom hook that simplifies the access to AuthContext, allowing components
- * to consume the authentication state and related functions easily.
- *
- * @returns {object} The current authentication context value.
- */
+// Custom hook to use the auth context
 export function useAuth() {
   return useContext(AuthContext);
 }
 
-/**
- * AuthProvider is a component that wraps the application's component tree to provide
- * a global authentication context. It initializes and manages the authentication state,
- * including user authentication status, logout functionality, and loading states.
- *
- * @param {object} { children } - The child components of the application that will have access to the auth context.
- */
 export function AuthProvider({ children }) {
-  const router = useRouter(); // Use the Next.js router for redirects on logout.
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State for tracking authentication status.
-  const [loading, setLoading] = useState(true); // State for tracking loading status during authentication checks.
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
+  // Effect to check authentication status on mount
   useEffect(() => {
-    // Effect to perform the authentication check when the component mounts.
     const checkAuthStatus = async () => {
       try {
-        const response = await validateUser(); // Call API to validate user session/token.
-        setIsAuthenticated(response === "Authenticated"); // Update authentication status based on API response.
+        const response = await validateUser();
+        setIsAuthenticated(response === "Authenticated");
+        console.log(
+          "Auth check completed. isAuthenticated:",
+          response === "Authenticated"
+        );
       } catch (error) {
         console.error("Authentication check failed", error);
-        setIsAuthenticated(false); // Set authentication status to false on error.
+        setIsAuthenticated(false);
       } finally {
-        setLoading(false); // Set loading to false once the check is complete.
+        setLoading(false);
       }
     };
     checkAuthStatus();
   }, []);
 
-  // Handles user logout action.
-  const logout = async () => {
+  // Login function
+  const login = useCallback(
+    async (email, password) => {
+      console.log("authContext login function called", email, password);
+      try {
+        const response = await userLogin(email, password);
+        setIsAuthenticated(true);
+        console.log("Login successful, isAuthenticated set to true");
+        router.push("/dashboard");
+      } catch (error) {
+        console.error("Login failed", error);
+        setIsAuthenticated(false);
+        throw error; // Re-throw to allow handling in the component
+      }
+    },
+    [router]
+  );
+
+  // Logout function
+  const logout = useCallback(async () => {
     try {
-      await userLogout(); // Call API to perform logout.
-      setIsAuthenticated(false); // Reset authentication status.
-      setShowLogoutModal(false); // Hide logout modal.
-      router.push("/"); // Redirect to home page on logout.
+      await userLogout();
+      setIsAuthenticated(false);
+      setShowLogoutModal(false);
+      console.log("Logout successful, isAuthenticated set to false");
+      localStorage.removeItem("user");
+      router.push("/");
     } catch (error) {
       console.error("Logout Failed:", error);
     }
-  };
+  }, [router]);
 
-  // Toggles the visibility of the logout modal.
-  const toggleLogoutModal = () => {
-    setShowLogoutModal(!showLogoutModal);
-  };
+  // Toggle logout modal visibility
+  const toggleLogoutModal = useCallback(() => {
+    setShowLogoutModal((prev) => !prev);
+  }, []);
 
-  // The value object to be passed to the AuthContext.Provider, making these states and functions
-  // available to any component in the application that consumes this context.
-  const value = {
-    isAuthenticated,
-    showLogoutModal,
-    logout,
-    toggleLogoutModal,
-    loading,
-    router,
-  };
+  // Memoize the context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      isAuthenticated,
+      showLogoutModal,
+      loading,
+      login,
+      logout,
+      toggleLogoutModal,
+      router,
+    }),
+    [
+      isAuthenticated,
+      showLogoutModal,
+      loading,
+      login,
+      logout,
+      toggleLogoutModal,
+      router,
+    ]
+  );
 
-  console.log("AuthContext value", value);
+  console.log("AuthContext value", contextValue);
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  );
 }

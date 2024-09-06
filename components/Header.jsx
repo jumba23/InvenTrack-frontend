@@ -1,52 +1,97 @@
-import Image from "next/image";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AccountMenu from "./AccountSettings/AccountMenu";
-// import sampleUserImage from "../../public/images/sample_user.jpg";
 
 const Header = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const router = useRouter();
+  const notificationRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log("Searching for:", searchTerm);
+  };
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   return (
-    <div className="flex flex-row items-center justify-between h-24 p-10 align-middle border-2">
-      <div className=" w-96">
-        <div className="flex h-10 p-2 border border-gray-300">
+    <header className="flex items-center justify-between px-6 py-2 bg-white border-b">
+      <div className="flex-1 max-w-xl">
+        <form onSubmit={handleSearch} className="relative">
           <input
-            className="w-full p-2 rounded-full outline-none"
-            type="search"
+            type="text"
             placeholder="Search products, suppliers, orders"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 pl-10 pr-4 text-gray-700 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
-          <button className="flex items-center p-2">
+          <button type="submit" className="absolute top-0 left-0 mt-2 ml-3">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5"
-              viewBox="0 0 22 22"
+              className="w-6 h-6 text-gray-400"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <path
-                xmlns="http://www.w3.org/2000/svg"
-                id="Vector"
-                d="M21.7275 20.4093L16.9402 15.6226C16.697 15.3795 16.3535 15.3025 16.0431 15.3844L15.016 14.3573C16.1747 13.0448 16.8846 11.3267 16.8846 9.44218C16.8846 5.33871 13.5462 2 9.44264 2C5.3385 2 1.99979 5.33871 1.99979 9.44285C1.99979 13.5467 5.3385 16.885 9.44264 16.885C11.3269 16.885 13.0449 16.1755 14.3577 15.0164L15.3848 16.0436C15.3029 16.354 15.3796 16.6972 15.6231 16.9406L20.4098 21.727C20.5921 21.9093 20.83 22 21.0686 22C21.3072 22 21.5454 21.909 21.7275 21.727C22.0912 21.3633 22.0912 20.7733 21.7275 20.4093L21.7275 20.4093ZM2.93171 9.44254C2.93171 5.85288 5.85214 2.93187 9.44239 2.93187C13.0326 2.93187 15.9527 5.85288 15.9527 9.44287C15.9527 13.0325 13.032 15.9532 9.44239 15.9532C5.8528 15.9532 2.93171 13.0325 2.93171 9.44254Z"
-              />
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </button>
-        </div>
+        </form>
       </div>
 
-      <div className="flex items-center gap-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="#A9A9A9"
-          className="cursor-pointer w-7 h-7 icon-hover"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-          />
-        </svg>
+      <div className="flex items-center space-x-4">
+        <div className="relative" ref={notificationRef}>
+          <button
+            onClick={toggleNotifications}
+            className="p-1 text-gray-400 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+          </button>
+          {showNotifications && (
+            <div className="absolute right-0 w-64 mt-2 bg-white border rounded-md shadow-lg">
+              <div className="p-2 text-sm font-semibold text-gray-700 border-b">
+                Notifications
+              </div>
+              <div className="p-2 text-sm text-gray-600">
+                You have no new notifications.
+              </div>
+            </div>
+          )}
+        </div>
         <AccountMenu />
       </div>
-    </div>
+    </header>
   );
 };
 

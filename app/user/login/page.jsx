@@ -13,9 +13,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { handleApiError } from "@/utils/api/errorHandling";
+import {
+  handleApiError,
+  getUserFriendlyErrorMessage,
+} from "@/utils/api/errorHandling";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth hook
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useEffect } from "react";
 
 // ========================= SUMMARY =========================
 // This component is a login form that allows users to sign in
@@ -59,9 +64,10 @@ const theme = createTheme({
 const LoginForm = () => {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
-  const [errorMsg, setErrorMsg] = React.useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       // redirect to dashboard if user is authenticated
       router.push("/dashboard");
@@ -70,14 +76,27 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMsg(null);
     const data = new FormData(e.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
+
     try {
-      login(email, password);
+      await login(email, password);
     } catch (error) {
       console.error("Login error:", error);
-      handleApiError(error, setErrorMsg);
+      handleApiError(error, setErrorMsg, {
+        serverError: "Unable to connect to the server. Please try again later.",
+        networkError: "Network error. Please check your internet connection.",
+        unexpectedError: "An unexpected error occurred. Please try again.",
+      });
+
+      // Use getUserFriendlyErrorMessage if specific error codes are available
+      // const friendlyMessage = getUserFriendlyErrorMessage(error.code);
+      // setErrorMsg(friendlyMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,6 +143,7 @@ const LoginForm = () => {
               name="email"
               autoComplete="email"
               autoFocus
+              error={!!errorMsg}
             />
             <TextField
               margin="normal"
@@ -134,9 +154,12 @@ const LoginForm = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={!!errorMsg}
             />
             {errorMsg && (
-              <div className="text-center text-red-500">{errorMsg}</div>
+              <Typography color="error" variant="body2" align="center">
+                {errorMsg}
+              </Typography>
             )}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

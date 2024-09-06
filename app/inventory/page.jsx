@@ -14,7 +14,7 @@
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/Spinners/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import ProductForm from "@/components/Forms/ProductForm";

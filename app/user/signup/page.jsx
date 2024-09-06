@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
   const router = useRouter();
+
+  // we are using react-hook-form for form validation
   const {
     register,
     handleSubmit,

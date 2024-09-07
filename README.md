@@ -46,7 +46,12 @@ frontend/
 │   ├── dashboard/
 │   │    └──page.jsx
 │   ├── inventory/
-│   │    └──page.jsx
+│   │    ├──page.jsx
+│   │    ├── new-product/
+│   │    │   └──page.jsx
+│   │    └── product/
+│   │        └──[id]/
+│   │            └──page.jsx
 │   ├── orders/
 │   │    └──page.jsx
 │   ├── reports/

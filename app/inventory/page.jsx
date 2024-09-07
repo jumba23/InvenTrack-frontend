@@ -24,6 +24,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/context/ProductContext";
 import InfoCards from "./InfoCards";
+import LogoSpinner from "@/components/Spinners/LogoSpinner";
 
 const InventoryPage = () => {
   useRequireAuth("/inventory");
@@ -210,7 +211,7 @@ const InventoryPage = () => {
                 </button>
               </div>
               {loading ? (
-                <Spinner />
+                <LogoSpinner />
               ) : (
                 <div className="flex-grow">
                   <DataGrid

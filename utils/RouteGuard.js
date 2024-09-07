@@ -20,7 +20,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import LogoSpinner from "./Spinners/LogoSpinner";
+import LogoSpinner from "@/components/Spinners/LogoSpinner";
 
 // List of routes that don't require authentication
 const PUBLIC_PATHS = ["/user/login", "/user/signup", "/"];

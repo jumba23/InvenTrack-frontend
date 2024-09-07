@@ -44,26 +44,43 @@ This project follows the Next.js 14.2.7 folder structure:
 frontend/
 ├── app/
 │   ├── dashboard/
+│   │    └──page.jsx
 │   ├── inventory/
+│   │    └──page.jsx
 │   ├── orders/
+│   │    └──page.jsx
 │   ├── reports/
+│   │    └──page.jsx
 │   ├── suppliers/
+│   │    └──page.jsx
 │   ├── user/
 │   │   ├── login/
+│   │   │    └──page.jsx
 │   │   └── signup/
+│   │        └──page.jsx
 │   ├── favicon.ico
 │   ├── globals.css
+│   ├── SkeletonScreen.jsx
 │   ├── layout.jsx
 │   └── page.jsx
 ├── components/
 │   ├── AccountSettings/
+│   │    └──AccountMenu.jsx
 │   ├── Forms/
+│   │   ├── OrderForm.jsx
+│   │   ├── ProductForm.jsx
+│   │   └── SupplierForm.jsx
 │   ├── LandingPage/
+│   │   ├── LandingPageHeader.jsx
+│   │   └── LandingMain.jsx
 │   ├── Modals/
+│   │   └── LogoutModal.jsx
+│   ├── Spinners/
+│   │   ├── Spinner.jsx
+│   │   └── LogoSpinner.jsx
 │   ├── Footer.jsx
 │   ├── Header.jsx
 │   ├── Sidebar.jsx
-│   └── Spinner.jsx
 ├── context/
 │   ├── AuthContext.jsx
 │   └── ProductContext.jsx
@@ -74,13 +91,12 @@ frontend/
 │   └── images/
 ├── utils/
 │   ├── api/
-│   │   ├── apiService.jsx
-│   │   ├── axiosClient.jsx
-│   │   └── errorHandling.jsx
-│   ├── authentication/
-│   └── hooks/
-│       ├── useRedirectToInventory.jsx
-│       └── useRequireAuth.jsx
+│   │   ├── apiService.js
+│   │   ├── axiosClient.js
+│   │   └── errorHandling.js
+│   ├── hooks/
+│   │    └── useRequireAuth.js
+│   └──RouteGuard.js
 ├── .env.local
 ├── .eslintrc.json
 ├── next.config.js
@@ -104,20 +120,20 @@ frontend/
 2. **Order Processing**: Handle and process customer orders.
 3. **Supplier Management**: Manage supplier information and orders.
 4. **Reporting**: Generate and view various business reports.
-5. **User Authentication**: Secure login and signup functionality.
+5. **User** Authentication: Secure login, signup, and route protection.
 
 ## Authentication
 
-The frontend application handles user authentication by passing user parameters to the backend. The backend utilizes the Supabase package for authentication services.
+Utilizes Supabase for backend authentication.
+Frontend stores authentication token in HTTP Cookies.
+Protected routes are managed by the RouteGuard component.
 
 Authentication flow:
 
-1. User enters credentials on the frontend.
-2. Frontend sends credentials to the backend API.
+1. User submits credentials.
+2. Frontend sends request to backend API.
 3. Backend authenticates with Supabase and returns a token.
-4. Frontend stores the token (currently in localStorage) and uses it for subsequent authenticated requests.
-
-**Note**: Consider using more secure storage methods for tokens in future updates.
+4. Frontend stores the token and uses it for subsequent requests.
 
 ## Development Practices
 

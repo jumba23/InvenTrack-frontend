@@ -109,7 +109,7 @@ const InventoryPage = () => {
   const handleAddProduct = () => {
     router.push("/inventory/new-product");
     setIsNewProduct(true);
-    setRenderForm(false);
+    setRenderForm(true);
     router.push("/inventory");
   };
 

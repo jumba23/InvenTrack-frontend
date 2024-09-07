@@ -113,3 +113,59 @@ export const validateUser = async () => {
     throw error;
   }
 };
+
+/**
+ * Product management functions
+ */
+/**
+ * Adds a new product to the inventory.
+ * @param {Object} productData - The product data to be added.
+ * @returns {Promise<Object>} A promise that resolves to the newly added product data.
+ * @throws {Error} If the API request fails.
+ */
+export const addProduct = async (productData) => {
+  try {
+    const response = await axiosClient.post("/products", productData);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding product:", error);
+    throw error;
+  }
+};
+
+/**
+ * Updates an existing product in the inventory.
+ * @param {number} productId - The ID of the product to update.
+ * @param {Object} productData - The updated product data.
+ * @returns {Promise<Object>} A promise that resolves to the updated product data.
+ * @throws {Error} If the API request fails.
+ */
+export const updateProduct = async (productId, productData) => {
+  try {
+    const response = await axiosClient.put(
+      `/products/${productId}`,
+      productData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+};
+
+/**
+ * Deletes a product from the inventory.
+ * @param {number} productId - The ID of the product to delete.
+ * @returns {Promise<Object>} A promise that resolves to the delete response data.
+ * @throws {Error} If the API request fails.
+ */
+
+export const deleteProduct = async (productId) => {
+  try {
+    const response = await axiosClient.delete(`/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+};

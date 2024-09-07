@@ -1,7 +1,7 @@
 import { ProductProvider } from "@/context/ProductContext";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
-import { RouteGuard } from "@/components/RouteGuard";
+import { RouteGuard } from "@/utils/RouteGuard";
 
 // Metadata for the application.
 export const metadata = {

@@ -16,15 +16,25 @@
  * @component
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
-import Spinner from "@/components/Spinners/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/context/ProductContext";
 import InfoCards from "./InfoCards";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
+import { deleteProduct, fetchProducts } from "@/utils/api/apiService";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 const InventoryPage = () => {
   useRequireAuth("/inventory");
@@ -40,6 +50,14 @@ const InventoryPage = () => {
     setSelectedCategory,
   } = useProduct();
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
   // Handler for editing a product
   const handleEdit = (id) => {
     console.log("Edit product with ID:", id);
@@ -48,10 +66,40 @@ const InventoryPage = () => {
     // TODO: Implement edit functionality
   };
 
+  // Handler for initiating product deletion
+  const handleDeleteClick = (id) => {
+    setProductToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
   // Handler for deleting a product
-  const handleDelete = (id) => {
-    console.log("Delete product with ID:", id);
-    // TODO: Implement delete functionality
+  // Handler for confirming product deletion
+  const handleDelete = async () => {
+    if (!productToDelete) return;
+
+    try {
+      await deleteProduct(productToDelete);
+
+      // Fetch updated product list
+      const updatedProducts = await fetchProducts();
+      setProducts(updatedProducts);
+
+      setSnackbar({
+        open: true,
+        message: "Product deleted successfully",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to delete product",
+        severity: "error",
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setProductToDelete(null);
+    }
   };
 
   // Handler for adding a new product
@@ -63,6 +111,13 @@ const InventoryPage = () => {
   // Handler for changing the category filter
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
   };
 
   // Define columns for DataGrid
@@ -137,7 +192,7 @@ const InventoryPage = () => {
           </button>
           <button
             className="px-3 py-1 text-xs text-white transition-colors bg-red-500 rounded hover:bg-red-600"
-            onClick={() => handleDelete(params.row.id)}
+            onClick={() => handleDeleteClick(params.row.id)}
           >
             Delete
           </button>
@@ -241,6 +296,41 @@ const InventoryPage = () => {
           </>
         )}
       </div>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this product? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="secondary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for success/error messages */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </MainLayout>
   );
 };

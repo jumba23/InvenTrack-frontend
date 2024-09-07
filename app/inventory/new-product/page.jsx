@@ -1,7 +1,7 @@
+// app/inventory/new-product/page.js
 "use client";
 
 import { useRouter } from "next/navigation";
-import MainLayout from "@/layouts/MainLayout";
 import ProductForm from "@/components/Forms/ProductForm";
 
 const NewProductPage = () => {
@@ -12,9 +12,9 @@ const NewProductPage = () => {
   };
 
   return (
-    <MainLayout>
+    <div className="w-full h-full p-4 md:p-6 lg:p-8">
       <ProductForm onFormClose={handleFormClose} isNewProduct={true} />
-    </MainLayout>
+    </div>
   );
 };
 

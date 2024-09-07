@@ -12,11 +12,18 @@ import {
   Select,
   MenuItem,
   Card,
+  CircularProgress,
 } from "@mui/material";
 import { useProduct } from "@/context/ProductContext";
+import {
+  addProduct,
+  updateProduct,
+  fetchProducts,
+} from "@/utils/api/apiService";
 
-const ProductForm = () => {
-  const { setRenderForm, isNewProduct } = useProduct();
+const ProductForm = ({ productId = null }) => {
+  const { setRenderForm, isNewProduct, setProducts } = useProduct();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const {
     control,
@@ -25,10 +32,29 @@ const ProductForm = () => {
     reset,
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Handle form submission logic here
-    reset();
+  /**
+   * Handles form submission for adding or updating a product.
+   * @param {Object} data - The form data to be submitted.
+   */
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      if (isNewProduct) {
+        await addProduct(data);
+      } else {
+        await updateProduct(productId, data);
+      }
+      // Fetch updated product list
+      const updatedProducts = await fetchProducts();
+      setProducts(updatedProducts);
+      setRenderForm(false);
+      reset();
+    } catch (error) {
+      console.error("Error submitting product:", error);
+      // Handle error (e.g., show error message to user)
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -178,16 +204,16 @@ const ProductForm = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Controller
                 name="short_description"
                 control={control}
                 defaultValue=""
                 rules={{
                   maxLength: {
-                    value: 500,
+                    value: 200,
                     message:
-                      "Short description must be less than 500 characters",
+                      "Short description must be less than 200 characters",
                   },
                 }}
                 render={({ field }) => (
@@ -196,10 +222,34 @@ const ProductForm = () => {
                     label="Short Description"
                     fullWidth
                     size="small"
-                    multiline
-                    rows={2}
+                    // multiline
+                    // rows={2}
                     error={!!errors.short_description}
                     helperText={errors.short_description?.message}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Controller
+                name="storage_location"
+                control={control}
+                defaultValue=""
+                rules={{
+                  maxLength: {
+                    value: 100,
+                    message:
+                      "Storage Location must be less than 100 characters",
+                  },
+                }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Storage Location"
+                    fullWidth
+                    size="small"
+                    error={!!errors.storage_location}
+                    helperText={errors.storage_location?.message}
                   />
                 )}
               />
@@ -230,42 +280,83 @@ const ProductForm = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+
+            <Grid item xs={4}>
               <Controller
-                name="sku"
+                name="category_id"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: "Category is required",
+                  validate: (value) =>
+                    value === 1 || value === 2 || "Category must be 1 or 2",
+                }}
+                render={({ field }) => (
+                  <FormControl
+                    fullWidth
+                    size="small"
+                    error={!!errors.category_id}
+                  >
+                    <InputLabel>Category</InputLabel>
+                    <Select {...field} label="Category">
+                      <MenuItem value={1}>Service</MenuItem>
+                      <MenuItem value={2}>Retail</MenuItem>
+                    </Select>
+                    {errors.category_id && (
+                      <Typography variant="caption" color="error">
+                        {errors.category_id.message}
+                      </Typography>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+
+            {/* Update Supplier field to accept any number */}
+            <Grid item xs={4}>
+              <Controller
+                name="supplier_id"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: "Supplier ID is required",
+                  validate: (value) =>
+                    (Number.isInteger(Number(value)) && Number(value) > 0) ||
+                    "Supplier ID must be a positive integer",
+                }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Supplier ID"
+                    type="number"
+                    fullWidth
+                    size="small"
+                    error={!!errors.supplier_id}
+                    helperText={errors.supplier_id?.message}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Controller
+                name="measurement_unit"
                 control={control}
                 defaultValue=""
                 rules={{
                   maxLength: {
-                    value: 50,
-                    message: "SKU must be less than 50 characters",
+                    value: 100,
+                    message: "Unit must be less than 100 characters",
                   },
                 }}
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label="SKU"
+                    label="Units"
                     fullWidth
                     size="small"
-                    error={!!errors.sku}
-                    helperText={errors.sku?.message}
+                    error={!!errors.measurement_unit}
+                    helperText={errors.measurement_unit?.message}
                   />
-                )}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Controller
-                name="supplier_id"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Supplier</InputLabel>
-                    <Select {...field} label="Supplier">
-                      <MenuItem value="">None</MenuItem>
-                      {/* Add supplier options here */}
-                    </Select>
-                  </FormControl>
                 )}
               />
             </Grid>
@@ -284,7 +375,7 @@ const ProductForm = () => {
               variant="outlined"
               color="secondary"
               onClick={handleCancel}
-              size="small"
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
@@ -292,9 +383,15 @@ const ProductForm = () => {
               type="submit"
               variant="outlined"
               color="primary"
-              size="small"
+              disabled={isSubmitting}
             >
-              {isNewProduct ? "Add Product" : "Update Product"}
+              {isSubmitting ? (
+                <CircularProgress size={24} />
+              ) : isNewProduct ? (
+                "Add Product"
+              ) : (
+                "Update Product"
+              )}
             </Button>
           </Box>
         </form>

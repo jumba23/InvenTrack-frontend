@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -13,6 +14,8 @@ import {
   MenuItem,
   Card,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useProduct } from "@/context/ProductContext";
 import {
@@ -21,9 +24,10 @@ import {
   fetchProducts,
 } from "@/utils/api/apiService";
 
-const ProductForm = ({ productId = null }) => {
-  const { setRenderForm, isNewProduct, setProducts } = useProduct();
+const ProductForm = ({ onFormClose, isNewProduct, productId = null }) => {
+  const { setProducts } = useProduct();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState(null);
 
   const {
     control,
@@ -32,33 +36,35 @@ const ProductForm = ({ productId = null }) => {
     reset,
   } = useForm();
 
-  /**
-   * Handles form submission for adding or updating a product.
-   * @param {Object} data - The form data to be submitted.
-   */
   const onSubmit = async (data) => {
     setIsSubmitting(true);
+    setErrorMessage(null);
     try {
       if (isNewProduct) {
         await addProduct(data);
       } else {
         await updateProduct(productId, data);
       }
-      // Fetch updated product list
       const updatedProducts = await fetchProducts();
       setProducts(updatedProducts);
-      setRenderForm(false);
+      if (typeof onFormClose === "function") {
+        onFormClose();
+      }
       reset();
     } catch (error) {
       console.error("Error submitting product:", error);
-      // Handle error (e.g., show error message to user)
+      setErrorMessage("Failed to save product. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleCancel = () => {
-    setRenderForm(false);
+    if (typeof onFormClose === "function") {
+      onFormClose();
+    } else {
+      console.error("onFormClose is not a function");
+    }
     reset();
   };
 
@@ -396,6 +402,19 @@ const ProductForm = ({ productId = null }) => {
           </Box>
         </form>
       </Box>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={6000}
+        onClose={() => setErrorMessage(null)}
+      >
+        <Alert
+          onClose={() => setErrorMessage(null)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 };

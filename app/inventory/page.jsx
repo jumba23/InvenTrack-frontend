@@ -35,9 +35,11 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 const InventoryPage = () => {
-  useRequireAuth("/inventory");
+  // useRequireAuth("/inventory");
+  const router = useRouter();
 
   const {
     products,
@@ -60,6 +62,7 @@ const InventoryPage = () => {
 
   // Handler for editing a product
   const handleEdit = (id) => {
+    router.push(`/inventory/product/${id}`);
     console.log("Edit product with ID:", id);
     setIsNewProduct(false);
     setRenderForm(true);
@@ -104,8 +107,10 @@ const InventoryPage = () => {
 
   // Handler for adding a new product
   const handleAddProduct = () => {
+    router.push("/inventory/new-product");
     setIsNewProduct(true);
-    setRenderForm(true);
+    setRenderForm(false);
+    router.push("/inventory");
   };
 
   // Handler for changing the category filter
@@ -118,6 +123,11 @@ const InventoryPage = () => {
       return;
     }
     setSnackbar({ ...snackbar, open: false });
+  };
+
+  const handleFormClose = () => {
+    setRenderForm(false);
+    router.push("/inventory");
   };
 
   // Define columns for DataGrid
@@ -226,10 +236,7 @@ const InventoryPage = () => {
     <MainLayout>
       <div className="flex flex-col h-full p-3">
         {renderForm ? (
-          <ProductForm
-            setRenderForm={setRenderForm}
-            setProducts={setProducts}
-          />
+          <ProductForm onFormClose={handleFormClose} isNewProduct={true} />
         ) : (
           <>
             <InfoCards products={filteredProducts} />

@@ -4,7 +4,6 @@
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import MainLayout from "@/layouts/MainLayout";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/context/ProductContext";
 
@@ -32,13 +31,13 @@ const EditProductPage = () => {
   }
 
   return (
-    <MainLayout>
+    <div className="w-full h-full p-4 md:p-6 lg:p-8">
       <ProductForm
         onFormClose={handleFormClose}
         isNewProduct={false}
         productId={params.id}
       />
-    </MainLayout>
+    </div>
   );
 };
 

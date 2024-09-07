@@ -27,3 +27,9 @@
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+
+@layer utilities {
+  .inventory-container {
+    min-height: calc(100vh - [height of header] - [height of footer]);
+  }
+}

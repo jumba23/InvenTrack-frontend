@@ -39,11 +39,11 @@ import SkeletonScreen from "./SkeletonScreen";
  */
 
 export default function Home() {
-  const { isAuthenticated, loading } = useAuth();
+  const { authState } = useAuth();
 
-  if (loading) {
+  if (authState.loading) {
     return <SkeletonScreen />;
   }
 
-  return isAuthenticated ? <MainLayout /> : <LandingPageLayout />;
+  return authState.isAuthenticated ? <MainLayout /> : <LandingPageLayout />;
 }

@@ -4,7 +4,8 @@
  * AuthContext.js
  *
  * This file defines the authentication context for the application.
- * It provides authentication state and functions to manage user authentication.
+ * It provides authentication state and functions to manage user authentication,
+ * as well as implementing a background product preloading strategy.
  *
  * Key features:
  * - Manages authentication state (isAuthenticated, loading, user, profile)
@@ -12,6 +13,7 @@
  * - Handles initial authentication check on mount
  * - Manages logout modal visibility
  * - Implements last visited route tracking
+ * - Preloads products in the background after successful authentication
  *
  * Usage:
  * Wrap your app with <AuthProvider> and use the useAuth hook in child components
@@ -27,7 +29,9 @@ import React, {
   useCallback,
 } from "react";
 import { userLogout, validateUser, userLogin } from "@/utils/api/apiService";
+import { fetchProducts } from "@/utils/api/apiService"; // Import fetchProducts
 import { useRouter } from "next/navigation";
+import { useProduct } from "@/context/ProductContext"; // Import useProduct hook
 
 // Define the shape of the context
 const AuthContext = createContext({
@@ -52,6 +56,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const router = useRouter();
+  const { setProducts } = useProduct(); // Get setProducts from ProductContext
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     loading: true,
@@ -66,12 +71,18 @@ export function AuthProvider({ children }) {
     const checkAuthStatus = async () => {
       try {
         const response = await validateUser();
-        setAuthState({
+        const newAuthState = {
           isAuthenticated: response === "Authenticated",
           loading: false,
           user: response.user || null,
           profile: response.profile || null,
-        });
+        };
+        setAuthState(newAuthState);
+
+        // Preload products if authenticated
+        if (newAuthState.isAuthenticated) {
+          preloadProducts();
+        }
       } catch (error) {
         console.error("Authentication check failed", error);
         setAuthState({
@@ -90,6 +101,16 @@ export function AuthProvider({ children }) {
 
     checkAuthStatus();
   }, []);
+
+  // Function to preload products
+  const preloadProducts = useCallback(async () => {
+    try {
+      const products = await fetchProducts();
+      setProducts(products);
+    } catch (error) {
+      console.error("Failed to preload products:", error);
+    }
+  }, [setProducts]);
 
   // Function to update last visited route
   const updateLastRoute = useCallback((route) => {
@@ -111,6 +132,7 @@ export function AuthProvider({ children }) {
           user: response.user,
           profile: response.profile,
         });
+        preloadProducts(); // Preload products after successful login
         router.push(lastRoute);
       } catch (error) {
         console.error("Login failed", error);
@@ -118,7 +140,7 @@ export function AuthProvider({ children }) {
         throw error; // Re-throw to allow handling in the component
       }
     },
-    [router, lastRoute]
+    [router, lastRoute, preloadProducts]
   );
 
   // Logout function
@@ -133,11 +155,12 @@ export function AuthProvider({ children }) {
       });
       setShowLogoutModal(false);
       localStorage.removeItem("user");
+      setProducts([]); // Clear products on logout
       router.push("/");
     } catch (error) {
       console.error("Logout Failed:", error);
     }
-  }, [router]);
+  }, [router, setProducts]);
 
   // Toggle logout modal visibility
   const toggleLogoutModal = useCallback(() => {
@@ -165,8 +188,6 @@ export function AuthProvider({ children }) {
       router,
     ]
   );
-
-  console.log("AuthContext", contextValue);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

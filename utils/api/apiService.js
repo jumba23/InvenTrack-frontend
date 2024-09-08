@@ -154,6 +154,23 @@ export const updateProduct = async (productId, productData) => {
 };
 
 /**
+ * Fetches a product by its ID.
+ * @param {number} productId - The ID of the product to fetch.
+ * @returns {Promise<Object>} A promise that resolves to the product data.
+ * @throws {Error} If the API request fails.
+ */
+
+export const fetchProductById = async (productId) => {
+  try {
+    const response = await axiosClient.get(`/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+};
+
+/**
  * Deletes a product from the inventory.
  * @param {number} productId - The ID of the product to delete.
  * @returns {Promise<Object>} A promise that resolves to the delete response data.

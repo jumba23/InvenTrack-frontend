@@ -1,54 +1,58 @@
 "use client";
-// use client indicates this module is intended for client-side usage only.
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { useRouter } from "next/navigation";
 import { fetchProducts } from "@/utils/api/apiService";
-import { set } from "react-hook-form";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth hook
 
-/** ======================================== SUMMARY ========================================
-  * ProductProvider acts as the context provider for the application's product state.
-  * It initializes and manages the state related to products, including the product data,
-  * loading state during data fetching, and the selected product category.
-  * The component also encapsulates the logic for fetching products and setting the selected category.
-  
-  * Functionality:
-  * - Upon mounting, it fetches the product data from the API and updates the product state.
-  * - It provides functions to set the product data, loading state, error state, and selected category.
-  * - It makes the product state and functions available to the entire application via the ProductContext.Provider.
-  * 
-  * The ProductProvider is crucial for maintaining a consistent product experience throughout the application.
-  * It leverages React's Context API to allow child components to consume product state and functionalities easily.
-  * 
-  * Usage:
-  * - Wrap the application's component tree with ProductProvider to provide a global product context.
-  * - Access the product state and functions using the 'useProduct' hook within any child component.
-  * ===========================================================================================
+/**
+ * ProductContext and Provider
+ *
+ * This module defines the ProductContext and ProductProvider for the application.
+ * It manages the state related to products, including product data, loading state,
+ * error handling, and category selection.
+ *
+ * Key features:
+ * - Manages product state and related functions
+ * - Implements product preloading after authentication
+ * - Provides functions for product CRUD operations
+ * - Allows category selection and form rendering control
+ *
+ * Usage:
+ * - Wrap the application or relevant part of the component tree with ProductProvider
+ * - Use the useProduct hook to access product state and functions in child components
  */
 
-// Create product provider context that keeps track of the product state
 const ProductContext = createContext({
   products: [],
   loading: true,
   error: "",
   selectedCategory: "Service",
   renderForm: false,
+  isNewProduct: true,
   setProducts: () => {},
   setLoading: () => {},
   setError: () => {},
   setSelectedCategory: () => {},
   setRenderForm: () => {},
+  setIsNewProduct: () => {},
+  loadProducts: () => {},
 });
 
-// Custom hook to access the product context
 export function useProduct() {
   return useContext(ProductContext);
 }
 
-// Product provider component that wraps the application to provide product context
 export function ProductProvider({ children }) {
   const router = useRouter();
+  const { authState } = useAuth(); // Get auth state
 
   const [products, setProducts] = useState([]);
   const [isNewProduct, setIsNewProduct] = useState(true);
@@ -57,36 +61,59 @@ export function ProductProvider({ children }) {
   const [selectedCategory, setSelectedCategory] = useState("Service");
   const [renderForm, setRenderForm] = useState(false);
 
+  const loadProducts = useCallback(async () => {
+    if (!authState.isAuthenticated) return;
+    setLoading(true);
+    try {
+      const data = await fetchProducts();
+      setProducts(data);
+      setError("");
+    } catch (error) {
+      console.error("Failed to load products:", error);
+      setError("Failed to load products. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }, [authState.isAuthenticated]);
+
+  // Effect to load products when authenticated
   useEffect(() => {
-    fetchProducts()
-      .then((data) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError("Failed to load products. Please try again later.");
-        setLoading(false);
-      });
-  }, []);
+    if (authState.isAuthenticated) {
+      loadProducts();
+    }
+  }, [authState.isAuthenticated, loadProducts]);
 
-  const value = {
-    products,
-    loading,
-    error,
-    selectedCategory,
-    renderForm,
-    isNewProduct,
-    setProducts,
-    setLoading,
-    setError,
-    setSelectedCategory,
-    setRenderForm,
-    setIsNewProduct,
-  };
-
-  console.log("ProductProvider value: ", value);
+  // Memoized context value
+  const contextValue = useMemo(
+    () => ({
+      products,
+      loading,
+      error,
+      selectedCategory,
+      renderForm,
+      isNewProduct,
+      setProducts,
+      setLoading,
+      setError,
+      setSelectedCategory,
+      setRenderForm,
+      setIsNewProduct,
+      loadProducts,
+    }),
+    [
+      products,
+      loading,
+      error,
+      selectedCategory,
+      renderForm,
+      isNewProduct,
+      loadProducts,
+    ]
+  );
 
   return (
-    <ProductContext.Provider value={value}>{children}</ProductContext.Provider>
+    <ProductContext.Provider value={contextValue}>
+      {children}
+    </ProductContext.Provider>
   );
 }

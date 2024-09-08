@@ -18,7 +18,7 @@ export default function Error({ error, reset }) {
           Oops! Something went wrong
         </h1>
         <p className="mb-4 text-gray-600">
-          We're sorry, but an unexpected error occurred. Our team has been
+          We&rsquo;re sorry, but an unexpected error occurred. Our team has been
           notified and is working to fix the issue.
         </p>
         <div className="flex flex-col space-y-4">

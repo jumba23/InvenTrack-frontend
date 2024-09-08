@@ -12,8 +12,8 @@ export const LogoutModal = () => {
             Confirm Logout
           </h2>
           <p className="mb-6 text-gray-600">
-            Are you sure you want to log out? You'll need to log in again to
-            access your account.
+            Are you sure you want to log out? You&apos;ll need to log in again
+            to access your account.
           </p>
           <div className="flex justify-end space-x-3">
             <button

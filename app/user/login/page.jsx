@@ -72,6 +72,7 @@ const LoginForm = () => {
       // redirect to dashboard if user is authenticated
       router.push("/dashboard");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   const handleSubmit = async (e) => {

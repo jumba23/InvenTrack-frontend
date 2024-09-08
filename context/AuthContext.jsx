@@ -7,10 +7,11 @@
  * It provides authentication state and functions to manage user authentication.
  *
  * Key features:
- * - Manages authentication state (isAuthenticated, loading)
+ * - Manages authentication state (isAuthenticated, loading, user, profile)
  * - Provides login and logout functionality
  * - Handles initial authentication check on mount
  * - Manages logout modal visibility
+ * - Implements last visited route tracking
  *
  * Usage:
  * Wrap your app with <AuthProvider> and use the useAuth hook in child components
@@ -30,12 +31,17 @@ import { useRouter } from "next/navigation";
 
 // Define the shape of the context
 const AuthContext = createContext({
-  isAuthenticated: false,
+  authState: {
+    isAuthenticated: false,
+    loading: true,
+    user: null,
+    profile: null,
+  },
   showLogoutModal: false,
-  loading: true,
   login: () => {},
   logout: () => {},
   toggleLogoutModal: () => {},
+  updateLastRoute: () => {},
   router: null,
 });
 
@@ -46,55 +52,86 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [authState, setAuthState] = useState({
+    isAuthenticated: false,
+    loading: true,
+    user: null,
+    profile: null,
+  });
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [lastRoute, setLastRoute] = useState("/dashboard");
 
-  // Effect to check authentication status on mount
+  // Effect to check authentication status on mount and set up last route
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
         const response = await validateUser();
-        setIsAuthenticated(response === "Authenticated");
-        console.log(
-          "Auth check completed. isAuthenticated:",
-          response === "Authenticated"
-        );
+        setAuthState({
+          isAuthenticated: response === "Authenticated",
+          loading: false,
+          user: response.user || null,
+          profile: response.profile || null,
+        });
       } catch (error) {
         console.error("Authentication check failed", error);
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
+        setAuthState({
+          isAuthenticated: false,
+          loading: false,
+          user: null,
+          profile: null,
+        });
       }
     };
+
+    const storedRoute = localStorage.getItem("lastRoute");
+    if (storedRoute) {
+      setLastRoute(storedRoute);
+    }
+
     checkAuthStatus();
+  }, []);
+
+  // Function to update last visited route
+  const updateLastRoute = useCallback((route) => {
+    const publicPaths = ["/user/login", "/user/signup", "/"];
+    if (!publicPaths.includes(route)) {
+      setLastRoute(route);
+      localStorage.setItem("lastRoute", route);
+    }
   }, []);
 
   // Login function
   const login = useCallback(
     async (email, password) => {
-      console.log("authContext login function called", email, password);
       try {
         const response = await userLogin(email, password);
-        setIsAuthenticated(true);
-        console.log("Login successful, isAuthenticated set to true");
-        router.push("/dashboard");
+        setAuthState({
+          isAuthenticated: true,
+          loading: false,
+          user: response.user,
+          profile: response.profile,
+        });
+        router.push(lastRoute);
       } catch (error) {
         console.error("Login failed", error);
-        setIsAuthenticated(false);
+        setAuthState((prev) => ({ ...prev, isAuthenticated: false }));
         throw error; // Re-throw to allow handling in the component
       }
     },
-    [router]
+    [router, lastRoute]
   );
 
   // Logout function
   const logout = useCallback(async () => {
     try {
       await userLogout();
-      setIsAuthenticated(false);
+      setAuthState({
+        isAuthenticated: false,
+        loading: false,
+        user: null,
+        profile: null,
+      });
       setShowLogoutModal(false);
-      console.log("Logout successful, isAuthenticated set to false");
       localStorage.removeItem("user");
       router.push("/");
     } catch (error) {
@@ -110,26 +147,26 @@ export function AuthProvider({ children }) {
   // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({
-      isAuthenticated,
+      authState,
       showLogoutModal,
-      loading,
       login,
       logout,
       toggleLogoutModal,
+      updateLastRoute,
       router,
     }),
     [
-      isAuthenticated,
+      authState,
       showLogoutModal,
-      loading,
       login,
       logout,
       toggleLogoutModal,
+      updateLastRoute,
       router,
     ]
   );
 
-  console.log("AuthContext value", contextValue);
+  console.log("AuthContext", contextValue);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TextField,
@@ -8,64 +8,49 @@ import {
   Typography,
   Grid,
   Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Card,
   CircularProgress,
   Snackbar,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { useProduct } from "@/context/ProductContext";
-import {
-  addProduct,
-  updateProduct,
-  fetchProducts,
-} from "@/utils/api/apiService";
 
-const ProductForm = ({ onFormClose, isNewProduct, productId = null }) => {
-  const { setProducts } = useProduct();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState(null);
-
+const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: initialData || {},
+  });
 
-  const onSubmit = async (data) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const onSubmitForm = async (data) => {
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      if (isNewProduct) {
-        await addProduct(data);
-      } else {
-        await updateProduct(productId, data);
-      }
-      const updatedProducts = await fetchProducts();
-      setProducts(updatedProducts);
-      if (typeof onFormClose === "function") {
-        onFormClose();
-      }
-      reset();
+      await onSubmit(data);
+      // If onSubmit doesn't throw an error, we assume it was successful
     } catch (error) {
-      console.error("Error submitting product:", error);
-      setErrorMessage("Failed to save product. Please try again.");
+      console.error("Error submitting form:", error);
+      setErrorMessage(
+        error.message || "An error occurred while saving the product."
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleCancel = () => {
-    if (typeof onFormClose === "function") {
-      onFormClose();
-    } else {
-      console.error("onFormClose is not a function");
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
     }
-    reset();
+    setErrorMessage(null);
   };
 
   return (
@@ -91,7 +76,7 @@ const ProductForm = ({ onFormClose, isNewProduct, productId = null }) => {
           {isNewProduct ? "Add New Product" : "Edit Product"}
         </Typography>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmitForm)}
           style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
         >
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
@@ -377,27 +362,11 @@ const ProductForm = ({ onFormClose, isNewProduct, productId = null }) => {
               gap: 1,
             }}
           >
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleCancel}
-              disabled={isSubmitting}
-            >
+            <Button variant="outlined" color="secondary" onClick={onCancel}>
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="outlined"
-              color="primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <CircularProgress size={24} />
-              ) : isNewProduct ? (
-                "Add Product"
-              ) : (
-                "Update Product"
-              )}
+            <Button type="submit" variant="outlined" color="primary">
+              {isNewProduct ? "Add Product" : "Update Product"}
             </Button>
           </Box>
         </form>
@@ -405,10 +374,10 @@ const ProductForm = ({ onFormClose, isNewProduct, productId = null }) => {
       <Snackbar
         open={!!errorMessage}
         autoHideDuration={6000}
-        onClose={() => setErrorMessage(null)}
+        onClose={handleCloseSnackbar}
       >
         <Alert
-          onClose={() => setErrorMessage(null)}
+          onClose={handleCloseSnackbar}
           severity="error"
           sx={{ width: "100%" }}
         >

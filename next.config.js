@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const path = require("path");
 
-module.exports = {
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    config.resolve.alias["@"] = __dirname;
+const nextConfig = {
+  webpack: (config) => {
+    config.resolve.alias["@"] = path.resolve(__dirname);
     return config;
   },
 };
+
+module.exports = nextConfig;

@@ -100,7 +100,8 @@ frontend/
 │   │   ├── axiosClient.js
 │   │   └── errorHandling.js
 │   ├── hooks/
-│   │    └── useRequireAuth.js
+│   │   ├── useProductLoader.js
+│   │   └── useRequireAuth.js
 │   └──RouteGuard.js
 ├── .env.local
 ├── .eslintrc.json

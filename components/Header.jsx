@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import AccountMenu from "@/components/AccountSettings/AccountMenu";
 
 const Header = () => {
-  f;
   const [searchTerm, setSearchTerm] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);

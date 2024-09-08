@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useProduct } from "@/context/ProductContext";
-import InfoCards from "@/app/inventory/infoCards";
+import InfoCards from "@/app/inventory/infoCards"; //updating path import
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
 import { deleteProduct, fetchProducts } from "@/utils/api/apiService";
 import {

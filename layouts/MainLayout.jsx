@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
-import { LogoutModal } from "@/components/Modals/LogoutModal";
+import { LogoutModal } from "../components/Modals/LogoutModal";
 
 /** ======================================== SUMMARY ========================================
  * MainLayout serves as the primary layout component for authenticated users.

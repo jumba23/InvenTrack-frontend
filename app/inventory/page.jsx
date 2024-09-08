@@ -18,9 +18,24 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 
+/**
+ * InventoryPage Component
+ *
+ * This component serves as the main inventory management page. It displays a list of products,
+ * allows filtering by category, and provides functionality to add, edit, and delete products.
+ *
+ * Features:
+ * - Displays products in a DataGrid
+ * - Filters products by category (Service or Retail)
+ * - Allows adding new products
+ * - Provides edit and delete functionality for existing products
+ * - Shows loading spinner while data is being fetched
+ * - Displays success/error messages using a Snackbar
+ */
 const InventoryPage = () => {
   const router = useRouter();
 
+  // Destructure values and functions from ProductContext
   const {
     products,
     setProducts,
@@ -30,24 +45,38 @@ const InventoryPage = () => {
     setSelectedCategory,
   } = useProduct();
 
+  // Local state for delete confirmation dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+
+  // Local state for Snackbar notifications
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
 
+  /**
+   * Handles the edit action for a product
+   * @param {number} id - The ID of the product to edit
+   */
   const handleEdit = (id) => {
     setIsNewProduct(false);
     router.push(`/inventory/product/${id}`);
   };
 
+  /**
+   * Initiates the delete process for a product
+   * @param {number} id - The ID of the product to delete
+   */
   const handleDeleteClick = (id) => {
     setProductToDelete(id);
     setDeleteDialogOpen(true);
   };
 
+  /**
+   * Confirms and executes the product deletion
+   */
   const handleDelete = async () => {
     if (!productToDelete) return;
 
@@ -73,14 +102,24 @@ const InventoryPage = () => {
     }
   };
 
+  /**
+   * Navigates to the new product page
+   */
   const handleAddProduct = () => {
     router.push("/inventory/new-product");
   };
 
+  /**
+   * Changes the selected category for filtering products
+   * @param {string} category - The category to filter by
+   */
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
+  /**
+   * Closes the Snackbar
+   */
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") return;
     setSnackbar({ ...snackbar, open: false });
@@ -177,6 +216,7 @@ const InventoryPage = () => {
     return products;
   }, [products, selectedCategory]);
 
+  // Prepare rows for DataGrid
   const rows = filteredProducts.map((product) => ({
     id: product.id,
     name: product.name,
@@ -217,10 +257,10 @@ const InventoryPage = () => {
               </button>
             </div>
             <button
-              className="px-4 py-2 text-sm text-white transition-colors bg-green-500 rounded hover:bg-green-600"
+              className="px-2 py-2 text-sm text-white transition-colors bg-green-500 rounded hover:bg-green-600"
               onClick={handleAddProduct}
             >
-              New Item
+              New Product
             </button>
           </div>
           {loading ? (

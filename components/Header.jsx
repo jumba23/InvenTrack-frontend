@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import AccountMenu from "./AccountSettings/AccountMenu";
+import AccountMenu from "@/components/AccountSettings/AccountMenu";
 
 const Header = () => {
+  f;
   const [searchTerm, setSearchTerm] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
-  const router = useRouter();
   const notificationRef = useRef(null);
 
   useEffect(() => {

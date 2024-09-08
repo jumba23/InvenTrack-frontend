@@ -11,13 +11,14 @@
  * - Allows specification of public routes that don't require authentication
  * - Handles route changes and updates authorization accordingly
  * - Displays a loading state while checking authentication
+ * - Integrates with the updated AuthContext for more robust auth checks
  *
  * Usage:
  * Wrap your app or protected routes with <RouteGuard>
  * Make sure to use it inside the AuthProvider
  */
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
@@ -28,38 +29,26 @@ const PUBLIC_PATHS = ["/user/login", "/user/signup", "/"];
 export function RouteGuard({ children }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, loading } = useAuth();
-  const [authorized, setAuthorized] = useState(false);
-
-  // Function to check if the current route is authorized
-  const authCheck = useCallback(
-    (url) => {
-      const path = url.split("?")[0];
-      if (!isAuthenticated && !PUBLIC_PATHS.includes(path)) {
-        setAuthorized(false);
-        router.push("/user/login");
-      } else {
-        setAuthorized(true);
-      }
-    },
-    [isAuthenticated, router]
-  );
+  const { authState, updateLastRoute } = useAuth();
+  const { isAuthenticated, loading } = authState;
 
   useEffect(() => {
-    // Check authorization when component mounts or auth status changes
-    authCheck(pathname);
-
-    // Set up a listener for route changes
-    const handleRouteChange = () => authCheck(pathname);
-
-    // Listen for route changes
-    window.addEventListener("popstate", handleRouteChange);
-
-    // Cleanup function to remove event listener
-    return () => {
-      window.removeEventListener("popstate", handleRouteChange);
+    // Function to check if the current route is authorized
+    const authCheck = () => {
+      const path = pathname.split("?")[0];
+      if (!isAuthenticated && !PUBLIC_PATHS.includes(path)) {
+        router.push("/user/login");
+      } else if (!PUBLIC_PATHS.includes(path)) {
+        // Update last route if it's not a public path
+        updateLastRoute(path);
+      }
     };
-  }, [isAuthenticated, pathname, authCheck]);
+
+    // Perform auth check when auth state changes or route changes
+    if (!loading) {
+      authCheck();
+    }
+  }, [isAuthenticated, loading, pathname, router, updateLastRoute]);
 
   // Show loading state while checking authentication
   if (loading) {
@@ -70,6 +59,6 @@ export function RouteGuard({ children }) {
     );
   }
 
-  // Render children only if authorized
-  return authorized ? children : null;
+  // Render children if not loading, letting the effect handle redirects
+  return children;
 }

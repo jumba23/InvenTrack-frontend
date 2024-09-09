@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import AccountMenu from "../components/AccountSettings/AccountMenu";
+import AccountMenu from "@components/AccountSettings/AccountMenu";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");

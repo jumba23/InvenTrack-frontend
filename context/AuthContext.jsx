@@ -100,6 +100,7 @@ export function AuthProvider({ children }) {
     }
 
     checkAuthStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Function to preload products

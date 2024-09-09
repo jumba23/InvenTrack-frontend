@@ -25,7 +25,7 @@ const Sidebar = () => {
     <aside className="flex flex-col w-64 h-screen bg-white shadow-md">
       <div className="flex items-center h-20 px-4 border-b ">
         <Image
-          src="/images/Logo.png"
+          src="/images/logo.png"
           alt="InvenTrack Logo"
           width={38}
           height={38}

@@ -8,9 +8,13 @@ import axios from "axios";
 // JWTs in HTTP-only cookies and other authentication mechanisms.
 // ------------------------------------------------------
 
+// Use environment variable for the base URL
+const baseURL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
+
 // Create an Axios instance with a predefined configuration.
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5000/api", // Base URL for all requests made using this client.
+  baseURL: baseURL, // Base URL for all requests made using this client.
   withCredentials: true, // Include credentials in every request made using this client.
 });
 

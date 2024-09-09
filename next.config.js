@@ -1,15 +1,12 @@
 const path = require("path");
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      "@": path.resolve(__dirname),
       "@components": path.resolve(__dirname, "components"),
+      "@": path.resolve(__dirname), // If using "@/*" for base path
     };
     return config;
   },
 };
-
-module.exports = nextConfig;

@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 
-export const LogoutModal = () => {
+const LogoutModal = () => {
   const { toggleLogoutModal, logout } = useAuth();
 
   return (
@@ -34,3 +34,5 @@ export const LogoutModal = () => {
     </div>
   );
 };
+
+export default LogoutModal;

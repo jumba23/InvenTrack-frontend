@@ -111,6 +111,8 @@ export function ProductProvider({ children }) {
     ]
   );
 
+  console.log("ProductContext value:", contextValue);
+
   return (
     <ProductContext.Provider value={contextValue}>
       {children}

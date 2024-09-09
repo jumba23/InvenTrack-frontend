@@ -190,6 +190,8 @@ export function AuthProvider({ children }) {
     ]
   );
 
+  console.log("AuthContext:", contextValue);
+
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );

@@ -9,8 +9,7 @@ import axios from "axios";
 // ------------------------------------------------------
 
 // Use environment variable for the base URL
-const baseURL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // Create an Axios instance with a predefined configuration.
 const axiosClient = axios.create({

@@ -141,55 +141,14 @@ const InventoryPage = () => {
     {
       field: "total_quantity",
       headerName: "Total Units",
-      width: 120,
+      width: 100,
       align: "center",
       headerAlign: "center",
-    },
-    {
-      field: "quantity_office_1", // New column for Office 1
-      headerName: "Office 1",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "quantity_office_8", // New column for Office 8
-      headerName: "Office 8",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "quantity_home", // New column for Home
-      headerName: "Home",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "retail_price_per_unit", // Updated column, swapping with Selling Price
-      headerName: "Retail Price",
-      width: 120,
-      valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Added proper null check
-    },
-
-    {
-      field: "reorder_point",
-      headerName: "Reorder Point",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "stock_retail_value", // Use stock_retail_value directly from the database
-      headerName: "Stock Retail Value",
-      width: 120,
-      valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Format stock_retail_value as currency
     },
     {
       field: "status", // New column for status (Levels)
       headerName: "Levels",
-      width: 120,
+      width: 100,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -216,6 +175,51 @@ const InventoryPage = () => {
           </span>
         );
       },
+    },
+    {
+      field: "quantity_office_1", // New column for Office 1
+      headerName: "Office 1",
+      width: 80,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "quantity_office_8", // New column for Office 8
+      headerName: "Office 8",
+      width: 80,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "quantity_home", // New column for Home
+      headerName: "Home",
+      width: 80,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "retail_price_per_unit", // Updated column, swapping with Selling Price
+      headerName: "Retail Price",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+      valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Added proper null check
+    },
+
+    {
+      field: "reorder_point",
+      headerName: "Reorder at",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "stock_retail_value", // Use stock_retail_value directly from the database
+      headerName: "Stock Retail Value",
+      width: 140,
+      align: "center",
+      headerAlign: "center",
+      valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Format stock_retail_value as currency
     },
 
     {

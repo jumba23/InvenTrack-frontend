@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useProduct } from "@/context/ProductContext";
-import InfoCards from "@/app/inventory/infoCards"; //updating path import
+import InfoCards from "@/app/inventory/infoCards"; // Updated import path
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
 import { deleteProduct, fetchProducts } from "@/utils/api/apiService";
 import {
@@ -31,6 +31,11 @@ import { useRouter } from "next/navigation";
  * - Provides edit and delete functionality for existing products
  * - Shows loading spinner while data is being fetched
  * - Displays success/error messages using a Snackbar
+ *
+ * Updates:
+ * - Added Office 1, Office 8, and Home quantity columns
+ * - Swapped Retail Price and Selling Price columns
+ * - Removed Location and Unit columns
  */
 const InventoryPage = () => {
   const router = useRouter();
@@ -132,23 +137,42 @@ const InventoryPage = () => {
       headerName: "Product",
       width: 120,
       flex: 1,
-      // align: "center",
-      // headerAlign: "center",
     },
     {
-      field: "quantity",
-      headerName: "Quantity",
+      field: "total_quantity",
+      headerName: "Total Units",
       width: 120,
       align: "center",
       headerAlign: "center",
     },
     {
-      field: "measurement_unit",
-      headerName: "Unit",
+      field: "quantity_office_1", // New column for Office 1
+      headerName: "Office 1",
       width: 120,
       align: "center",
       headerAlign: "center",
     },
+    {
+      field: "quantity_office_8", // New column for Office 8
+      headerName: "Office 8",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "quantity_home", // New column for Home
+      headerName: "Home",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "retail_price_per_unit", // Updated column, swapping with Selling Price
+      headerName: "Retail Price",
+      width: 120,
+      valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Added proper null check
+    },
+
     {
       field: "reorder_point",
       headerName: "Reorder Point",
@@ -157,30 +181,43 @@ const InventoryPage = () => {
       headerAlign: "center",
     },
     {
-      field: "selling_price_per_unit",
-      headerName: "Selling Price",
+      field: "stock_retail_value", // Use stock_retail_value directly from the database
+      headerName: "Stock Retail Value",
       width: 120,
-      // align: "center",
-      // headerAlign: "center",
-      valueFormatter: ({ value }) => `$${value.toFixed(2)}`,
+      valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Format stock_retail_value as currency
     },
     {
-      field: "value",
-      headerName: "Value",
-      width: 120,
-      // align: "center",
-      // headerAlign: "center",
-      valueFormatter: ({ value }) => `$${value.toFixed(2)}`,
-      valueGetter: (params) =>
-        params.row.quantity * params.row.selling_price_per_unit,
-    },
-    {
-      field: "storage_location",
-      headerName: "Location",
+      field: "status", // New column for status (Levels)
+      headerName: "Levels",
       width: 120,
       align: "center",
       headerAlign: "center",
+      renderCell: (params) => {
+        let statusClass = ""; // Define a class to color the status
+        let statusText = ""; // Define text representation
+
+        // Conditional classes based on status
+        if (params.row.status === "out") {
+          statusClass = "bg-red-500 text-white"; // Red for 'out'
+          statusText = "Out of Stock";
+        } else if (params.row.status === "low") {
+          statusClass = "bg-yellow-500 text-black"; // Yellow for 'low'
+          statusText = "Low Stock";
+        } else if (params.row.status === "normal") {
+          statusClass = "bg-green-500 text-white"; // Green for 'normal'
+          statusText = "In Stock";
+        }
+
+        return (
+          <span
+            className={`px-3 py-1 rounded-full font-bold text-xs ${statusClass}`}
+          >
+            {statusText}
+          </span>
+        );
+      },
     },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -220,18 +257,20 @@ const InventoryPage = () => {
   const rows = filteredProducts.map((product) => ({
     id: product.id,
     name: product.name,
-    quantity: product.quantity,
-    measurement_unit: product.measurement_unit,
+    quantity_office_1: product.quantity_office_1,
+    quantity_office_8: product.quantity_office_8,
+    quantity_home: product.quantity_home,
     reorder_point: product.reorder_point,
-    selling_price_per_unit: product.selling_price_per_unit,
-    storage_location: product.storage_location,
+    retail_price_per_unit: product.retail_price_per_unit,
+    total_quantity: product.total_quantity,
+    stock_retail_value: product.stock_retail_value,
+    status: product.status,
   }));
 
   return (
     <>
       <div className="flex flex-col h-full p-3">
         <InfoCards products={filteredProducts} />
-
         <div className="flex flex-col flex-grow px-4 pb-2 mt-3 bg-white rounded-lg shadow">
           <div className="flex justify-between px-1 py-4 border-b">
             <div className="space-x-2">

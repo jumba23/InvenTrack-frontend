@@ -12,40 +12,40 @@ import React from "react";
  * @component
  */
 const InfoCards = ({ products }) => {
-  // Calculate total inventory value
-  const totalInventoryValue = products.reduce(
-    (acc, product) => acc + product.quantity * product.selling_price_per_unit,
+  // Calculate total retail value
+  const totalRetailValue = products.reduce(
+    (acc, product) => acc + product.stock_retail_value,
+    0
+  );
+
+  // Calculate total selling value
+  const totalSellingValue = products.reduce(
+    (acc, product) => acc + product.stock_selling_value,
     0
   );
 
   // Count items with low stock
   const lowStockItems = products.filter(
-    (product) => product.quantity <= product.reorder_point
+    (product) => product.total_quantity <= product.reorder_point
   ).length;
 
-  // Calculate total units in stock
+  // Sum up total quantity from the `total_quantity` field
   const totalUnits = products.reduce(
-    (acc, product) => acc + product.quantity,
+    (acc, product) => acc + product.total_quantity,
     0
   );
-
-  // Calculate average margin
-  const averageMargin =
-    products.length > 0
-      ? products.reduce(
-          (acc, product) =>
-            acc +
-            (product.selling_price_per_unit - product.retail_price_per_unit),
-          0
-        ) / products.length
-      : 0;
 
   return (
     <div className="grid grid-cols-2 gap-4 mb-4 sm:grid-cols-4">
       <InfoCard
-        title="Total Inventory Value"
-        value={`$${totalInventoryValue.toFixed(2)}`}
+        title="Total Retail Value"
+        value={`$${totalRetailValue.toLocaleString()}`}
         color="bg-blue-100"
+      />
+      <InfoCard
+        title="Total Selling Value"
+        value={`$${totalSellingValue.toLocaleString()}`}
+        color="bg-green-100"
       />
       <InfoCard
         title="Low Stock Items"
@@ -54,17 +54,13 @@ const InfoCards = ({ products }) => {
       />
       <InfoCard
         title="Total Units in Stock"
-        value={totalUnits}
-        color="bg-green-100"
-      />
-      <InfoCard
-        title="Average Margin"
-        value={`$${averageMargin.toFixed(2)}`}
+        value={totalUnits.toLocaleString()} // Total units formatted
         color="bg-yellow-100"
       />
     </div>
   );
 };
+
 /**
  * InfoCard Component
  *

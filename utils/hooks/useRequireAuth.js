@@ -25,48 +25,48 @@
  * @returns {function} A Higher-Order Component that wraps the provided component with authentication logic.
  */
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
-import { validateUser } from "@/utils/api/apiService";
+// import { useEffect } from "react";
+// import { useRouter } from "next/navigation";
+// import { useAuth } from "@/context/AuthContext";
+// import { validateUser } from "@/utils/api/apiService";
 
-export const useRequireAuth = (redirectUrl = "/dashboard") => {
-  return (WrappedComponent) => {
-    return (props) => {
-      const router = useRouter();
-      const { isAuthenticated, loading, setIsAuthenticated } = useAuth();
+// export const useRequireAuth = (redirectUrl = "/dashboard") => {
+//   return (WrappedComponent) => {
+//     return (props) => {
+//       const router = useRouter();
+//       const { isAuthenticated, loading, setIsAuthenticated } = useAuth();
 
-      useEffect(() => {
-        if (!router.isReady) return;
+//       useEffect(() => {
+//         if (!router.isReady) return;
 
-        const checkAuth = async () => {
-          if (loading) {
-            try {
-              const response = await validateUser();
-              setIsAuthenticated(response === "Authenticated");
-            } catch (error) {
-              console.error("Token validation failed", error);
-              setIsAuthenticated(false);
-              router.push("/user/login");
-            }
-          } else if (!isAuthenticated) {
-            router.push("/user/login");
-          } else if (router.pathname !== redirectUrl) {
-            router.push(redirectUrl);
-          }
-        };
+//         const checkAuth = async () => {
+//           if (loading) {
+//             try {
+//               const response = await validateUser();
+//               setIsAuthenticated(response === "Authenticated");
+//             } catch (error) {
+//               console.error("Token validation failed", error);
+//               setIsAuthenticated(false);
+//               router.push("/user/login");
+//             }
+//           } else if (!isAuthenticated) {
+//             router.push("/user/login");
+//           } else if (router.pathname !== redirectUrl) {
+//             router.push(redirectUrl);
+//           }
+//         };
 
-        checkAuth();
-      }, [router.isReady, loading, isAuthenticated, router, redirectUrl]);
+//         checkAuth();
+//       }, [router.isReady, loading, isAuthenticated, router, redirectUrl]);
 
-      if (loading) {
-        return <div>Loading...</div>; // Replace with your loading component
-      }
+//       if (loading) {
+//         return <div>Loading...</div>; // Replace with your loading component
+//       }
 
-      return isAuthenticated ? <WrappedComponent {...props} /> : null;
-    };
-  };
-};
+//       return isAuthenticated ? <WrappedComponent {...props} /> : null;
+//     };
+//   };
+// };
 
-// Usage example:
-// export default useRequireAuth()(YourProtectedComponent);
+// // Usage example:
+// // export default useRequireAuth()(YourProtectedComponent);

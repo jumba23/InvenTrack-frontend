@@ -2,7 +2,7 @@
 "use client";
 import MainLayout from "@/layouts/MainLayout";
 import React from "react";
-import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
+// import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 
 // ======================= SUMMARY =======================
 // This page component represents the dashboard page of the application.
@@ -16,7 +16,7 @@ import { useRequireAuth } from "@/utils/hooks/useRequireAuth";
 // ======================================================
 
 const DashboardPage = () => {
-  useRequireAuth("/dashboard");
+  // useRequireAuth("/dashboard");
   return (
     <MainLayout>
       {/* Parent div that fills space of its parent */}

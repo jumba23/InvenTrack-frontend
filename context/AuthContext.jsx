@@ -39,7 +39,6 @@ const AuthContext = createContext({
     isAuthenticated: false,
     loading: true,
     user: null,
-    profile: null,
   },
   showLogoutModal: false,
   login: () => {},
@@ -56,12 +55,11 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const router = useRouter();
-  const { setProducts } = useProduct(); // Get setProducts from ProductContext
+  const { setProducts } = useProduct();
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     loading: true,
     user: null,
-    profile: null,
   });
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [lastRoute, setLastRoute] = useState("/dashboard");
@@ -72,10 +70,9 @@ export function AuthProvider({ children }) {
       try {
         const response = await validateUser();
         const newAuthState = {
+          ...authState,
           isAuthenticated: response === "Authenticated",
           loading: false,
-          user: response.user || null,
-          profile: response.profile || null,
         };
         setAuthState(newAuthState);
 
@@ -89,7 +86,6 @@ export function AuthProvider({ children }) {
           isAuthenticated: false,
           loading: false,
           user: null,
-          profile: null,
         });
       }
     };
@@ -127,11 +123,11 @@ export function AuthProvider({ children }) {
     async (email, password) => {
       try {
         const response = await userLogin(email, password);
+        console.log("Login successful:", response.user);
         setAuthState({
           isAuthenticated: true,
           loading: false,
           user: response.user,
-          profile: response.profile,
         });
         preloadProducts(); // Preload products after successful login
         router.push(lastRoute);
@@ -141,6 +137,7 @@ export function AuthProvider({ children }) {
         throw error; // Re-throw to allow handling in the component
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [router, lastRoute, preloadProducts]
   );
 
@@ -152,7 +149,6 @@ export function AuthProvider({ children }) {
         isAuthenticated: false,
         loading: false,
         user: null,
-        profile: null,
       });
       setShowLogoutModal(false);
       localStorage.removeItem("user");

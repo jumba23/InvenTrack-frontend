@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
@@ -9,32 +11,77 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import Image from "next/image";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useProfile } from "@/context/ProfileContext";
 import { useAuth } from "@/context/AuthContext";
+import SettingsDialog from "./SettingsDialog";
+import Image from "next/image";
+import { useState } from "react";
+
+/**
+ * ======================================== SUMMARY ========================================
+ * AccountMenu Component
+ *
+ * Purpose:
+ * - This component provides a dropdown menu for account-related actions such as
+ *   accessing account settings, viewing the profile, and logging out.
+ * - It uses MUI's `Menu`, `MenuItem`, and `Avatar` components to display the account menu.
+ *
+ * Functionality:
+ * - Displays the user's profile picture (fetched from ProfileContext) in the avatar.
+ * - Allows the user to access "My Account", "Settings", and "Logout" functionalities.
+ * - Utilizes ProfileContext to fetch the current user's profile, including the profile image.
+ *
+ * Props:
+ * - None (as it relies on context data and local state).
+ *
+ * Usage:
+ * - This component is typically used in the application's header or navigation bar.
+ *
+ * Features:
+ * - Loads the user's profile image and displays it in the account avatar.
+ * - Opens a settings dialog where the user can update profile details such as name, cell number, and image.
+ * - Displays a loading spinner while fetching profile data.
+ *
+ * ===========================================================================================
+ */
 
 export default function AccountMenu() {
+  // Fetch the profile context for loading profile data
+  const { profile, loading } = useProfile();
   const { toggleLogoutModal } = useAuth();
 
-  //local state
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  // Local state for handling the menu open/close behavior
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openSettings, setOpenSettings] = useState(false); // For opening settings dialog
 
   const open = Boolean(anchorEl);
 
-  // Similar to Sidebar, use this function to show the logout modal
-  const handleOpenLogoutModal = () => {
-    console.log("AccountMenu: handleOpenLogoutModal");
-    toggleLogoutModal();
-    handleClose();
-  };
-
+  // Open the menu when the user clicks on the avatar
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  // Close the menu
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // Open the logout modal
+  const handleOpenLogoutModal = () => {
+    toggleLogoutModal(); // This opens the logout modal
+    handleClose();
+  };
+
+  // Open the settings dialog
+  const handleOpenSettings = () => {
+    setOpenSettings(true); // Open settings dialog when user selects "Settings"
+    handleClose();
+  };
+
   return (
-    <React.Fragment>
+    <>
+      {/* User Avatar */}
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         <Tooltip title="Account settings">
           <IconButton
@@ -45,73 +92,84 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 48, height: 48 }}>
-              <Image
-                src="/images/sample_user.jpg"
-                alt="Your Image Description"
-                width={48}
-                height={48}
-                className="rounded-full cursor-pointer hover:opacity-75"
-                style={{ width: "auto", height: "auto" }}
-              />
-            </Avatar>
+            {/* Show a loading spinner if profile data is still being loaded */}
+            {loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              <Avatar sx={{ width: 48, height: 48 }}>
+                {profile?.imageUrl ? (
+                  <Image
+                    src={profile.imageUrl}
+                    alt="Profile Image"
+                    width={48}
+                    height={48}
+                    className="rounded-full cursor-pointer hover:opacity-75"
+                    style={{ width: "auto", height: "auto" }}
+                  />
+                ) : (
+                  <Avatar />
+                )}
+              </Avatar>
+            )}
           </IconButton>
         </Tooltip>
       </Box>
+
+      {/* Dropdown Menu */}
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: "visible",
+              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+              mt: 1.5,
+              "& .MuiAvatar-root": {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              "&:before": {
+                content: '""',
+                display: "block",
+                position: "absolute",
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: "background.paper",
+                transform: "translateY(-50%) rotate(45deg)",
+                zIndex: 0,
+              },
             },
           },
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {/* <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem> */}
+        {/* "My Account" menu item */}
         <MenuItem onClick={handleClose}>
           <Avatar /> My account
         </MenuItem>
+
+        {/* Divider */}
         <Divider />
-        {/* <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem> */}
-        <MenuItem onClick={handleClose}>
+
+        {/* "Settings" menu item */}
+        <MenuItem onClick={handleOpenSettings}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           Settings
         </MenuItem>
+
+        {/* "Logout" menu item */}
         <MenuItem onClick={handleOpenLogoutModal}>
           <ListItemIcon>
             <Logout fontSize="small" />
@@ -119,6 +177,12 @@ export default function AccountMenu() {
           Logout
         </MenuItem>
       </Menu>
-    </React.Fragment>
+
+      {/* Settings Dialog for updating profile details */}
+      <SettingsDialog
+        open={openSettings}
+        onClose={() => setOpenSettings(false)}
+      />
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { ProductProvider } from "@/context/ProductContext";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 import { RouteGuard } from "@/utils/RouteGuard";
+import { ProfileProvider } from "@/context/ProfileContext";
 
 // Metadata for the application.
 export const metadata = {
@@ -45,7 +46,9 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider>
           <RouteGuard>
-            <ProductProvider>{children}</ProductProvider>
+            <ProfileProvider>
+              <ProductProvider>{children}</ProductProvider>
+            </ProfileProvider>
           </RouteGuard>
         </AuthProvider>
       </body>

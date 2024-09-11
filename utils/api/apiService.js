@@ -43,7 +43,7 @@ export const fetchProducts = async () => {
 export const userLogin = async (email, password) => {
   try {
     const response = await axiosClient.post("/user/login", { email, password });
-
+    console.log("response after login", response);
     return response.data;
   } catch (error) {
     console.error("Login error:", error);
@@ -184,6 +184,73 @@ export const deleteProduct = async (productId) => {
     return response.data;
   } catch (error) {
     console.error("Error deleting product:", error);
+    throw error;
+  }
+};
+
+/**
+ * Profile management functions
+ */
+
+/**
+ * Fetches all profiles.
+ * @returns {Promise<Object>} A promise that resolves to the user's profile data.
+ * @throws {Error} If the API request fails.
+ */
+export const fetchUserProfile = async () => {
+  try {
+    const response = await axiosClient.get("/profiles");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw error;
+  }
+};
+
+/**
+ * Fetches the user's profile using the user ID.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<Object>} A promise that resolves to the user's profile data.
+ * @throws {Error} If the API request fails.
+ */
+export const fetchUserProfileById = async (userId) => {
+  console.log("userId in apiService", userId);
+  try {
+    const response = await axiosClient.get(`/profiles/${userId}`);
+    console.log("response in fetchUserProfileById", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw error;
+  }
+};
+
+/**
+ * Uploads or updates the profile image for a given user.
+ * @param {string} userId - The ID of the user.
+ * @param {File} imageFile - The image file to upload.
+ * @returns {Promise<string>} A promise that resolves to the new image URL.
+ * @throws {Error} If the API request fails.
+ */
+export const updateProfileImage = async (userId, imageFile) => {
+  const formData = new FormData();
+  formData.append("file", imageFile);
+
+  try {
+    const response = await axiosClient.post(
+      `/storage/${userId}/profile-image`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+
+    return response.data.imageUrl;
+  } catch (error) {
+    console.error("Error uploading image:", error);
     throw error;
   }
 };

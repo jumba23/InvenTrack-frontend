@@ -1,25 +1,5 @@
 "use client";
 
-/**
- * AuthContext.js
- *
- * This file defines the authentication context for the application.
- * It manages user authentication state and provides functions for login, logout,
- * and other authentication-related operations.
- *
- * Key features:
- * - Manages authentication state (isAuthenticated, loading, user)
- * - Provides login and logout functionality
- * - Handles initial authentication check on mount
- * - Manages logout modal visibility
- * - Implements last visited route tracking
- * - Integrates with Zustand stores for product preloading and profile management
- *
- * Usage:
- * Wrap your app with <AuthProvider> and use the useAuth hook in child components
- * to access authentication state and functions.
- */
-
 import React, {
   createContext,
   useContext,
@@ -43,7 +23,7 @@ const AuthContext = createContext({
   login: () => {},
   logout: () => {},
   toggleLogoutModal: () => {},
-  updateLastRoute: () => {},
+  checkAuth: () => Promise.resolve(),
 });
 
 export function useAuth() {
@@ -54,6 +34,7 @@ export function AuthProvider({ children }) {
   const router = useRouter();
   const { loadProducts, reset: resetProducts } = useProductStore();
   const { loadProfile, reset: resetProfile } = useProfileStore();
+
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     loading: true,
@@ -62,63 +43,53 @@ export function AuthProvider({ children }) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [lastRoute, setLastRoute] = useState("/dashboard");
 
-  // Effect to check authentication status on mount and set up last route
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await validateUser();
-        const newAuthState = {
-          isAuthenticated: response === "Authenticated",
-          loading: false,
-          user: response.user, // Assuming the response includes user data
-        };
-        setAuthState(newAuthState);
+  // Function to check authentication status without user data
+  const checkAuth = useCallback(async () => {
+    try {
+      const response = await validateUser(); // Validate the user token/session
+      console.log("Validate token response:", response); // Log the response to debug
 
-        if (newAuthState.isAuthenticated) {
-          loadProducts();
-          loadProfile(newAuthState.user.id);
-        }
-      } catch (error) {
-        console.error("Authentication check failed", error);
+      // Only update the isAuthenticated state, since user data isn't available
+      if (response === "Authenticated") {
+        setAuthState((prev) => ({
+          ...prev,
+          isAuthenticated: true,
+          loading: false,
+        }));
+        return true;
+      } else {
         setAuthState({
           isAuthenticated: false,
           loading: false,
           user: null,
         });
+        return false;
       }
-    };
-
-    const storedRoute = localStorage.getItem("lastRoute");
-    if (storedRoute) {
-      setLastRoute(storedRoute);
-    }
-
-    checkAuthStatus();
-  }, [loadProducts, loadProfile]);
-
-  // Function to update last visited route
-  const updateLastRoute = useCallback((route) => {
-    const publicPaths = ["/user/login", "/user/signup", "/"];
-    if (!publicPaths.includes(route)) {
-      setLastRoute(route);
-      localStorage.setItem("lastRoute", route);
+    } catch (error) {
+      console.error("Authentication check failed", error);
+      setAuthState({
+        isAuthenticated: false,
+        loading: false,
+        user: null,
+      });
+      return false;
     }
   }, []);
 
-  // Login function
+  // Login function that returns the user data
   const login = useCallback(
     async (email, password) => {
       try {
-        const response = await userLogin(email, password);
-        console.log("Login successful:", response.user);
+        const response = await userLogin(email, password); // Login API
         setAuthState({
           isAuthenticated: true,
           loading: false,
           user: response.user,
         });
-        loadProducts();
-        loadProfile(response.user.id);
-        router.push(lastRoute);
+        loadProducts(); // Load products based on user data
+        loadProfile(response.user.id); // Load user profile using ID from user data
+        setShowLogoutModal(false); // Ensure the logout modal is closed after login
+        router.push(lastRoute); // Route to the last visited route
       } catch (error) {
         console.error("Login failed", error);
         setAuthState((prev) => ({ ...prev, isAuthenticated: false }));
@@ -131,16 +102,15 @@ export function AuthProvider({ children }) {
   // Logout function
   const logout = useCallback(async () => {
     try {
-      await userLogout();
+      await userLogout(); // Logout API call
       setAuthState({
         isAuthenticated: false,
         loading: false,
         user: null,
       });
-      setShowLogoutModal(false);
       resetProducts();
       resetProfile();
-      router.push("/");
+      router.push("/"); // Route to home page after logout
     } catch (error) {
       console.error("Logout Failed:", error);
     }
@@ -151,7 +121,6 @@ export function AuthProvider({ children }) {
     setShowLogoutModal((prev) => !prev);
   }, []);
 
-  // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({
       authState,
@@ -159,16 +128,9 @@ export function AuthProvider({ children }) {
       login,
       logout,
       toggleLogoutModal,
-      updateLastRoute,
+      checkAuth,
     }),
-    [
-      authState,
-      showLogoutModal,
-      login,
-      logout,
-      toggleLogoutModal,
-      updateLastRoute,
-    ]
+    [authState, showLogoutModal, login, logout, toggleLogoutModal, checkAuth]
   );
 
   return (

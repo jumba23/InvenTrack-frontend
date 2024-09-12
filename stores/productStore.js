@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { fetchProducts } from "@/utils/api/apiService";
 
 /**
@@ -54,7 +54,7 @@ const useProductStore = create(
     }),
     {
       name: "product-storage",
-      getStorage: () => localStorage,
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

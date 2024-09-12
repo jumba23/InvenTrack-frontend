@@ -2,6 +2,16 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { fetchProducts } from "@/utils/api/apiService";
 
+/**
+ * Product Store
+ *
+ * This Zustand store manages the state for products in the application.
+ * It provides actions for loading products, updating the product list,
+ * and managing UI-related states like selected category and form rendering.
+ *
+ * The store uses the persist middleware to save its state in localStorage,
+ * allowing for data persistence across page reloads.
+ */
 const useProductStore = create(
   persist(
     (set, get) => ({

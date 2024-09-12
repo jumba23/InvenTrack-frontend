@@ -14,11 +14,12 @@ export default function ProfileInitializer({ children }) {
   const { authState } = useAuth(); // Assuming you have access to the userId here
 
   useEffect(() => {
-    const userId = authState?.user?.id; // Assuming you get the userId from auth state
-    if (userId && !profile && !loading) {
-      loadProfile(userId); // Load profile only if not already loaded and not loading
+    const profileId = authState?.profile?.id;
+    if (profileId && !profile && !loading) {
+      // loadProfile(profileId); // Load profile only if not already loaded and not loading
+      console.log("ProfileInitializer: Loading profile for user", profileId);
     }
-  }, [authState?.user?.id, profile, loading, loadProfile]);
+  }, [authState?.profile?.id, profile, loading, loadProfile]);
 
   return <>{children}</>;
 }

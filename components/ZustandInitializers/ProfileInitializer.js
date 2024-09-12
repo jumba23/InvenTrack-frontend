@@ -2,26 +2,23 @@
 
 import { useEffect } from "react";
 import { useProfile } from "@/utils/hooks/useProfile";
+import { useAuth } from "@/context/AuthContext"; // Assuming user data comes from AuthContext
 
 /**
  * ProfileInitializer Component
  *
  * This component is responsible for initializing the user profile data when the application loads.
- * It uses the useProfile hook to trigger the initial loading of the user profile.
- *
- * @component
- * @param {Object} props
- * @param {React.ReactNode} props.children - Child components to be rendered
- * @returns {React.ReactNode} The child components
  */
 export default function ProfileInitializer({ children }) {
-  const { loadProfile } = useProfile();
+  const { loadProfile, profile, loading } = useProfile();
+  const { authState } = useAuth(); // Assuming you have access to the userId here
 
   useEffect(() => {
-    // Trigger initial profile loading when the component mounts
-    loadProfile();
-  }, [loadProfile]);
+    const userId = authState?.user?.id; // Assuming you get the userId from auth state
+    if (userId && !profile && !loading) {
+      loadProfile(userId); // Load profile only if not already loaded and not loading
+    }
+  }, [authState?.user?.id, profile, loading, loadProfile]);
 
-  // Render children without modifying them
   return <>{children}</>;
 }

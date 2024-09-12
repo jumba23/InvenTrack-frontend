@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import {
   fetchUserProfileById,
   updateProfileImage,
@@ -17,19 +17,19 @@ import {
  */
 const useProfileStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       profile: null,
       loading: false,
       error: null,
 
+      // Set profile directly
       setProfile: (profile) => set({ profile }),
-      setLoading: (loading) => set({ loading }),
-      setError: (error) => set({ error }),
 
+      // Load profile with userId
       loadProfile: async (userId) => {
         set({ loading: true });
         try {
-          const profileData = await fetchUserProfileById(userId);
+          const profileData = await fetchUserProfileById(userId); // API call to get profile data
           set({ profile: profileData, error: null });
         } catch (error) {
           console.error("Error loading profile:", error);
@@ -39,23 +39,27 @@ const useProfileStore = create(
         }
       },
 
+      // Update profile image and update store
       updateImage: async (userId, imageFile) => {
         try {
-          const newImageUrl = await updateProfileImage(userId, imageFile);
+          const newImageUrl = await updateProfileImage(userId, imageFile); // API call
           set((state) => ({
-            profile: { ...state.profile, imageUrl: newImageUrl },
+            profile: { ...state.profile, profile_image_url: newImageUrl },
           }));
+          return newImageUrl;
         } catch (error) {
           console.error("Error updating profile image:", error);
-          set({ error: error.message });
+          set({ error: "Failed to upload image" });
+          throw error;
         }
       },
 
+      // Reset profile data
       reset: () => set({ profile: null, loading: false, error: null }),
     }),
     {
-      name: "profile-storage",
-      getStorage: () => localStorage,
+      name: "profile-storage", // Store key in localStorage
+      storage: createJSONStorage(() => localStorage), // Use localStorage
     }
   )
 );

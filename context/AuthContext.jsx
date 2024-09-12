@@ -188,6 +188,7 @@ export function AuthProvider({ children }) {
       });
       resetProducts();
       resetProfile();
+      setShowLogoutModal(false); // Close the logout modal after logout
       router.push("/"); // Route to home page after logout
     } catch (error) {
       console.error("Logout Failed:", error);

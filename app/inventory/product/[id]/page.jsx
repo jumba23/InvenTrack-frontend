@@ -5,12 +5,8 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import ProductForm from "@/components/Forms/ProductForm";
-import { useProduct } from "@/context/ProductContext";
-import {
-  fetchProductById,
-  updateProduct,
-  fetchProducts,
-} from "@/utils/api/apiService";
+import { useProduct } from "@/utils/hooks/useProduct";
+import { fetchProductById, updateProduct } from "@/utils/api/apiService";
 
 /**
  * EditProductPage Component
@@ -22,9 +18,9 @@ import {
 const EditProductPage = () => {
   const router = useRouter();
   const params = useParams();
-  const { setProducts, setLoading } = useProduct();
+  const { products, setProducts, loading, setLoading, error, setError } =
+    useProduct();
   const [productData, setProductData] = useState(null);
-  const [error, setError] = useState(null);
 
   /**
    * Fetches the product data when the component mounts or the product ID changes
@@ -49,7 +45,7 @@ const EditProductPage = () => {
     };
 
     loadProductData();
-  }, [params.id, setLoading]);
+  }, [params.id, setLoading, setError]);
 
   /**
    * Handles form submission for updating a product
@@ -81,17 +77,28 @@ const EditProductPage = () => {
       try {
         setLoading(true);
         await updateProduct(params.id, changedFields);
-        const updatedProducts = await fetchProducts();
+        // Update the product in the local state
+        const updatedProducts = products.map((product) =>
+          product.id === params.id ? { ...product, ...changedFields } : product
+        );
         setProducts(updatedProducts);
         router.push("/inventory");
       } catch (error) {
         console.error("Error updating product:", error);
-        throw new Error("Failed to update product. Please try again.");
+        setError("Failed to update product. Please try again.");
       } finally {
         setLoading(false);
       }
     },
-    [params.id, productData, router, setLoading, setProducts]
+    [
+      params.id,
+      productData,
+      router,
+      setLoading,
+      setProducts,
+      products,
+      setError,
+    ]
   );
 
   /**
@@ -107,8 +114,12 @@ const EditProductPage = () => {
   }
 
   // Show loading state while fetching product data
-  if (!productData) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (!productData) {
+    return null;
   }
 
   return (

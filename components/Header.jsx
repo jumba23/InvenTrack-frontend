@@ -36,6 +36,7 @@ const Header = () => {
   return (
     <header className="flex items-center justify-between px-6 py-2 bg-white border-b">
       <div className="flex-1 max-w-xl">
+        {/* Search Form */}
         <form onSubmit={handleSearch} className="relative">
           <input
             type="text"
@@ -62,6 +63,7 @@ const Header = () => {
 
       <div className="flex items-center space-x-4">
         <div className="relative" ref={notificationRef}>
+          {/* Notification Button */}
           <button
             onClick={toggleNotifications}
             className="p-1 text-gray-400 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -89,6 +91,7 @@ const Header = () => {
             </div>
           )}
         </div>
+        {/* Account Menu */}
         <AccountMenu />
       </div>
     </header>

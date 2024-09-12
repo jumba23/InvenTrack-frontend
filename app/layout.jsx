@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/context/AuthContext";
 import { RouteGuard } from "@/utils/RouteGuard";
-import ProfileInitializer from "@/components/ProfileInitializer";
-import ProductInitializer from "@/components/ProductInitializer";
+import ProfileInitializer from "@/components/ZustandInitializers/ProfileInitializer";
+import ProductInitializer from "@/components/ZustandInitializers/ProductInitializer";
 import "./globals.css";
 
 // Metadata for the application.

@@ -4,16 +4,16 @@
  * AuthContext.js
  *
  * This file defines the authentication context for the application.
- * It provides authentication state and functions to manage user authentication,
- * as well as implementing a background product preloading strategy.
+ * It manages user authentication state and provides functions for login, logout,
+ * and other authentication-related operations.
  *
  * Key features:
- * - Manages authentication state (isAuthenticated, loading, user, profile)
+ * - Manages authentication state (isAuthenticated, loading, user)
  * - Provides login and logout functionality
  * - Handles initial authentication check on mount
  * - Manages logout modal visibility
  * - Implements last visited route tracking
- * - Preloads products in the background after successful authentication
+ * - Integrates with Zustand stores for product preloading and profile management
  *
  * Usage:
  * Wrap your app with <AuthProvider> and use the useAuth hook in child components
@@ -29,11 +29,10 @@ import React, {
   useCallback,
 } from "react";
 import { userLogout, validateUser, userLogin } from "@/utils/api/apiService";
-import { fetchProducts } from "@/utils/api/apiService"; // Import fetchProducts
 import { useRouter } from "next/navigation";
-import { useProduct } from "@/context/ProductContext"; // Import useProduct hook
+import useProductStore from "@/stores/productStore";
+import useProfileStore from "@/stores/profileStore";
 
-// Define the shape of the context
 const AuthContext = createContext({
   authState: {
     isAuthenticated: false,
@@ -45,17 +44,16 @@ const AuthContext = createContext({
   logout: () => {},
   toggleLogoutModal: () => {},
   updateLastRoute: () => {},
-  router: null,
 });
 
-// Custom hook to use the auth context
 export function useAuth() {
   return useContext(AuthContext);
 }
 
 export function AuthProvider({ children }) {
   const router = useRouter();
-  const { setProducts } = useProduct();
+  const { loadProducts, reset: resetProducts } = useProductStore();
+  const { loadProfile, reset: resetProfile } = useProfileStore();
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     loading: true,
@@ -70,15 +68,15 @@ export function AuthProvider({ children }) {
       try {
         const response = await validateUser();
         const newAuthState = {
-          ...authState,
           isAuthenticated: response === "Authenticated",
           loading: false,
+          user: response.user, // Assuming the response includes user data
         };
         setAuthState(newAuthState);
 
-        // Preload products if authenticated
         if (newAuthState.isAuthenticated) {
-          preloadProducts();
+          loadProducts();
+          loadProfile(newAuthState.user.id);
         }
       } catch (error) {
         console.error("Authentication check failed", error);
@@ -96,18 +94,7 @@ export function AuthProvider({ children }) {
     }
 
     checkAuthStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Function to preload products
-  const preloadProducts = useCallback(async () => {
-    try {
-      const products = await fetchProducts();
-      setProducts(products);
-    } catch (error) {
-      console.error("Failed to preload products:", error);
-    }
-  }, [setProducts]);
+  }, [loadProducts, loadProfile]);
 
   // Function to update last visited route
   const updateLastRoute = useCallback((route) => {
@@ -129,16 +116,16 @@ export function AuthProvider({ children }) {
           loading: false,
           user: response.user,
         });
-        preloadProducts(); // Preload products after successful login
+        loadProducts();
+        loadProfile(response.user.id);
         router.push(lastRoute);
       } catch (error) {
         console.error("Login failed", error);
         setAuthState((prev) => ({ ...prev, isAuthenticated: false }));
-        throw error; // Re-throw to allow handling in the component
+        throw error;
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [router, lastRoute, preloadProducts]
+    [router, lastRoute, loadProducts, loadProfile]
   );
 
   // Logout function
@@ -151,13 +138,13 @@ export function AuthProvider({ children }) {
         user: null,
       });
       setShowLogoutModal(false);
-      localStorage.removeItem("user");
-      setProducts([]); // Clear products on logout
+      resetProducts();
+      resetProfile();
       router.push("/");
     } catch (error) {
       console.error("Logout Failed:", error);
     }
-  }, [router, setProducts]);
+  }, [router, resetProducts, resetProfile]);
 
   // Toggle logout modal visibility
   const toggleLogoutModal = useCallback(() => {
@@ -173,7 +160,6 @@ export function AuthProvider({ children }) {
       logout,
       toggleLogoutModal,
       updateLastRoute,
-      router,
     }),
     [
       authState,
@@ -182,11 +168,8 @@ export function AuthProvider({ children }) {
       logout,
       toggleLogoutModal,
       updateLastRoute,
-      router,
     ]
   );
-
-  console.log("AuthContext:", contextValue);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

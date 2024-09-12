@@ -12,7 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useProfile } from "@/context/ProfileContext";
+import { useProfile } from "@/utils/hooks/useProfile";
 import { useAuth } from "@/context/AuthContext";
 import SettingsDialog from "./SettingsDialog";
 import Image from "next/image";
@@ -96,18 +96,35 @@ export default function AccountMenu() {
             {loading ? (
               <CircularProgress size={24} />
             ) : (
-              <Avatar sx={{ width: 48, height: 48 }}>
-                {profile?.imageUrl ? (
+              <Avatar sx={{ width: 46, height: 46 }}>
+                {profile?.profile_image_url ? (
                   <Image
-                    src={profile.imageUrl}
+                    src={profile.profile_image_url} // Use profile image if available
                     alt="Profile Image"
-                    width={48}
-                    height={48}
+                    width={45}
+                    height={45}
                     className="rounded-full cursor-pointer hover:opacity-75"
-                    style={{ width: "auto", height: "auto" }}
+                    style={{
+                      objectFit: "contain", // Ensures the whole image fits inside
+                      objectPosition: "center", // Centers the image within the avatar
+                      width: "100%", // Ensures it takes full width of the container
+                      height: "100%", // Ensures it takes full height of the container
+                    }}
                   />
                 ) : (
-                  <Avatar />
+                  <Image
+                    src="/images/default-avatar.png" // Default image if profile image is not available
+                    alt="Default Avatar"
+                    width={45}
+                    height={45}
+                    className="rounded-full cursor-pointer hover:opacity-75"
+                    style={{
+                      objectFit: "contain", // Ensures the whole image fits inside
+                      objectPosition: "center", // Centers the image within the avatar
+                      width: "100%", // Ensures it takes full width of the container
+                      height: "100%", // Ensures it takes full height of the container
+                    }}
+                  />
                 )}
               </Avatar>
             )}

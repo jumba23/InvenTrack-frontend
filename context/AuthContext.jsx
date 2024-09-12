@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     loading: true,
-    user: null,
+    profile: null,
   });
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [lastRoute, setLastRoute] = useState("/dashboard");
@@ -61,7 +61,7 @@ export function AuthProvider({ children }) {
         setAuthState({
           isAuthenticated: false,
           loading: false,
-          user: null,
+          profile: null,
         });
         return false;
       }
@@ -70,7 +70,7 @@ export function AuthProvider({ children }) {
       setAuthState({
         isAuthenticated: false,
         loading: false,
-        user: null,
+        profile: null,
       });
       return false;
     }
@@ -84,10 +84,10 @@ export function AuthProvider({ children }) {
         setAuthState({
           isAuthenticated: true,
           loading: false,
-          user: response.user,
+          profile: response.profile,
         });
         loadProducts(); // Load products based on user data
-        loadProfile(response.user.id); // Load user profile using ID from user data
+        loadProfile(response.profile.id); // Load user profile using ID from user data
         setShowLogoutModal(false); // Ensure the logout modal is closed after login
         router.push(lastRoute); // Route to the last visited route
       } catch (error) {
@@ -106,7 +106,7 @@ export function AuthProvider({ children }) {
       setAuthState({
         isAuthenticated: false,
         loading: false,
-        user: null,
+        profile: null,
       });
       resetProducts();
       resetProfile();

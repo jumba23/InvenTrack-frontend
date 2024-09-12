@@ -210,18 +210,38 @@ export const fetchUserProfile = async () => {
 
 /**
  * Fetches the user's profile using the user ID.
- * @param {string} userId - The ID of the user.
+ * @param {string} profileId - The profile ID of the user.
  * @returns {Promise<Object>} A promise that resolves to the user's profile data.
  * @throws {Error} If the API request fails.
  */
-export const fetchUserProfileById = async (userId) => {
+export const fetchUserProfileById = async (profileId) => {
   // console.log("userId in apiService", userId);
   try {
-    const response = await axiosClient.get(`/profiles/${userId}`);
+    const response = await axiosClient.get(`/profiles/${profileId}`);
     // console.log("response in fetchUserProfileById", response);
     return response.data;
   } catch (error) {
     console.error("Error fetching user profile:", error);
+    throw error;
+  }
+};
+
+/**
+ * Updates the user's profile data.
+ * @param {string} profileId - The profile ID of the user.
+ * @param {Object} profileData - The updated profile data.
+ * @returns {Promise<Object>} A promise that resolves to the updated profile data.
+ * @throws {Error} If the API request fails.
+ */
+export const updateUserProfile = async (profileId, profileData) => {
+  try {
+    const response = await axiosClient.put(
+      `/profiles/${profileId}`,
+      profileData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating profile:", error);
     throw error;
   }
 };
@@ -239,7 +259,7 @@ export const updateProfileImage = async (userId, imageFile) => {
 
   try {
     const response = await axiosClient.post(
-      `/storage/${userId}/inventrack-profile-images`,
+      `/storage/${userId}/profile-image`,
       formData,
       {
         headers: {

@@ -26,10 +26,10 @@ const useProfileStore = create(
       setProfile: (profile) => set({ profile }),
 
       // Load profile with userId
-      loadProfile: async (userId) => {
+      loadProfile: async (profileId) => {
         set({ loading: true });
         try {
-          const profileData = await fetchUserProfileById(userId); // API call to get profile data
+          const profileData = await fetchUserProfileById(profileId); // API call to get profile data
           set({ profile: profileData, error: null });
         } catch (error) {
           console.error("Error loading profile:", error);
@@ -42,7 +42,7 @@ const useProfileStore = create(
       // Update profile image and update store
       updateImage: async (userId, imageFile) => {
         try {
-          const newImageUrl = await updateProfileImage(userId, imageFile); // API call
+          const newImageUrl = await updateProfileImage(userId, imageFile);
           set((state) => ({
             profile: { ...state.profile, profile_image_url: newImageUrl },
           }));

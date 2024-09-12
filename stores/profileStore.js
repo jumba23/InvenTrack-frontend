@@ -5,6 +5,16 @@ import {
   updateProfileImage,
 } from "@/utils/api/apiService";
 
+/**
+ * Profile Store
+ *
+ * This Zustand store manages the state for user profiles in the application.
+ * It provides actions for loading user profiles, updating profile images,
+ * and managing loading and error states.
+ *
+ * The store uses the persist middleware to save its state in localStorage,
+ * allowing for data persistence across page reloads.
+ */
 const useProfileStore = create(
   persist(
     (set, get) => ({

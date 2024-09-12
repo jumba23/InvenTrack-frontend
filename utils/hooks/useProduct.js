@@ -21,22 +21,25 @@ export function useProduct() {
   const { authState } = useAuth();
   const productStore = useProductStore();
 
-  useEffect(() => {
-    // Load products if authenticated and no products are loaded
-    if (
-      authState.isAuthenticated &&
-      productStore.products.length === 0 &&
-      !productStore.loading
-    ) {
-      productStore.loadProducts();
-    }
-    //eslint-disable-next-line
-  }, [
-    authState.isAuthenticated,
-    productStore.products.length,
-    productStore.loading,
-    productStore.loadProducts,
-  ]);
+  useEffect(
+    () => {
+      // Load products if authenticated and no products are loaded
+      if (
+        authState.isAuthenticated &&
+        productStore.products.length === 0 &&
+        !productStore.loading
+      ) {
+        productStore.loadProducts();
+      }
+    },
+    // eslint-disable-next-line
+    [
+      authState.isAuthenticated,
+      productStore.products.length,
+      productStore.loading,
+      productStore.loadProducts,
+    ]
+  );
 
   return productStore;
 }

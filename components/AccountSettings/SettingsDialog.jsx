@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogActions,
@@ -7,24 +7,39 @@ import {
   Button,
   TextField,
   CircularProgress,
-  Snackbar,
   Avatar,
 } from "@mui/material";
-import { useProfile } from "@/context/ProfileContext"; // Assuming this context is created
+import { useProfile } from "@/utils/hooks/useProfile"; // Assuming this hook is created
 import { useForm, Controller } from "react-hook-form";
 
 export default function SettingsDialog({ open, onClose }) {
-  const { profile, updateImage } = useProfile();
+  const { profile, updateImage, setProfile } = useProfile(); // Using updateImage to update the profile image
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
-    defaultValues: profile ? { name: profile.name, cell: profile.cell } : {},
+    defaultValues: {
+      name: profile?.full_name || "", // Initialize with full name from profile
+      cell: profile?.cell_number || "", // Initialize with cell number or empty if null
+      email: profile?.email || "", // Initialize with email or empty if null
+    },
   });
 
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Reset form values when profile data changes
+  useEffect(() => {
+    if (profile) {
+      reset({
+        name: profile.full_name || "",
+        cell: profile.cell_number || "",
+        email: profile.email || "",
+      });
+    }
+  }, [profile, reset]);
 
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
@@ -34,10 +49,9 @@ export default function SettingsDialog({ open, onClose }) {
     setLoading(true);
     try {
       if (imageFile) {
-        await updateImage(profile.userId, imageFile); // Update profile image
+        await updateImage(profile.user_id, imageFile); // Ensure profile.user_id is valid
       }
-      // Handle the name and cell number update here (you can make another API call)
-      console.log(data);
+      console.log("Submitted data:", data);
       onClose(); // Close dialog after successful update
     } catch (error) {
       console.error("Update failed:", error);
@@ -53,7 +67,7 @@ export default function SettingsDialog({ open, onClose }) {
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Display Avatar */}
           <Avatar
-            src={profile?.imageUrl}
+            src={profile?.profile_image_url || "/images/default-avatar.png"} // Correct path
             alt="Profile Image"
             sx={{ width: 100, height: 100, mb: 2 }}
           />
@@ -80,7 +94,6 @@ export default function SettingsDialog({ open, onClose }) {
           <Controller
             name="cell"
             control={control}
-            rules={{ required: "Cell number is required" }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -88,6 +101,22 @@ export default function SettingsDialog({ open, onClose }) {
                 fullWidth
                 error={!!errors.cell}
                 helperText={errors.cell?.message}
+                sx={{ mt: 2 }}
+              />
+            )}
+          />
+
+          {/* Email Field */}
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Email"
+                fullWidth
+                error={!!errors.email}
+                helperText={errors.email?.message}
                 sx={{ mt: 2 }}
               />
             )}
@@ -109,7 +138,6 @@ export default function SettingsDialog({ open, onClose }) {
           </DialogActions>
         </form>
       </DialogContent>
-      {/* Snackbar for success/error messages */}
     </Dialog>
   );
 }

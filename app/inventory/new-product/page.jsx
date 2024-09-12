@@ -1,11 +1,10 @@
-// NewProductPage.jsx
 "use client";
 
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import ProductForm from "@/components/Forms/ProductForm";
-import { useProduct } from "@/context/ProductContext";
-import { addProduct, fetchProducts } from "@/utils/api/apiService";
+import { useProduct } from "@/utils/hooks/useProduct";
+import { addProduct } from "@/utils/api/apiService";
 
 /**
  * NewProductPage Component
@@ -14,15 +13,15 @@ import { addProduct, fetchProducts } from "@/utils/api/apiService";
  * It renders a ProductForm and manages the submission process, including
  * adding the new product to the database and updating the global product state.
  *
- * The component uses the ProductContext for global state management and
- * Next.js routing for navigation.
+ * The component uses the Zustand store through the useProduct hook for global state management
+ * and Next.js routing for navigation.
  */
 const NewProductPage = () => {
   // Initialize router for programmatic navigation
   const router = useRouter();
 
-  // Destructure necessary functions from ProductContext
-  const { setProducts, setLoading } = useProduct();
+  // Destructure necessary functions and state from useProduct hook
+  const { products, setProducts, setLoading, setError } = useProduct();
 
   /**
    * Handles the submission of the new product form
@@ -36,26 +35,25 @@ const NewProductPage = () => {
         setLoading(true);
 
         // Add the new product to the database
-        await addProduct(productData);
+        const newProduct = await addProduct(productData);
 
-        // Fetch the updated list of products
-        const updatedProducts = await fetchProducts();
-
-        // Update the global product state with the new list
-        setProducts(updatedProducts);
+        // Update the global product state by adding the new product
+        setProducts([...products, newProduct]);
 
         // Navigate back to the inventory page after successful addition
         router.push("/inventory");
       } catch (error) {
         console.error("Error adding new product:", error);
+        // Set error in the global state
+        setError("Failed to add new product. Please try again.");
         // Re-throw the error to be handled by the ProductForm component
-        throw new Error("Failed to add new product. Please try again.");
+        throw error;
       } finally {
         // Ensure loading state is set to false after operations complete
         setLoading(false);
       }
     },
-    [setLoading, setProducts, router]
+    [setLoading, setProducts, setError, products, router]
   );
 
   /**

@@ -57,6 +57,8 @@ export default function AccountMenu() {
 
   const open = Boolean(anchorEl);
 
+  console.log("Profile data:", profile);
+
   // Open the menu when the user clicks on the avatar
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

@@ -1,4 +1,27 @@
-import React, { useState, useEffect } from "react";
+/**
+ * SettingsDialog Component
+ *
+ * This component renders a dialog for user profile settings, allowing users to view and edit
+ * their profile information, including their avatar image, name, cell number, and email.
+ *
+ * Key features:
+ * - Displays and allows updating of user avatar
+ * - Provides form fields for editing user information
+ * - Handles form submission and profile updates
+ * - Manages loading states and error messages
+ *
+ * Props:
+ * @param {boolean} open - Controls the visibility of the dialog
+ * @param {function} onClose - Function to call when the dialog should be closed
+ *
+ * @requires React
+ * @requires next/image
+ * @requires @mui/material
+ * @requires react-hook-form
+ */
+
+import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import {
   Dialog,
   DialogActions,
@@ -7,73 +30,147 @@ import {
   Button,
   TextField,
   CircularProgress,
-  Avatar,
 } from "@mui/material";
-import { useProfile } from "@/utils/hooks/useProfile"; // Assuming this hook is created
+import { useProfile } from "@/utils/hooks/useProfile";
 import { useForm, Controller } from "react-hook-form";
+import { updateUserProfile } from "@/utils/api/apiService";
+import { handleApiError } from "@/utils/api/errorHandling";
 
 export default function SettingsDialog({ open, onClose }) {
-  const { profile, updateImage, setProfile } = useProfile(); // Using updateImage to update the profile image
+  const { profile, setProfile, updateImage } = useProfile();
+  const [imageUploading, setImageUploading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm({
     defaultValues: {
-      name: profile?.full_name || "", // Initialize with full name from profile
-      cell: profile?.cell_number || "", // Initialize with cell number or empty if null
-      email: profile?.email || "", // Initialize with email or empty if null
+      name: profile?.full_name || "",
+      cell: profile?.cell_number || "",
+      email: profile?.email || "",
     },
   });
 
-  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Reset form values when profile data changes
+  // Clear error message and reset form when dialog opens
   useEffect(() => {
-    if (profile) {
+    if (open) {
+      setErrorMsg(null);
       reset({
-        name: profile.full_name || "",
-        cell: profile.cell_number || "",
-        email: profile.email || "",
+        name: profile?.full_name || "",
+        cell: profile?.cell_number || "",
+        email: profile?.email || "",
       });
     }
-  }, [profile, reset]);
+  }, [open, profile, reset]);
 
-  const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+  // Handle image upload
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageUploading(true);
+      try {
+        await updateImage(profile.user_id, file);
+      } catch (error) {
+        handleApiError(error, setErrorMsg);
+      } finally {
+        setImageUploading(false);
+      }
+    }
   };
 
+  // Handle form submission
   const onSubmit = async (data) => {
+    const updatedFields = Object.keys(dirtyFields).reduce((acc, key) => {
+      if (data[key] !== profile[key]) {
+        acc[
+          key === "name" ? "full_name" : key === "cell" ? "cell_number" : key
+        ] = data[key];
+      }
+      return acc;
+    }, {});
+
+    if (Object.keys(updatedFields).length === 0) {
+      onClose();
+      return;
+    }
+
     setLoading(true);
     try {
-      if (imageFile) {
-        await updateImage(profile.user_id, imageFile); // Ensure profile.user_id is valid
-      }
-      console.log("Submitted data:", data);
-      onClose(); // Close dialog after successful update
+      await updateUserProfile(profile.id, updatedFields);
+      setProfile({ ...profile, ...updatedFields });
+      onClose();
     } catch (error) {
-      console.error("Update failed:", error);
+      handleApiError(error, setErrorMsg);
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle dialog close
+  const handleClose = useCallback(() => {
+    setErrorMsg(null);
+    onClose();
+  }, [onClose]);
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Account Settings</DialogTitle>
       <DialogContent>
+        {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>}
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Display Avatar */}
-          <Avatar
-            src={profile?.profile_image_url || "/images/default-avatar.png"} // Correct path
-            alt="Profile Image"
-            sx={{ width: 100, height: 100, mb: 2 }}
-          />
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              marginBottom: "20px",
+            }}
+          >
+            <div
+              style={{
+                width: 110,
+                height: 110,
+                borderRadius: "50%",
+                backgroundColor: "#2563ec", // Light gray background hex code
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "20px",
+              }}
+            >
+              <div
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  position: "relative",
+                }}
+              >
+                <Image
+                  src={
+                    profile?.profile_image_url || "/images/default-avatar.png"
+                  }
+                  alt="Profile Image"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ marginBottom: "10px" }}
+            />
+            {imageUploading && <CircularProgress size={24} />}
+          </div>
 
-          {/* Name Field */}
           <Controller
             name="name"
             control={control}
@@ -89,8 +186,6 @@ export default function SettingsDialog({ open, onClose }) {
               />
             )}
           />
-
-          {/* Cell Number Field */}
           <Controller
             name="cell"
             control={control}
@@ -105,8 +200,6 @@ export default function SettingsDialog({ open, onClose }) {
               />
             )}
           />
-
-          {/* Email Field */}
           <Controller
             name="email"
             control={control}
@@ -121,11 +214,9 @@ export default function SettingsDialog({ open, onClose }) {
               />
             )}
           />
-
-          {/* Submit Button */}
           <DialogActions>
             <Button
-              onClick={onClose}
+              onClick={handleClose}
               disabled={loading}
               variant="outlined"
               color="secondary"

@@ -2,10 +2,10 @@
 
 import React, { useMemo, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { useProduct } from "@/context/ProductContext";
-import InfoCards from "@/app/inventory/infoCards"; // Updated import path
+import { useProduct } from "@/utils/hooks/useProduct";
+import InfoCards from "@/app/inventory/infoCards";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
-import { deleteProduct, fetchProducts } from "@/utils/api/apiService";
+import { deleteProduct } from "@/utils/api/apiService";
 import {
   Dialog,
   DialogActions,
@@ -31,23 +31,20 @@ import { useRouter } from "next/navigation";
  * - Provides edit and delete functionality for existing products
  * - Shows loading spinner while data is being fetched
  * - Displays success/error messages using a Snackbar
- *
- * Updates:
- * - Added Office 1, Office 8, and Home quantity columns
- * - Swapped Retail Price and Selling Price columns
- * - Removed Location and Unit columns
  */
 const InventoryPage = () => {
   const router = useRouter();
 
-  // Destructure values and functions from ProductContext
+  // Use the useProduct hook to access the Zustand store
   const {
     products,
     setProducts,
     loading,
     selectedCategory,
-    setIsNewProduct,
     setSelectedCategory,
+    setIsNewProduct,
+    setLoading,
+    setError,
   } = useProduct();
 
   // Local state for delete confirmation dialog
@@ -61,34 +58,28 @@ const InventoryPage = () => {
     severity: "success",
   });
 
-  /**
-   * Handles the edit action for a product
-   * @param {number} id - The ID of the product to edit
-   */
+  // Log the current state
+  console.log("Current products state:", products);
+  console.log("Current loading state:", loading);
+  console.log("Current selectedCategory state:", selectedCategory);
+
   const handleEdit = (id) => {
     setIsNewProduct(false);
     router.push(`/inventory/product/${id}`);
   };
 
-  /**
-   * Initiates the delete process for a product
-   * @param {number} id - The ID of the product to delete
-   */
   const handleDeleteClick = (id) => {
     setProductToDelete(id);
     setDeleteDialogOpen(true);
   };
 
-  /**
-   * Confirms and executes the product deletion
-   */
   const handleDelete = async () => {
     if (!productToDelete) return;
 
     try {
+      setLoading(true);
       await deleteProduct(productToDelete);
-      const updatedProducts = await fetchProducts();
-      setProducts(updatedProducts);
+      setProducts(products.filter((product) => product.id !== productToDelete));
       setSnackbar({
         open: true,
         message: "Product deleted successfully",
@@ -96,35 +87,27 @@ const InventoryPage = () => {
       });
     } catch (error) {
       console.error("Error deleting product:", error);
+      setError("Failed to delete product");
       setSnackbar({
         open: true,
         message: "Failed to delete product",
         severity: "error",
       });
     } finally {
+      setLoading(false);
       setDeleteDialogOpen(false);
       setProductToDelete(null);
     }
   };
 
-  /**
-   * Navigates to the new product page
-   */
   const handleAddProduct = () => {
     router.push("/inventory/new-product");
   };
 
-  /**
-   * Changes the selected category for filtering products
-   * @param {string} category - The category to filter by
-   */
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
-  /**
-   * Closes the Snackbar
-   */
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") return;
     setSnackbar({ ...snackbar, open: false });

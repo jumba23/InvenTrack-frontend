@@ -108,6 +108,7 @@ export const validateUser = async () => {
     const response = await axiosClient.get("/user/validate-token", {
       withCredentials: true,
     });
+    console.log("Validate token response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Token validation error:", error);
@@ -214,10 +215,10 @@ export const fetchUserProfile = async () => {
  * @throws {Error} If the API request fails.
  */
 export const fetchUserProfileById = async (userId) => {
-  console.log("userId in apiService", userId);
+  // console.log("userId in apiService", userId);
   try {
     const response = await axiosClient.get(`/profiles/${userId}`);
-    console.log("response in fetchUserProfileById", response);
+    // console.log("response in fetchUserProfileById", response);
     return response.data;
   } catch (error) {
     console.error("Error fetching user profile:", error);
@@ -238,7 +239,7 @@ export const updateProfileImage = async (userId, imageFile) => {
 
   try {
     const response = await axiosClient.post(
-      `/storage/${userId}/profile-image`,
+      `/storage/${userId}/inventrack-profile-images`,
       formData,
       {
         headers: {

@@ -182,11 +182,6 @@ export function AuthProvider({ children }) {
     try {
       await userLogout(); // Logout API call
 
-      // error handling
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Logout failed");
-      }
       setAuthState({
         isAuthenticated: false,
         loading: false,

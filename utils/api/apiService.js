@@ -43,7 +43,6 @@ export const fetchProducts = async () => {
 export const userLogin = async (email, password) => {
   try {
     const response = await axiosClient.post("/user/login", { email, password });
-    console.log("response after login", response);
     return response.data;
   } catch (error) {
     console.error("Login error:", error);

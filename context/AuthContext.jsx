@@ -175,12 +175,18 @@ export function AuthProvider({ children }) {
 
   /**
    * logout function:
-   * - Logs the user out by clearing session and profile data, and resetting zustand state.
+   * - Logs the user out by clearing session and profile data, resetting zustand state, and closing the logout modal.
    * - Redirects the user to the home page upon successful logout.
    */
   const logout = useCallback(async () => {
     try {
       await userLogout(); // Logout API call
+
+      // error handling
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Logout failed");
+      }
       setAuthState({
         isAuthenticated: false,
         loading: false,

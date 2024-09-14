@@ -49,9 +49,12 @@ frontend/
 │   │    ├──page.jsx
 │   │    ├── new-product/
 │   │    │   └──page.jsx
-│   │    └── product/
-│   │        └──[id]/
-│   │            └──page.jsx
+│   │    ├── product/
+│   │    │    └──[id]/
+│   │    │        └──page.jsx
+│   │    ├──infoCards.jsx
+│   │    ├──layout.jsx
+│   │    └──page.jsx
 │   ├── orders/
 │   │    └──page.jsx
 │   ├── reports/
@@ -65,12 +68,15 @@ frontend/
 │   │        └──page.jsx
 │   ├── favicon.ico
 │   ├── globals.css
+│   ├── not-found.jsx
+│   ├── error.jsx
 │   ├── SkeletonScreen.jsx
 │   ├── layout.jsx
 │   └── page.jsx
 ├── components/
 │   ├── AccountSettings/
-│   │    └──AccountMenu.jsx
+│   │   ├──SettingsDialog.jsx
+│   │   └──AccountMenu.jsx
 │   ├── Forms/
 │   │   ├── OrderForm.jsx
 │   │   ├── ProductForm.jsx
@@ -83,30 +89,36 @@ frontend/
 │   ├── Spinners/
 │   │   ├── Spinner.jsx
 │   │   └── LogoSpinner.jsx
+│   ├── ZustandInitializers/
+│   │   ├── ProductInitializer.js
+│   │   └── ProfileInitializer.js
 │   ├── Footer.jsx
 │   ├── Header.jsx
 │   ├── Sidebar.jsx
 ├── context/
-│   ├── AuthContext.jsx
-│   └── ProductContext.jsx
+│   └── AuthContext.jsx
 ├── layouts/
 │   ├── LandingPageLayout.jsx
 │   └── MainLayout.jsx
 ├── public/
 │   └── images/
+├── context/
+│   ├── productStore.js
+│   └── profileStore.js
 ├── utils/
 │   ├── api/
 │   │   ├── apiService.js
 │   │   ├── axiosClient.js
 │   │   └── errorHandling.js
 │   ├── hooks/
-│   │   ├── useProductLoader.js
-│   │   └── useRequireAuth.js
+│   │   ├── useProduct.js
+│   │   └── useProfile.js
 │   └──RouteGuard.js
 ├── .env.local
 ├── .eslintrc.json
 ├── next.config.js
 ├── package.json
+├── jsconfig.json
 ├── postcss.config.js
 └── tailwind.config.js
 ```
@@ -115,7 +127,8 @@ frontend/
 
 - `app/`: Contains Next.js 14.2.7 pages and routing structure.
 - `components/`: Reusable React components.
-- `context/`: React Context providers for state management.
+- `context/`: React Context providers for Authentication state management.
+- `store/`: Zustand stores for global state management.
 - `layouts/`: Custom layout components.
 - `utils/`: Utility functions, API services, and custom hooks.
 - `public/`: Static assets.
@@ -143,7 +156,7 @@ Authentication flow:
 
 ## Development Practices
 
-1. **State Management**: Utilizes React Context API (see `context/` directory).
+1. **State Management**: Utilizes React Context API (see `context/` directory) and Zustand for global state management.
 2. **API Integration**: Axios is used for API calls, with a centralized service in `utils/api/apiService.jsx`.
 3. **Routing**: Leverages Next.js 14.2.7 App Router for file-system based routing.
 4. **Styling**: Uses Tailwind CSS for styling (see `tailwind.config.js` and `postcss.config.js`).

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
+import ErrorDisplay from "@/components/ErrorDisplay/ErrorDisplay";
 
 /**
  * ===================================== SUMMARY =====================================
@@ -29,6 +30,10 @@ import LogoSpinner from "@/components/Spinners/LogoSpinner";
  *    - While authentication status is being verified, a loading spinner (`LogoSpinner`)
  *      is displayed to enhance user experience.
  *
+ * 4. **Error Handling**:
+ *    - Catches and displays authentication-related errors using the `ErrorDisplay` component.
+ *    - Provides an option to retry the authentication check when an error occurs.
+ *
  * Core Flow:
  * 1. **Authentication Check**:
  *    - On every route change, the `RouteGuard` component runs an authentication check.
@@ -42,6 +47,10 @@ import LogoSpinner from "@/components/Spinners/LogoSpinner";
  * 3. **Loading State**:
  *    - While the authentication status is being determined, the page is temporarily
  *      blocked, and a loading spinner is displayed to indicate that a background check is in progress.
+ *
+ * 4. **Error State**:
+ *    - If an error occurs during the authentication check, an error message is displayed
+ *      with an option to retry the check.
  *
  * Props:
  * - `children`: The child components (e.g., pages) to be conditionally rendered
@@ -76,42 +85,48 @@ const PUBLIC_PATHS = ["/user/login", "/user/signup", "/"];
  * - This component guards routes from unauthenticated access.
  * - It checks the user's authentication status and conditionally renders
  *   protected content or redirects the user to a login page.
+ * - Now includes error handling for authentication checks.
  */
 export function RouteGuard({ children }) {
-  const router = useRouter(); // Access Next.js router for navigation control
-  const pathname = usePathname(); // Get the current path for route checks
-  const { isAuthenticated, loading, checkAuth } = useAuth(); // Access auth state and methods from AuthContext
-  const [isChecking, setIsChecking] = useState(true); // Track if an auth check is currently happening
-
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isAuthenticated, loading, checkAuth, error, clearError } = useAuth();
+  const [isChecking, setIsChecking] = useState(true);
+  const [localError, setLocalError] = useState(null);
   /**
    * useEffect:
    * - Runs when the route (`pathname`) changes.
    * - Executes the authentication check and handles redirection based on the result.
    */
-  useEffect(() => {
-    const authCheck = async () => {
-      setIsChecking(true); // Set checking state to true (show loading indicator)
+  const performAuthCheck = async () => {
+    setIsChecking(true);
+    setLocalError(null);
+    clearError();
+
+    try {
       const isAuthenticated = await checkAuth(); // Check if the user is authenticated
-
       const path = pathname.split("?")[0]; // Get the current path (ignore query params)
-
       // If the user is not authenticated and trying to access a protected route, redirect to login
       if (!isAuthenticated && !PUBLIC_PATHS.includes(path)) {
-        router.push("/user/login"); // Redirect to login page
-      } else {
-        setIsChecking(false); // Stop the loading spinner once the check is done
+        router.push("/user/login");
       }
-    };
+    } catch (err) {
+      console.error("Authentication check failed:", err);
+      setLocalError(err);
+    } finally {
+      setIsChecking(false);
+    }
+  };
 
-    authCheck(); // Execute the auth check whenever the path changes
-  }, [pathname, router, checkAuth]); // Dependencies: re-run when pathname, router, or checkAuth changes
-
+  useEffect(() => {
+    performAuthCheck();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, router, checkAuth]);
   /**
    * Conditional rendering:
    * - If the authentication check is in progress (`isChecking`) or the global auth state
    *   indicates loading, show a loading spinner.
-   */
-  if (isChecking || loading) {
+   */ if (isChecking || loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <LogoSpinner />
@@ -119,6 +134,13 @@ export function RouteGuard({ children }) {
     );
   }
 
-  // If authentication is verified or not required, render the child components (protected pages)
+  if (localError || error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <ErrorDisplay error={localError || error} onRetry={performAuthCheck} />
+      </div>
+    );
+  }
+
   return children;
 }

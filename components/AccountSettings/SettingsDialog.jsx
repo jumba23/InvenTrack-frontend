@@ -34,7 +34,7 @@ import {
 import { useProfile } from "@/utils/hooks/useProfile";
 import { useForm, Controller } from "react-hook-form";
 import { updateUserProfile } from "@/utils/api/apiService";
-import { handleApiError } from "@/utils/api/errorHandling";
+import { handleApiError } from "@/utils/errorHandling/errorHandling";
 
 export default function SettingsDialog({ open, onClose }) {
   const { profile, setProfile, updateImage } = useProfile();

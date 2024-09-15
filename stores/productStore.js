@@ -34,7 +34,7 @@ const useProductStore = create(
       setIsNewProduct: (isNew) => set({ isNewProduct: isNew }),
 
       loadProducts: async () => {
-        set({ loading: true });
+        set({ loading: true, error: null });
         try {
           const data = await fetchProducts();
           set({ products: data, error: null });
@@ -42,11 +42,12 @@ const useProductStore = create(
           console.error("Failed to load products:", error);
           set({
             error: {
-              type: ErrorTypes.API_ERROR,
-              message: "Failed to load products. Please try again later.",
+              type: error.type || ErrorTypes.API_ERROR,
+              message:
+                error.message ||
+                "Failed to load products. Please try again later.",
             },
           });
-          throw error; // Re-throw for the component to handle
         } finally {
           set({ loading: false });
         }

@@ -16,7 +16,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   handleApiError,
   getUserFriendlyErrorMessage,
-} from "@/utils/api/errorHandling";
+} from "@/utils/errorHandling/errorHandling";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth hook
 import { useRouter } from "next/navigation";
 import { useState } from "react";

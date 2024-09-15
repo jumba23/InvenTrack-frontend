@@ -5,7 +5,7 @@ import { userSignUp } from "@/utils/api/apiService";
 import {
   handleApiError,
   getUserFriendlyErrorMessage,
-} from "@/utils/api/errorHandling";
+} from "@/utils/errorHandling/errorHandling";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

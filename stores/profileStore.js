@@ -34,19 +34,20 @@ const useProfileStore = create(
 
       // Load profile with userId
       loadProfile: async (profileId) => {
-        set({ loading: true });
+        set({ loading: true, error: null });
         try {
-          const profileData = await fetchUserProfileById(profileId); // API call to get profile data
+          const profileData = await fetchUserProfileById(profileId);
           set({ profile: profileData, error: null });
         } catch (error) {
           console.error("Error loading profile:", error);
           set({
             error: {
-              type: ErrorTypes.API_ERROR,
-              message: "Failed to load profile. Please try again later.",
+              type: error.type || ErrorTypes.API_ERROR,
+              message:
+                error.message ||
+                "Failed to load profile. Please try again later.",
             },
           });
-          throw error; // Re-throw for the component to handle
         } finally {
           set({ loading: false });
         }
@@ -58,14 +59,15 @@ const useProfileStore = create(
           const newImageUrl = await updateProfileImage(userId, imageFile);
           set((state) => ({
             profile: { ...state.profile, profile_image_url: newImageUrl },
+            error: null,
           }));
           return newImageUrl;
         } catch (error) {
           console.error("Error updating profile image:", error);
           set({
             error: {
-              type: ErrorTypes.API_ERROR,
-              message: "Failed to upload image",
+              type: error.type || ErrorTypes.API_ERROR,
+              message: error.message || "Failed to upload image",
             },
           });
           throw error;

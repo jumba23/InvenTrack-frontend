@@ -1,8 +1,10 @@
+// hooks/useProduct.js
 "use client";
 
 import { useEffect } from "react";
 import useProductStore from "@/stores/productStore";
 import { useAuth } from "@/context/AuthContext";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
 
 /**
  * useProduct Hook
@@ -14,6 +16,7 @@ import { useAuth } from "@/context/AuthContext";
  * - Provides access to all product store states and actions
  * - Automatically loads products when authenticated and no products are loaded
  * - Integrates with AuthContext for authentication state
+ * - Includes error handling for product loading failures
  *
  * @returns {Object} The entire product store state and actions
  */
@@ -29,7 +32,12 @@ export function useProduct() {
         productStore.products.length === 0 &&
         !productStore.loading
       ) {
-        productStore.loadProducts();
+        productStore.loadProducts().catch((error) => {
+          productStore.setError({
+            type: ErrorTypes.API_ERROR,
+            message: "Failed to load products",
+          });
+        });
       }
     },
     // eslint-disable-next-line

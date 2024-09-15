@@ -1,3 +1,4 @@
+// AuthProvider.jsx
 "use client";
 
 import React, {
@@ -11,6 +12,7 @@ import { userLogout, validateUser, userLogin } from "@/utils/api/apiService";
 import { useRouter } from "next/navigation";
 import useProductStore from "@/stores/productStore";
 import useProfileStore from "@/stores/profileStore";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
 
 /**
  * ===================================== SUMMARY =====================================
@@ -80,6 +82,8 @@ const AuthContext = createContext({
   logout: () => {},
   toggleLogoutModal: () => {},
   checkAuth: () => Promise.resolve(),
+  error: null,
+  clearError: () => {},
 });
 
 // Custom hook to access AuthContext
@@ -101,6 +105,7 @@ export function AuthProvider({ children }) {
   });
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [lastRoute, setLastRoute] = useState("/dashboard");
+  const [error, setError] = useState(null);
 
   /**
    * checkAuth function:
@@ -111,9 +116,14 @@ export function AuthProvider({ children }) {
    * Returns:
    *   true if authenticated, false otherwise.
    */
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   const checkAuth = useCallback(async () => {
     try {
-      const response = await validateUser(); // Validate the user token/session
+      const response = await validateUser();
 
       if (response === "Authenticated") {
         setAuthState((prev) => ({
@@ -121,6 +131,7 @@ export function AuthProvider({ children }) {
           isAuthenticated: true,
           loading: false,
         }));
+        clearError();
         return true;
       } else {
         setAuthState({
@@ -137,10 +148,13 @@ export function AuthProvider({ children }) {
         loading: false,
         profile: null,
       });
+      setError({
+        type: error.type || ErrorTypes.AUTHENTICATION_ERROR,
+        message: error.message || "Authentication check failed",
+      });
       return false;
     }
-  }, []);
-
+  }, [clearError]);
   /**
    * login function:
    * - Logs in the user by making an API call with their email and password.
@@ -154,25 +168,29 @@ export function AuthProvider({ children }) {
   const login = useCallback(
     async (email, password) => {
       try {
-        const response = await userLogin(email, password); // Login API
+        const response = await userLogin(email, password);
         setAuthState({
           isAuthenticated: true,
           loading: false,
           profile: response.profile,
         });
-        loadProducts(); // Load products based on user data
-        loadProfile(response.profile.id); // Load user profile using ID from user data
-        setShowLogoutModal(false); // Ensure the logout modal is closed after login
-        router.push(lastRoute); // Route to the last visited route
+        await loadProducts();
+        await loadProfile(response.profile.id);
+        setShowLogoutModal(false);
+        clearError();
+        router.push(lastRoute);
       } catch (error) {
         console.error("Login failed", error);
         setAuthState((prev) => ({ ...prev, isAuthenticated: false }));
-        throw error;
+        setError({
+          type: error.type || ErrorTypes.AUTHENTICATION_ERROR,
+          message:
+            error.message || "Login failed. Please check your credentials.",
+        });
       }
     },
-    [router, lastRoute, loadProducts, loadProfile]
+    [router, lastRoute, loadProducts, loadProfile, clearError]
   );
-
   /**
    * logout function:
    * - Logs the user out by clearing session and profile data, resetting zustand state, and closing the logout modal.
@@ -180,23 +198,26 @@ export function AuthProvider({ children }) {
    */
   const logout = useCallback(async () => {
     try {
-      await userLogout(); // Logout API call
+      await userLogout();
 
       setAuthState({
         isAuthenticated: false,
         loading: false,
         profile: null,
       });
-      setShowLogoutModal(false); // Close the logout modal after logout
+      setShowLogoutModal(false);
       resetProducts();
       resetProfile();
-      router.push("/"); // Route to home page after logout
+      clearError();
+      router.push("/");
     } catch (error) {
       console.error("Logout Failed:", error);
+      setError({
+        type: error.type || ErrorTypes.AUTHENTICATION_ERROR,
+        message: error.message || "Logout failed. Please try again.",
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router, resetProducts, resetProfile]);
-
+  }, [router, resetProducts, resetProfile, clearError]);
   /**
    * toggleLogoutModal function:
    * - Toggles the visibility of the logout confirmation modal.
@@ -214,8 +235,19 @@ export function AuthProvider({ children }) {
       logout,
       toggleLogoutModal,
       checkAuth,
+      error,
+      clearError,
     }),
-    [authState, showLogoutModal, login, logout, toggleLogoutModal, checkAuth]
+    [
+      authState,
+      showLogoutModal,
+      login,
+      logout,
+      toggleLogoutModal,
+      checkAuth,
+      error,
+      clearError,
+    ]
   );
 
   // Providing the auth context to children components

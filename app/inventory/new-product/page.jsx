@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/utils/hooks/useProduct";
 import { addProduct } from "@/utils/api/apiService";
+import ErrorDisplay from "@/components/ErrorDisplay/ErrorDisplay";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
 
 /**
  * NewProductPage Component
@@ -14,14 +16,12 @@ import { addProduct } from "@/utils/api/apiService";
  * adding the new product to the database and updating the global product state.
  *
  * The component uses the Zustand store through the useProduct hook for global state management
- * and Next.js routing for navigation.
+ * and Next.js routing for navigation. It also implements enhanced error handling.
  */
 const NewProductPage = () => {
-  // Initialize router for programmatic navigation
   const router = useRouter();
-
-  // Destructure necessary functions and state from useProduct hook
-  const { products, setProducts, setLoading, setError } = useProduct();
+  const { products, setProducts, setLoading } = useProduct();
+  const [error, setError] = useState(null);
 
   /**
    * Handles the submission of the new product form
@@ -30,30 +30,25 @@ const NewProductPage = () => {
    */
   const handleFormSubmit = useCallback(
     async (productData) => {
+      setLoading(true);
+      setError(null);
       try {
-        // Set loading state to true before API operations
-        setLoading(true);
-
-        // Add the new product to the database
         const newProduct = await addProduct(productData);
-
-        // Update the global product state by adding the new product
-        setProducts([...products, newProduct]);
-
-        // Navigate back to the inventory page after successful addition
+        setProducts([...products, newProduct]); // Update the global product state by adding the new product
         router.push("/inventory");
       } catch (error) {
         console.error("Error adding new product:", error);
         // Set error in the global state
-        setError("Failed to add new product. Please try again.");
-        // Re-throw the error to be handled by the ProductForm component
-        throw error;
+        setError({
+          type: error.type || ErrorTypes.API_ERROR,
+          message:
+            error.message || "Failed to add new product. Please try again.",
+        });
       } finally {
-        // Ensure loading state is set to false after operations complete
         setLoading(false);
       }
     },
-    [setLoading, setProducts, setError, products, router]
+    [setLoading, setProducts, products, router]
   );
 
   /**
@@ -64,13 +59,24 @@ const NewProductPage = () => {
     router.push("/inventory");
   }, [router]);
 
+  /**
+   * Handles retry action when an error occurs
+   */
+  const handleRetry = useCallback(() => {
+    setError(null);
+  }, []);
+
   return (
     <div className="w-full h-full p-4 md:p-6 lg:p-8">
-      <ProductForm
-        onSubmit={handleFormSubmit}
-        onCancel={handleFormClose}
-        isNewProduct={true}
-      />
+      {error ? (
+        <ErrorDisplay error={error} onRetry={handleRetry} />
+      ) : (
+        <ProductForm
+          onSubmit={handleFormSubmit}
+          onCancel={handleFormClose}
+          isNewProduct={true}
+        />
+      )}
     </div>
   );
 };

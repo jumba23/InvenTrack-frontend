@@ -3,6 +3,7 @@ import { RouteGuard } from "@/utils/RouteGuard";
 import ProfileInitializer from "@/components/ZustandInitializers/ProfileInitializer";
 import ProductInitializer from "@/components/ZustandInitializers/ProductInitializer";
 import "./globals.css";
+import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
 
 // Metadata for the application.
 export const metadata = {
@@ -52,13 +53,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
-          <RouteGuard>
-            <ProfileInitializer>
-              <ProductInitializer>{children}</ProductInitializer>
-            </ProfileInitializer>
-          </RouteGuard>
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <RouteGuard>
+              <ProfileInitializer>
+                <ProductInitializer>{children}</ProductInitializer>
+              </ProfileInitializer>
+            </RouteGuard>
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

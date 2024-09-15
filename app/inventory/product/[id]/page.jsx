@@ -1,4 +1,3 @@
-// EditProductPage.jsx
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -7,6 +6,8 @@ import { useEffect, useState, useCallback } from "react";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/utils/hooks/useProduct";
 import { fetchProductById, updateProduct } from "@/utils/api/apiService";
+import ErrorDisplay from "@/components/ErrorDisplay/ErrorDisplay";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
 
 /**
  * EditProductPage Component
@@ -14,13 +15,14 @@ import { fetchProductById, updateProduct } from "@/utils/api/apiService";
  * This component handles the editing of existing products. It fetches the product data,
  * renders the ProductForm with the current data, and processes form submissions.
  * It implements partial updates by only sending changed fields to the server.
+ * It also includes enhanced error handling for various scenarios.
  */
 const EditProductPage = () => {
   const router = useRouter();
   const params = useParams();
-  const { products, setProducts, loading, setLoading, error, setError } =
-    useProduct();
+  const { products, setProducts, setLoading } = useProduct();
   const [productData, setProductData] = useState(null);
+  const [error, setError] = useState(null);
 
   /**
    * Fetches the product data when the component mounts or the product ID changes
@@ -28,24 +30,31 @@ const EditProductPage = () => {
   useEffect(() => {
     const loadProductData = async () => {
       if (!params.id) {
-        setError("Product ID is missing");
+        setError({
+          type: ErrorTypes.VALIDATION_ERROR,
+          message: "Product ID is missing",
+        });
         return;
       }
 
+      setLoading(true);
       try {
-        setLoading(true);
         const data = await fetchProductById(params.id);
         setProductData(data);
       } catch (error) {
         console.error("Error fetching product data:", error);
-        setError("Failed to load product data. Please try again.");
+        setError({
+          type: error.type || ErrorTypes.API_ERROR,
+          message:
+            error.message || "Failed to load product data. Please try again.",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     loadProductData();
-  }, [params.id, setLoading, setError]);
+  }, [params.id, setLoading]);
 
   /**
    * Handles form submission for updating a product
@@ -54,7 +63,11 @@ const EditProductPage = () => {
   const handleFormSubmit = useCallback(
     async (updatedData) => {
       if (!params.id) {
-        throw new Error("Product ID is missing");
+        setError({
+          type: ErrorTypes.VALIDATION_ERROR,
+          message: "Product ID is missing",
+        });
+        return;
       }
 
       // Determine which fields have changed
@@ -74,8 +87,9 @@ const EditProductPage = () => {
         return;
       }
 
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
         await updateProduct(params.id, changedFields);
         // Update the product in the local state
         const updatedProducts = products.map((product) =>
@@ -85,20 +99,16 @@ const EditProductPage = () => {
         router.push("/inventory");
       } catch (error) {
         console.error("Error updating product:", error);
-        setError("Failed to update product. Please try again.");
+        setError({
+          type: error.type || ErrorTypes.API_ERROR,
+          message:
+            error.message || "Failed to update product. Please try again.",
+        });
       } finally {
         setLoading(false);
       }
     },
-    [
-      params.id,
-      productData,
-      router,
-      setLoading,
-      setProducts,
-      products,
-      setError,
-    ]
+    [params.id, productData, router, setLoading, setProducts, products]
   );
 
   /**
@@ -108,18 +118,22 @@ const EditProductPage = () => {
     router.push("/inventory");
   }, [router]);
 
-  // Render error message if there's an error
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  /**
+   * Handles retry action when an error occurs
+   */
+  const handleRetry = useCallback(() => {
+    setError(null);
+    if (!productData) {
+      router.refresh(); // Refresh the page to re-fetch product data
+    }
+  }, [productData, router]);
 
-  // Show loading state while fetching product data
-  if (loading) {
-    return <div>Loading...</div>;
+  if (error) {
+    return <ErrorDisplay error={error} onRetry={handleRetry} />;
   }
 
   if (!productData) {
-    return null;
+    return <div>Loading...</div>;
   }
 
   return (

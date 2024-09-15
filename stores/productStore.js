@@ -1,6 +1,8 @@
+// stores/productStore.js
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { fetchProducts } from "@/utils/api/apiService";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
 
 /**
  * Product Store
@@ -11,6 +13,8 @@ import { fetchProducts } from "@/utils/api/apiService";
  *
  * The store uses the persist middleware to save its state in localStorage,
  * allowing for data persistence across page reloads.
+ *
+ * Now includes improved error handling with specific error types.
  */
 const useProductStore = create(
   persist(
@@ -36,7 +40,13 @@ const useProductStore = create(
           set({ products: data, error: null });
         } catch (error) {
           console.error("Failed to load products:", error);
-          set({ error: "Failed to load products. Please try again later." });
+          set({
+            error: {
+              type: ErrorTypes.API_ERROR,
+              message: "Failed to load products. Please try again later.",
+            },
+          });
+          throw error; // Re-throw for the component to handle
         } finally {
           set({ loading: false });
         }

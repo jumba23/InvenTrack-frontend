@@ -1,9 +1,11 @@
+// stores/profileStore.js
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import {
   fetchUserProfileById,
   updateProfileImage,
 } from "@/utils/api/apiService";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
 
 /**
  * Profile Store
@@ -14,6 +16,8 @@ import {
  *
  * The store uses the persist middleware to save its state in localStorage,
  * allowing for data persistence across page reloads.
+ *
+ * Now includes improved error handling with specific error types.
  */
 const useProfileStore = create(
   persist(
@@ -25,6 +29,9 @@ const useProfileStore = create(
       // Set profile directly
       setProfile: (profile) => set({ profile }),
 
+      // Set error
+      setError: (error) => set({ error }),
+
       // Load profile with userId
       loadProfile: async (profileId) => {
         set({ loading: true });
@@ -33,7 +40,13 @@ const useProfileStore = create(
           set({ profile: profileData, error: null });
         } catch (error) {
           console.error("Error loading profile:", error);
-          set({ error: error.message });
+          set({
+            error: {
+              type: ErrorTypes.API_ERROR,
+              message: "Failed to load profile. Please try again later.",
+            },
+          });
+          throw error; // Re-throw for the component to handle
         } finally {
           set({ loading: false });
         }
@@ -49,7 +62,12 @@ const useProfileStore = create(
           return newImageUrl;
         } catch (error) {
           console.error("Error updating profile image:", error);
-          set({ error: "Failed to upload image" });
+          set({
+            error: {
+              type: ErrorTypes.API_ERROR,
+              message: "Failed to upload image",
+            },
+          });
           throw error;
         }
       },

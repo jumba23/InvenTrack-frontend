@@ -1,28 +1,47 @@
-import React from "react";
+// components/ErrorBoundary/ErrorBoundary.jsx
+
+"use client";
+
+import React, { useState, useEffect } from "react";
 import ErrorDisplay from "../ErrorDisplay/ErrorDisplay";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
+/**
+ * ErrorBoundary Component
+ *
+ * This component catches JavaScript errors anywhere in its child component tree,
+ * logs those errors, and displays a fallback UI instead of the component tree that crashed.
+ *
+ * @component
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - The child components to be rendered within the error boundary.
+ */
+const ErrorBoundary = ({ children }) => {
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const errorHandler = (event) => {
+      console.error("Error caught by ErrorBoundary:", event.error);
+      setHasError(true);
+      setError({
+        type: ErrorTypes.UNEXPECTED_ERROR,
+        message: event.error.message || "An unexpected error occurred",
+      });
+    };
+
+    window.addEventListener("error", errorHandler);
+
+    return () => {
+      window.removeEventListener("error", errorHandler);
+    };
+  }, []);
+
+  if (hasError) {
+    return <ErrorDisplay error={error} />;
   }
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error("Error caught by ErrorBoundary:", error, errorInfo);
-    // You can log the error to an error reporting service here
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <ErrorDisplay error={this.state.error} />;
-    }
-
-    return this.props.children;
-  }
-}
+  return children;
+};
 
 export default ErrorBoundary;

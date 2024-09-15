@@ -1,9 +1,11 @@
+// hooks/useProfile.js
 import useProfileStore from "@/stores/profileStore";
 
 /**
  * useProfile Hook
  *
  * A custom hook that provides profile-related data and actions from the profile store.
+ * Error handling is managed within the store actions.
  *
  * @returns {Object} The profile store state and actions.
  */

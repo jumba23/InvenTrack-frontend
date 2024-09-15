@@ -1,7 +1,22 @@
-import React from "react";
-import { getErrorMessage } from "../../utils/errorHandling/errorMessages";
-import { ErrorTypes } from "../../utils/errorHandling/errorTypes";
+// components/ErrorDisplay/ErrorDisplay.jsx
 
+"use client";
+
+import React from "react";
+import { getErrorMessage } from "@/utils/errorHandling/errorMessages";
+import { ErrorTypes } from "@/utils/errorHandling/errorTypes";
+
+/**
+ * ErrorDisplay Component
+ *
+ * This component is responsible for displaying error messages to the user.
+ * It uses the getErrorMessage utility to get a user-friendly error message based on the error type.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.error - The error object containing type and message.
+ * @param {Function} [props.onRetry] - Optional callback function to retry the operation that caused the error.
+ */
 const ErrorDisplay = ({ error, onRetry }) => {
   const errorType = error?.type || ErrorTypes.UNEXPECTED_ERROR;
   const errorMessage = getErrorMessage(errorType, error?.message);

@@ -58,11 +58,6 @@ const InventoryPage = () => {
     severity: "success",
   });
 
-  // Log the current state
-  console.log("Current products state:", products);
-  console.log("Current loading state:", loading);
-  console.log("Current selectedCategory state:", selectedCategory);
-
   const handleEdit = (id) => {
     setIsNewProduct(false);
     router.push(`/inventory/product/${id}`);

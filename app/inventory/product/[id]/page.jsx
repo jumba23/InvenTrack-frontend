@@ -1,60 +1,89 @@
-// EditProductPage.jsx
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useRouter, useParams } from "next/navigation";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/utils/hooks/useProduct";
-import { fetchProductById, updateProduct } from "@/utils/api/apiService";
+import { fetchProductById, updateProduct } from "@/utils/api/productService";
+import { Snackbar, Alert } from "@mui/material";
+import Spinner from "@/components/Spinners/Spinner";
 
 /**
  * EditProductPage Component
  *
- * This component handles the editing of existing products. It fetches the product data,
- * renders the ProductForm with the current data, and processes form submissions.
- * It implements partial updates by only sending changed fields to the server.
+ * This component handles editing an existing product. It fetches the current product data based
+ * on the product ID from the URL and renders the ProductForm component for the user to update the product.
+ * Upon form submission, it only updates the fields that have changed.
+ *
+ * The component manages the following key behaviors:
+ * - Fetch product data when the page loads or when the product ID changes.
+ * - Handle form submission, only sending changed fields to the server.
+ * - Display a success or error message using Snackbar after an update attempt.
+ * - Prevents form re-render or data refetch after a failed API request to ensure better UX.
+ *
+ * Features:
+ * - Product data loading using Zustand store (`useProduct` hook).
+ * - Conditional rendering for loading and error states.
+ * - Snackbar notifications for success and failure states.
+ * - Next.js routing for navigation upon form submission or cancellation.
  */
+
 const EditProductPage = () => {
   const router = useRouter();
   const params = useParams();
-  const { products, setProducts, loading, setLoading, error, setError } =
-    useProduct();
+  const {
+    products,
+    setProducts,
+    loading,
+    setLoading,
+    setError,
+    snackbar, // Zustand snackbar state
+    setSnackbar, // Zustand function to set snackbar state
+  } = useProduct();
   const [productData, setProductData] = useState(null);
+  const [isFetched, setIsFetched] = useState(false);
 
   /**
-   * Fetches the product data when the component mounts or the product ID changes
+   * Fetches the product data when the component mounts or the product ID changes.
+   * Ensures the product data is only fetched once (controlled by `isFetched`).
    */
   useEffect(() => {
     const loadProductData = async () => {
-      if (!params.id) {
-        setError("Product ID is missing");
-        return;
-      }
+      if (!params.id || isFetched) return; // Avoid fetching if ID is missing or already fetched
 
       try {
         setLoading(true);
         const data = await fetchProductById(params.id);
         setProductData(data);
+        setIsFetched(true); // Mark as fetched to avoid re-fetching
       } catch (error) {
         console.error("Error fetching product data:", error);
         setError("Failed to load product data. Please try again.");
+        setSnackbar({
+          open: true,
+          message: "Failed to load product data.",
+          severity: "error",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     loadProductData();
-  }, [params.id, setLoading, setError]);
+  }, [params.id, isFetched, setLoading, setError, setSnackbar]);
 
   /**
-   * Handles form submission for updating a product
-   * @param {Object} updatedData - The updated product data from the form
+   * Handles the form submission for updating a product.
+   * Only fields that have changed compared to the initial data are sent in the API request.
+   *
+   * @param {Object} updatedData - The updated product data from the form.
+   * @param {Function} setErrorMessage - Function to set the error message in case of failure.
    */
   const handleFormSubmit = useCallback(
-    async (updatedData) => {
+    async (updatedData, setErrorMessage) => {
       if (!params.id) {
-        throw new Error("Product ID is missing");
+        setErrorMessage("Product ID is missing.");
+        return;
       }
 
       // Determine which fields have changed
@@ -67,25 +96,48 @@ const EditProductPage = () => {
         return acc;
       }, {});
 
-      // If no fields have changed, don't make an API call
+      // If no fields have changed, notify and skip the update
       if (Object.keys(changedFields).length === 0) {
-        console.log("No fields changed, skipping update");
-        router.push("/inventory");
+        setSnackbar({
+          open: true,
+          message: "No changes made.",
+          severity: "info",
+        });
         return;
       }
 
       try {
         setLoading(true);
-        await updateProduct(params.id, changedFields);
+
+        // Call the API to update the product
+        await updateProduct(params.id, changedFields, setErrorMessage);
+
         // Update the product in the local state
-        const updatedProducts = products.map((product) =>
-          product.id === params.id ? { ...product, ...changedFields } : product
+        setProducts(
+          products.map((product) =>
+            product.id === params.id
+              ? { ...product, ...changedFields }
+              : product
+          )
         );
-        setProducts(updatedProducts);
+
+        // Notify the user of success and redirect to the inventory page
+        setSnackbar({
+          open: true,
+          message: "Product updated successfully.",
+          severity: "success",
+        });
         router.push("/inventory");
       } catch (error) {
         console.error("Error updating product:", error);
-        setError("Failed to update product. Please try again.");
+        setErrorMessage("Failed to update product.");
+
+        // Show an error notification in case of failure
+        setSnackbar({
+          open: true,
+          message: "Failed to update product. Please try again.",
+          severity: "error",
+        });
       } finally {
         setLoading(false);
       }
@@ -97,38 +149,53 @@ const EditProductPage = () => {
       setLoading,
       setProducts,
       products,
-      setError,
+      setSnackbar,
     ]
   );
 
   /**
-   * Handles cancellation of the form edit
+   * Handles cancellation of the form by redirecting to the inventory page.
    */
   const handleFormClose = useCallback(() => {
     router.push("/inventory");
   }, [router]);
 
-  // Render error message if there's an error
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  // Show loading spinner while fetching product data
+  if (loading) return <Spinner />;
 
-  // Show loading state while fetching product data
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // If no product data, don't render the form
+  if (!productData) return null;
 
-  if (!productData) {
-    return null;
-  }
+  // Snackbar for success and error messages
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar({ open: false, message: "", severity: "success" });
+  };
 
   return (
-    <ProductForm
-      initialData={productData}
-      onSubmit={handleFormSubmit}
-      onCancel={handleFormClose}
-      isNewProduct={false}
-    />
+    <>
+      <ProductForm
+        initialData={productData}
+        onSubmit={handleFormSubmit}
+        onCancel={handleFormClose}
+        isNewProduct={false}
+      />
+
+      {/* Snackbar to display success or error messages */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

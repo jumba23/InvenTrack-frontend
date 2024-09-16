@@ -53,9 +53,15 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
    */
   const onSubmitForm = async (data) => {
     setIsSubmitting(true);
-    setErrorMessage(null);
+    setErrorMessage(null); // Clear previous error message
     try {
-      await onSubmit(data);
+      // Pass only the error message string to setErrorMessage
+      await onSubmit(data, (errorObj) => {
+        if (errorObj && errorObj.message) {
+          console.log("Setting error message:", errorObj.message); // Now log the string message
+          setErrorMessage(errorObj.message); // Pass only the message, not the whole object
+        }
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
       setErrorMessage(
@@ -410,16 +416,25 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
               gap: 1,
             }}
           >
-            <Button variant="outlined" color="secondary" onClick={onCancel}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onCancel}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
-            <Button type="submit" variant="outlined" color="primary">
+            <Button
+              type="submit"
+              variant="outlined"
+              color="primary"
+              disabled={isSubmitting}
+            >
               {isNewProduct ? "Add Product" : "Update Product"}
             </Button>
           </Box>
         </form>
       </Box>
-
       {/* Snackbar for Error Messages */}
       <Snackbar
         open={!!errorMessage}

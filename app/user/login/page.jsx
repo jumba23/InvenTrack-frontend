@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -13,7 +12,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { handleApiError } from "@/utils/api/errorHandling";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -114,15 +112,7 @@ const LoginForm = () => {
       await login(email, password);
     } catch (error) {
       console.error("Login error:", error);
-      const errorObj = handleApiError(error, setError, {
-        invalidCredentials: "Invalid email or password. Please try again.",
-        accessDenied: "Access denied. You don't have permission to log in.",
-        authError: "Authentication failed. Please try again.",
-        serverError: "Unable to connect to the server. Please try again later.",
-        networkError: "Network error. Please check your internet connection.",
-        unexpectedError: "An unexpected error occurred. Please try again.",
-      });
-      setError(errorObj);
+      setError(error); // The error object now contains the server's message
     } finally {
       setIsLoading(false);
     }

@@ -107,7 +107,9 @@ frontend/
 │   └── profileStore.js
 ├── utils/
 │   ├── api/
-│   │   ├── apiService.js
+│   │   ├── authService.js
+│   │   ├── productService.js
+│   │   ├── profileService.js
 │   │   ├── axiosClient.js
 │   │   └── errorHandling.js
 │   ├── hooks/

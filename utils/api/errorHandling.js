@@ -53,7 +53,10 @@ export const handleApiError = (error, setErrorMsg, customMessages = {}) => {
     };
   }
 
-  setErrorMsg(errorObj);
+  if (typeof setErrorMsg === "function") {
+    setErrorMsg(errorObj); // Pass the whole object to the setErrorMsg
+  }
+
   return errorObj;
 };
 

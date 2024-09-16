@@ -33,7 +33,7 @@ import {
 } from "@mui/material";
 import { useProfile } from "@/utils/hooks/useProfile";
 import { useForm, Controller } from "react-hook-form";
-import { updateUserProfile } from "@/utils/api/apiService";
+import { updateUserProfile } from "@/utils/api/profileService";
 import { handleApiError } from "@/utils/api/errorHandling";
 
 export default function SettingsDialog({ open, onClose }) {

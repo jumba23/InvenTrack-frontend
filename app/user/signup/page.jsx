@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { userSignUp } from "@/utils/api/apiService";
+import { userSignUp } from "@/utils/api/authService";
 import { handleApiError } from "@/utils/api/errorHandling";
 import { useRouter } from "next/navigation";
 import {

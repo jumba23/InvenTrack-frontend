@@ -12,7 +12,6 @@ export const userLogin = async (email, password, setErrorMsg) => {
     const response = await axiosClient.post("/user/login", { email, password });
     return response.data;
   } catch (error) {
-    console.error("Login error API SERVICE:", error);
     const errorObj = handleApiError(error, setErrorMsg, {
       authError: "Login failed. Please check your credentials.",
     });

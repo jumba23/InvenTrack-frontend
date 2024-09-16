@@ -159,6 +159,7 @@ export function AuthProvider({ children }) {
     async (email, password) => {
       try {
         const response = await userLogin(email, password, setError);
+        console.log("AuthContext login successful:", response);
         if (response && response.profile) {
           setAuthState({
             isAuthenticated: true,
@@ -168,12 +169,14 @@ export function AuthProvider({ children }) {
           loadProducts(); // Load products based on user data
           loadProfile(response.profile.id); // Load user profile using ID from user data
           setShowLogoutModal(false); // Ensure the logout modal is closed after login
-          router.push(lastRoute); // Route to the last visited route
+          router.push(lastRoute);
+          // Route to the last visited route
         } else {
           throw new Error("Invalid response from server");
         }
+        return response;
       } catch (error) {
-        console.error("Login failed", error);
+        console.error("Login failed - Auth Context", error);
         setAuthState((prev) => ({ ...prev, isAuthenticated: false }));
         // The error is already set by userLogin, but we can add additional handling here if needed
         throw error; // Propagate the error to the component

@@ -11,6 +11,7 @@ import { userLogout, validateUser, userLogin } from "@/utils/api/apiService";
 import { useRouter } from "next/navigation";
 import useProductStore from "@/stores/productStore";
 import useProfileStore from "@/stores/profileStore";
+import { handleApiError } from "@/utils/api/errorHandling";
 
 /**
  * ===================================== SUMMARY =====================================
@@ -80,6 +81,8 @@ const AuthContext = createContext({
   logout: () => {},
   toggleLogoutModal: () => {},
   checkAuth: () => Promise.resolve(),
+  error: null,
+  clearError: () => {},
 });
 
 // Custom hook to access AuthContext
@@ -92,6 +95,7 @@ export function AuthProvider({ children }) {
   const router = useRouter();
   const { loadProducts, reset: resetProducts } = useProductStore();
   const { loadProfile, reset: resetProfile } = useProfileStore();
+  const [error, setError] = useState(null);
 
   // Initializing auth state
   const [authState, setAuthState] = useState({
@@ -167,7 +171,13 @@ export function AuthProvider({ children }) {
       } catch (error) {
         console.error("Login failed", error);
         setAuthState((prev) => ({ ...prev, isAuthenticated: false }));
-        throw error;
+        // Use the new error handling utility
+        const errorObj = handleApiError(error, setError, {
+          serverError: "Unable to log in. Please try again later.",
+          networkError: "Network error. Please check your internet connection.",
+          unexpectedError: "An unexpected error occurred. Please try again.",
+        });
+        setError(errorObj);
       }
     },
     [router, lastRoute, loadProducts, loadProfile]
@@ -190,9 +200,17 @@ export function AuthProvider({ children }) {
       setShowLogoutModal(false); // Close the logout modal after logout
       resetProducts();
       resetProfile();
+      setError(null); // Clear any existing errors
       router.push("/"); // Route to home page after logout
     } catch (error) {
       console.error("Logout Failed:", error);
+      // Use the new error handling utility
+      const errorObj = handleApiError(error, setError, {
+        serverError: "Unable to log out. Please try again later.",
+        networkError: "Network error. Please check your internet connection.",
+        unexpectedError: "An unexpected error occurred. Please try again.",
+      });
+      setError(errorObj);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, resetProducts, resetProfile]);
@@ -205,6 +223,13 @@ export function AuthProvider({ children }) {
     setShowLogoutModal((prev) => !prev);
   }, []);
 
+  /**
+   * Function for clearing errors in the component state.
+   */
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   // Memoize the context value to optimize performance and prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({
@@ -214,8 +239,19 @@ export function AuthProvider({ children }) {
       logout,
       toggleLogoutModal,
       checkAuth,
+      error,
+      clearError,
     }),
-    [authState, showLogoutModal, login, logout, toggleLogoutModal, checkAuth]
+    [
+      authState,
+      showLogoutModal,
+      login,
+      logout,
+      toggleLogoutModal,
+      checkAuth,
+      error,
+      clearError,
+    ]
   );
 
   // Providing the auth context to children components

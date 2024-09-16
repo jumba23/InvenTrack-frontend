@@ -2,12 +2,14 @@
  * errorHandling.js
  *
  * This module provides utility functions for handling API errors in a consistent manner.
- * It includes functions to process error responses and set appropriate error messages.
+ * It includes functions to process error responses and set appropriate error messages,
+ * with special handling for authentication errors.
  *
  * Key features:
- * - Handles various types of API errors (network errors, response errors, unexpected errors)
+ * - Handles various types of API errors (network errors, response errors, authentication errors, unexpected errors)
  * - Provides detailed error messages for different scenarios
  * - Allows customization of error messages
+ * - Special handling for authentication-related errors
  *
  * Usage:
  * Import the handleApiError function and use it in your API call catch blocks.
@@ -20,32 +22,63 @@
  * @param {Error} error - The error object caught from an API call.
  * @param {Function} setErrorMsg - A function to set the error message in the component state.
  * @param {Object} [customMessages] - Optional custom error messages.
+ * @returns {Object} An error object with type and message.
  */
 export const handleApiError = (error, setErrorMsg, customMessages = {}) => {
   console.error("API Error:", error);
 
+  let errorObj = {
+    type: "UNEXPECTED_ERROR",
+    message: "An unexpected error occurred.",
+  };
+
   if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    if (error.response.data && error.response.data.error) {
-      setErrorMsg(error.response.data.error);
+    const status = error.response.status;
+    if (status === 401 || status === 403) {
+      errorObj = handleAuthError(error.response, customMessages);
+    } else if (error.response.data && error.response.data.error) {
+      errorObj = { type: "API_ERROR", message: error.response.data.error };
     } else {
-      setErrorMsg(
-        customMessages.serverError || `Server error: ${error.response.status}`
-      );
+      errorObj = {
+        type: "SERVER_ERROR",
+        message: customMessages.serverError || `Server error: ${status}`,
+      };
     }
   } else if (error.request) {
-    // The request was made but no response was received
-    setErrorMsg(
-      customMessages.networkError ||
-        "Network error. Please check your connection."
-    );
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    setErrorMsg(
-      customMessages.unexpectedError || "An unexpected error occurred."
-    );
+    errorObj = {
+      type: "NETWORK_ERROR",
+      message:
+        customMessages.networkError ||
+        "Network error. Please check your connection.",
+    };
   }
+
+  setErrorMsg(errorObj);
+  return errorObj;
+};
+
+/**
+ * Handles authentication-specific errors.
+ *
+ * @param {Object} response - The error response object.
+ * @param {Object} customMessages - Custom error messages.
+ * @returns {Object} An error object with type and message.
+ */
+const handleAuthError = (response, customMessages) => {
+  const status = response.status;
+  let message = customMessages.authError || "Authentication failed.";
+
+  if (status === 401) {
+    message =
+      customMessages.invalidCredentials ||
+      "Invalid credentials. Please check your email and password.";
+  } else if (status === 403) {
+    message =
+      customMessages.accessDenied ||
+      "Access denied. You don't have permission to access this resource.";
+  }
+
+  return { type: "AUTH_ERROR", message };
 };
 
 /**
@@ -62,6 +95,7 @@ export const getUserFriendlyErrorMessage = (errorCode) => {
       "Unable to connect to the server. Please check your internet connection.",
     SERVER_ERROR:
       "We're experiencing technical difficulties. Please try again later.",
+    AUTH_ERROR: "Authentication failed. Please try again.",
     // Add more error codes and messages as needed
   };
 

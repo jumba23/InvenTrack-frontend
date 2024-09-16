@@ -13,23 +13,23 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  handleApiError,
-  getUserFriendlyErrorMessage,
-} from "@/utils/api/errorHandling";
-import { useAuth } from "@/context/AuthContext"; // Import useAuth hook
+import { handleApiError } from "@/utils/api/errorHandling";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import Alert from "@mui/material/Alert";
 
 // ========================= SUMMARY =========================
 // This component is a login form that allows users to sign in
-// to the application. It uses the userLogin function to send
-// a login request to the API and handles any errors that occur.
+// to the application. It includes client-side validation for
+// email format and non-empty fields before submission. It uses
+// the login function from the AuthContext to send a login request
+// to the API and handles any errors that occur.
 // ==========================================================
 // Usage:
 // - Place this component inside the pages directory to create
 //   the login page.
+// - Ensure that the AuthContext and error handling utilities are properly set up.
 // ==========================================================
 
 const Copyright = (props) => {
@@ -64,41 +64,76 @@ const theme = createTheme({
 const LoginForm = () => {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     if (isAuthenticated) {
-      // redirect to dashboard if user is authenticated
       router.push("/dashboard");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
+
+  const validateForm = () => {
+    let isValid = true;
+    setEmailError("");
+    setPasswordError("");
+
+    // Email validation
+    if (!email) {
+      setEmailError("Email is required");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Email is invalid");
+      isValid = false;
+    }
+
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+
+    if (!validateForm()) {
+      return;
+    }
+
     setIsLoading(true);
-    setErrorMsg(null);
-    const data = new FormData(e.currentTarget);
-    const email = data.get("email");
-    const password = data.get("password");
 
     try {
       await login(email, password);
     } catch (error) {
       console.error("Login error:", error);
-      handleApiError(error, setErrorMsg, {
+      const errorObj = handleApiError(error, setError, {
+        invalidCredentials: "Invalid email or password. Please try again.",
+        accessDenied: "Access denied. You don't have permission to log in.",
+        authError: "Authentication failed. Please try again.",
         serverError: "Unable to connect to the server. Please try again later.",
         networkError: "Network error. Please check your internet connection.",
         unexpectedError: "An unexpected error occurred. Please try again.",
       });
-
-      // Use getUserFriendlyErrorMessage if specific error codes are available
-      // const friendlyMessage = getUserFriendlyErrorMessage(error.code);
-      // setErrorMsg(friendlyMessage);
+      setError(errorObj);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    setError(null);
+    setEmail("");
+    setPassword("");
+    setEmailError("");
+    setPasswordError("");
   };
 
   return (
@@ -129,11 +164,20 @@ const LoginForm = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          {error && (
+            <Alert
+              severity="error"
+              onClose={handleRetry}
+              sx={{ mt: 2, mb: 2, width: "100%" }}
+            >
+              {error.message}
+            </Alert>
+          )}
           <Box
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, width: "100%" }}
           >
             <TextField
               margin="normal"
@@ -144,7 +188,10 @@ const LoginForm = () => {
               name="email"
               autoComplete="email"
               autoFocus
-              error={!!errorMsg}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={!!emailError}
+              helperText={emailError}
             />
             <TextField
               margin="normal"
@@ -155,25 +202,24 @@ const LoginForm = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              error={!!errorMsg}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={!!passwordError}
+              helperText={passwordError}
             />
-            {errorMsg && (
-              <Typography color="error" variant="body2" align="center">
-                {errorMsg}
-              </Typography>
-            )}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button
+            <button
               type="submit"
-              fullWidth
-              variant="outlined"
-              sx={{ mt: 3, mb: 2 }}
+              className={`w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={isLoading}
             >
-              Sign In
-            </Button>
+              {isLoading ? "Signing In..." : "Sign In"}
+            </button>
             <Grid container>
               <Grid item xs>
                 <Link href="/forgot-password" variant="body2">

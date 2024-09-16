@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { fetchProducts } from "@/utils/api/apiService";
+import { fetchProducts } from "@/utils/api/productService";
 
 /**
  * Product Store
@@ -11,6 +11,9 @@ import { fetchProducts } from "@/utils/api/apiService";
  *
  * The store uses the persist middleware to save its state in localStorage,
  * allowing for data persistence across page reloads.
+ *
+ * This Zustand store manages the state for products and UI elements like the snackbar
+ * and other global UI-related states.
  */
 const useProductStore = create(
   persist(
@@ -22,12 +25,23 @@ const useProductStore = create(
       renderForm: false,
       isNewProduct: true,
 
+      // Snackbar state
+      snackbar: {
+        open: false,
+        message: "",
+        severity: "success", // Can be 'success', 'error', 'info', 'warning'
+      },
+
+      // Actions
       setProducts: (products) => set({ products }),
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
       setSelectedCategory: (category) => set({ selectedCategory: category }),
       setRenderForm: (render) => set({ renderForm: render }),
       setIsNewProduct: (isNew) => set({ isNewProduct: isNew }),
+
+      // Snackbar actions
+      setSnackbar: (snackbar) => set({ snackbar }),
 
       loadProducts: async () => {
         set({ loading: true });
@@ -50,6 +64,7 @@ const useProductStore = create(
           selectedCategory: "Service",
           renderForm: false,
           isNewProduct: true,
+          snackbar: { open: false, message: "", severity: "success" }, // Reset snackbar state
         }),
     }),
     {

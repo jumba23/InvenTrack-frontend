@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import ProductForm from "@/components/Forms/ProductForm";
 import { useProduct } from "@/utils/hooks/useProduct";
-import { addProduct } from "@/utils/api/apiService";
+import { addProduct } from "@/utils/api/productService";
 
 /**
  * NewProductPage Component
@@ -21,7 +21,8 @@ const NewProductPage = () => {
   const router = useRouter();
 
   // Destructure necessary functions and state from useProduct hook
-  const { products, setProducts, setLoading, setError } = useProduct();
+  const { products, setProducts, setLoading, setError, setSnackbar } =
+    useProduct();
 
   /**
    * Handles the submission of the new product form
@@ -29,31 +30,42 @@ const NewProductPage = () => {
    * @param {Object} productData - The data of the new product to be added
    */
   const handleFormSubmit = useCallback(
-    async (productData) => {
+    async (productData, setErrorMessage) => {
       try {
         // Set loading state to true before API operations
         setLoading(true);
 
         // Add the new product to the database
-        const newProduct = await addProduct(productData);
+        const newProduct = await addProduct(productData, setErrorMessage);
 
         // Update the global product state by adding the new product
         setProducts([...products, newProduct]);
+
+        // Trigger success snackbar
+        setSnackbar({
+          open: true,
+          message: "Product added successfully",
+          severity: "success",
+        });
 
         // Navigate back to the inventory page after successful addition
         router.push("/inventory");
       } catch (error) {
         console.error("Error adding new product:", error);
+        setErrorMessage("Failed to add new product.");
+        setSnackbar({
+          open: true,
+          message: "Failed to add new product.",
+          severity: "error",
+        });
         // Set error in the global state
         setError("Failed to add new product. Please try again.");
-        // Re-throw the error to be handled by the ProductForm component
-        throw error;
       } finally {
         // Ensure loading state is set to false after operations complete
         setLoading(false);
       }
     },
-    [setLoading, setProducts, setError, products, router]
+    [setLoading, setProducts, setError, products, router, setSnackbar]
   );
 
   /**

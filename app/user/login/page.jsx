@@ -16,6 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Alert from "@mui/material/Alert";
+import { useAuthError } from "@/utils/hooks/Errors";
 
 // ========================= SUMMARY =========================
 // This component is a login form that allows users to sign in
@@ -62,7 +63,7 @@ const theme = createTheme({
 const LoginForm = () => {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
-  const [error, setError] = useState(null);
+  const { authError, handleAuthError, clearAuthError } = useAuthError();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -100,9 +101,10 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    clearAuthError();
 
     if (!validateForm()) {
+      setIsLoading(false);
       return;
     }
 
@@ -110,20 +112,13 @@ const LoginForm = () => {
 
     try {
       await login(email, password);
+      // If login is successful, the useEffect hook will handle redirection
     } catch (error) {
-      console.error("Login error:", error);
-      setError(error); // The error object now contains the server's message
+      console.error("Login error LOGIN PAGE:", error);
+      handleAuthError(error); // Using the new error handling function
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleRetry = () => {
-    setError(null);
-    setEmail("");
-    setPassword("");
-    setEmailError("");
-    setPasswordError("");
   };
 
   return (
@@ -154,13 +149,13 @@ const LoginForm = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          {error && (
+          {authError && (
             <Alert
               severity="error"
-              onClose={handleRetry}
-              sx={{ mt: 2, mb: 2, width: "100%" }}
+              onClose={clearAuthError}
+              sx={{ mt: 2, width: "100%" }}
             >
-              {error.message}
+              {authError.message}
             </Alert>
           )}
           <Box

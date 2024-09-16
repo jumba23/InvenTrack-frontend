@@ -158,26 +158,25 @@ export function AuthProvider({ children }) {
   const login = useCallback(
     async (email, password) => {
       try {
-        const response = await userLogin(email, password); // Login API
-        setAuthState({
-          isAuthenticated: true,
-          loading: false,
-          profile: response.profile,
-        });
-        loadProducts(); // Load products based on user data
-        loadProfile(response.profile.id); // Load user profile using ID from user data
-        setShowLogoutModal(false); // Ensure the logout modal is closed after login
-        router.push(lastRoute); // Route to the last visited route
+        const response = await userLogin(email, password, setError);
+        if (response && response.profile) {
+          setAuthState({
+            isAuthenticated: true,
+            loading: false,
+            profile: response.profile,
+          });
+          loadProducts(); // Load products based on user data
+          loadProfile(response.profile.id); // Load user profile using ID from user data
+          setShowLogoutModal(false); // Ensure the logout modal is closed after login
+          router.push(lastRoute); // Route to the last visited route
+        } else {
+          throw new Error("Invalid response from server");
+        }
       } catch (error) {
         console.error("Login failed", error);
         setAuthState((prev) => ({ ...prev, isAuthenticated: false }));
-        // Use the new error handling utility
-        const errorObj = handleApiError(error, setError, {
-          serverError: "Unable to log in. Please try again later.",
-          networkError: "Network error. Please check your internet connection.",
-          unexpectedError: "An unexpected error occurred. Please try again.",
-        });
-        setError(errorObj);
+        // The error is already set by userLogin, but we can add additional handling here if needed
+        throw error; // Propagate the error to the component
       }
     },
     [router, lastRoute, loadProducts, loadProfile]
@@ -190,7 +189,7 @@ export function AuthProvider({ children }) {
    */
   const logout = useCallback(async () => {
     try {
-      await userLogout(); // Logout API call
+      await userLogout(setError); // Logout API call
 
       setAuthState({
         isAuthenticated: false,
@@ -204,13 +203,7 @@ export function AuthProvider({ children }) {
       router.push("/"); // Route to home page after logout
     } catch (error) {
       console.error("Logout Failed:", error);
-      // Use the new error handling utility
-      const errorObj = handleApiError(error, setError, {
-        serverError: "Unable to log out. Please try again later.",
-        networkError: "Network error. Please check your internet connection.",
-        unexpectedError: "An unexpected error occurred. Please try again.",
-      });
-      setError(errorObj);
+      // Error is already handled in userLogout, but we can add additional handling here if needed
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, resetProducts, resetProfile]);

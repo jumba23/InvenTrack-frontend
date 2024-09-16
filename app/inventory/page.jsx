@@ -5,7 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useProduct } from "@/utils/hooks/useProduct";
 import InfoCards from "@/app/inventory/infoCards";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
-import { deleteProduct } from "@/utils/api/apiService";
+import { deleteProduct } from "@/utils/api/productService";
 import {
   Dialog,
   DialogActions,
@@ -45,23 +45,13 @@ const InventoryPage = () => {
     setIsNewProduct,
     setLoading,
     setError,
+    snackbar,
+    setSnackbar,
   } = useProduct();
 
   // Local state for delete confirmation dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
-
-  // Local state for Snackbar notifications
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
-
-  // Log the current state
-  console.log("Current products state:", products);
-  console.log("Current loading state:", loading);
-  console.log("Current selectedCategory state:", selectedCategory);
 
   const handleEdit = (id) => {
     setIsNewProduct(false);
@@ -110,7 +100,7 @@ const InventoryPage = () => {
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") return;
-    setSnackbar({ ...snackbar, open: false });
+    setSnackbar({ open: false, message: "", severity: "success" });
   };
 
   // Define columns for DataGrid
@@ -338,6 +328,7 @@ const InventoryPage = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Snackbar for success/error messages */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

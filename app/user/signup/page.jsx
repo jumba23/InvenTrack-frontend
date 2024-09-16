@@ -1,20 +1,41 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { userSignUp } from "@/utils/api/apiService";
-import {
-  handleApiError,
-  getUserFriendlyErrorMessage,
-} from "@/utils/api/errorHandling";
+import { handleApiError } from "@/utils/api/errorHandling";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Container,
+  CssBaseline,
+  Avatar,
+  Alert,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+// ========================= SUMMARY =========================
+// This component is a sign-up form that allows new users to
+// create an account. It includes client-side validation,
+// improved error handling, and a more user-friendly UI.
+// It uses react-hook-form for form management and Material-UI
+// for consistent styling with the login form.
+// ==========================================================
+// Usage:
+// - Place this component in the appropriate route for user registration.
+// - Ensure that the apiService and error handling utilities are set up.
+// ==========================================================
+
+const theme = createTheme();
 
 const SignUpForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
-  // we are using react-hook-form for form validation
   const {
     register,
     handleSubmit,
@@ -22,7 +43,6 @@ const SignUpForm = () => {
     setError,
   } = useForm();
 
-  // Handle form submission
   const onSubmit = async (data) => {
     setIsLoading(true);
     setApiError(null);
@@ -37,118 +57,138 @@ const SignUpForm = () => {
       router.push("/user/login");
     } catch (error) {
       console.error("Signup error:", error);
-      handleApiError(error, setApiError, {
+      const errorObj = handleApiError(error, setApiError, {
         serverError: "Unable to create account. Please try again later.",
         networkError: "Network error. Please check your internet connection.",
         unexpectedError: "An unexpected error occurred. Please try again.",
       });
+      setApiError(errorObj.message);
 
-      // Use getUserFriendlyErrorMessage if specific error codes are available
-      // const friendlyMessage = getUserFriendlyErrorMessage(error.code);
-      // setApiError(friendlyMessage);
-
-      // Set field-specific errors if available from the API response
-      if (error.response && error.response.data && error.response.data.errors) {
-        Object.keys(error.response.data.errors).forEach((key) => {
-          setError(key, {
-            type: "manual",
-            message: error.response.data.errors[key],
-          });
+      if (error.response?.data?.errors) {
+        Object.entries(error.response.data.errors).forEach(([key, value]) => {
+          setError(key, { type: "manual", message: value });
         });
       }
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h1 className="mb-4 text-2xl text-center">Sign Up</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* First Name Input */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="First Name"
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign Up
+          </Typography>
+          {apiError && (
+            <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
+              {apiError}
+            </Alert>
+          )}
+          <Box
+            component="form"
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            sx={{ mt: 3 }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="firstName"
+              label="First Name"
+              name="firstName"
+              autoComplete="given-name"
+              autoFocus
               {...register("firstName", { required: "First Name is required" })}
-              className={`w-full p-2 border rounded ${
-                errors.firstName ? "border-red-500" : "border-gray-300"
-              }`}
+              error={!!errors.firstName}
+              helperText={errors.firstName?.message}
             />
-            {errors.firstName && (
-              <p className="text-red-500">{errors.firstName.message}</p>
-            )}
-          </div>
-          {/* Last Name Input */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Last Name"
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoComplete="family-name"
               {...register("lastName", { required: "Last Name is required" })}
-              className={`w-full p-2 border rounded ${
-                errors.lastName ? "border-red-500" : "border-gray-300"
-              }`}
+              error={!!errors.lastName}
+              helperText={errors.lastName?.message}
             />
-            {errors.lastName && (
-              <p className="text-red-500">{errors.lastName.message}</p>
-            )}
-          </div>
-          {/* Cell Number Input */}
-          <div className="mb-4">
-            <input
-              type="tel"
-              placeholder="Cell Number"
+            <TextField
+              margin="normal"
+              fullWidth
+              id="cellNumber"
+              label="Cell Number"
+              name="cellNumber"
+              autoComplete="tel"
               {...register("cellNumber")}
-              className={`w-full p-2 border rounded ${
-                errors.cellNumber ? "border-red-500" : "border-gray-300"
-              }`}
+              error={!!errors.cellNumber}
+              helperText={errors.cellNumber?.message}
             />
-          </div>
-          {/* Email Input */}
-          <div className="mb-4">
-            <input
-              type="email"
-              placeholder="Email"
-              {...register("email", { required: "Email is required" })}
-              className={`w-full p-2 border rounded ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "Entered value does not match email format",
+                },
+              })}
+              error={!!errors.email}
+              helperText={errors.email?.message}
             />
-            {errors.email && (
-              <p className="text-red-500">{errors.email.message}</p>
-            )}
-          </div>
-          {/* Password Input */}
-          <div className="mb-4">
-            <input
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
               type="password"
-              placeholder="Password"
-              {...register("password", { required: "Password is required" })}
-              className={`w-full p-2 border rounded ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
+              id="password"
+              autoComplete="new-password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long",
+                },
+              })}
+              error={!!errors.password}
+              helperText={errors.password?.message}
             />
-            {errors.password && (
-              <p className="text-red-500">{errors.password.message}</p>
-            )}
-          </div>
-          {/* Submit Button */}
-          <div className="mb-4">
             <button
               type="submit"
-              className="w-full p-2 text-white bg-green-500 rounded disabled:bg-green-300"
+              className={`w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               disabled={isLoading}
             >
-              {isLoading ? "Signing Up..." : "Submit"}
+              {isLoading ? "Signing Up..." : "Sign Up"}
             </button>
-          </div>
-          {/* Error Message */}
-          {errors.apiError && (
-            <div className="text-center text-red-500">{apiError}</div>
-          )}
-        </form>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 };
 

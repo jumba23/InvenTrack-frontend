@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import {
   fetchUserProfileById,
   updateProfileImage,
-} from "@/utils/api/apiService";
+} from "@/utils/api/profileService";
 
 /**
  * Profile Store

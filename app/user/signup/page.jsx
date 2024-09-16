@@ -2,17 +2,17 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { userSignUp } from "@/utils/api/authService";
-import { handleApiError } from "@/utils/api/errorHandling";
 import { useRouter } from "next/navigation";
 import {
   TextField,
-  Button,
   Box,
   Typography,
   Container,
   CssBaseline,
   Avatar,
   Alert,
+  Grid,
+  Link,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -26,7 +26,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 // ==========================================================
 // Usage:
 // - Place this component in the appropriate route for user registration.
-// - Ensure that the apiService and error handling utilities are set up.
+// - Ensure that the authService and error handling utilities are set up.
 // ==========================================================
 
 const theme = createTheme();
@@ -34,44 +34,37 @@ const theme = createTheme();
 const SignUpForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState(null);
+  const [error, setError] = useState(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
+    setError: setFormError,
   } = useForm();
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setApiError(null);
+    setError(null);
     try {
-      await userSignUp(
-        data.firstName,
-        data.lastName,
-        data.cellNumber,
-        data.email,
-        data.password
-      );
+      await userSignUp(data, setError);
       router.push("/user/login");
     } catch (error) {
       console.error("Signup error:", error);
-      const errorObj = handleApiError(error, setApiError, {
-        serverError: "Unable to create account. Please try again later.",
-        networkError: "Network error. Please check your internet connection.",
-        unexpectedError: "An unexpected error occurred. Please try again.",
-      });
-      setApiError(errorObj.message);
+      setError(error);
 
       if (error.response?.data?.errors) {
         Object.entries(error.response.data.errors).forEach(([key, value]) => {
-          setError(key, { type: "manual", message: value });
+          setFormError(key, { type: "manual", message: value });
         });
       }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    setError(null);
   };
 
   return (
@@ -92,9 +85,13 @@ const SignUpForm = () => {
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
-          {apiError && (
-            <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
-              {apiError}
+          {error && (
+            <Alert
+              severity="error"
+              onClose={handleRetry}
+              sx={{ mt: 2, width: "100%" }}
+            >
+              {error.message}
             </Alert>
           )}
           <Box
@@ -185,6 +182,18 @@ const SignUpForm = () => {
             >
               {isLoading ? "Signing Up..." : "Sign Up"}
             </button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="/" variant="body2">
+                  Home Page
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/user/login" variant="body2">
+                  {"Login instead?"}
+                </Link>
+              </Grid>
+            </Grid>
           </Box>
         </Box>
       </Container>

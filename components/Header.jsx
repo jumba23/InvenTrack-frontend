@@ -1,13 +1,33 @@
+// Header.jsx
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import AccountMenu from "@/components/AccountSettings/AccountMenu";
+import { useProfile } from "@/utils/hooks/useProfile"; // Import the custom profile hook
+
+/**
+ * Header Component
+ *
+ * This component represents the header of the application. It includes a search bar, notifications,
+ * store name (fetched from the profile state), and the account menu. It also handles user interactions
+ * with notifications and search functionality.
+ *
+ * Features:
+ * - Search functionality
+ * - Notification dropdown with outside click handler
+ * - Dynamic store name display fetched from the Zustand profile store
+ * - Responsive layout using TailwindCSS and MUI for modern styling
+ */
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
 
+  const { profile } = useProfile();
+  const storeName = profile?.store_name || "My Store";
+
+  // Close notifications when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -17,7 +37,6 @@ const Header = () => {
         setShowNotifications(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -35,8 +54,8 @@ const Header = () => {
 
   return (
     <header className="flex items-center justify-between px-6 py-2 bg-white border-b">
+      {/* Search Form */}
       <div className="flex-1 max-w-xl">
-        {/* Search Form */}
         <form onSubmit={handleSearch} className="relative">
           <input
             type="text"
@@ -61,9 +80,14 @@ const Header = () => {
         </form>
       </div>
 
-      <div className="flex items-center space-x-4">
-        <div className="relative" ref={notificationRef}>
-          {/* Notification Button */}
+      {/* Notification, Store Name, Account Menu */}
+      <div className="flex items-center space-x-2">
+        {" "}
+        {/* Reduce space between store name and account menu */}
+        {/* Notification Button */}
+        <div className="relative mr-6" ref={notificationRef}>
+          {" "}
+          {/* Add margin-right to move it to the left */}
           <button
             onClick={toggleNotifications}
             className="p-1 text-gray-400 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -90,6 +114,10 @@ const Header = () => {
               </div>
             </div>
           )}
+        </div>
+        {/* Store Name Display */}
+        <div className="text-base font-semibold text-gray-900 whitespace-nowrap">
+          {storeName}
         </div>
         {/* Account Menu */}
         <AccountMenu />

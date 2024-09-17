@@ -7,11 +7,9 @@ export const useAuthError = () => {
   const [authError, setAuthError] = useState(null);
 
   const handleAuthError = useCallback((error) => {
-    console.log("handleAuthError called with:", error);
     const errorObj = handleApiError(
       error,
       () => {
-        console.log("Setting auth error:", error);
         setAuthError(error);
       },
       {
@@ -22,12 +20,10 @@ export const useAuthError = () => {
         authError: "Authentication failed. Please try again.",
       }
     );
-    console.log("Auth Error processed:", errorObj);
     return errorObj;
   }, []);
 
   const clearAuthError = useCallback(() => {
-    console.log("Clearing auth error");
     setAuthError(null);
   }, []);
 

@@ -18,9 +18,9 @@ const InfoCards = ({ products }) => {
     0
   );
 
-  // Calculate total selling value
-  const totalSellingValue = products.reduce(
-    (acc, product) => acc + product.stock_selling_value,
+  // Calculate total wholesale value
+  const totalWholesaleValue = products.reduce(
+    (acc, product) => acc + product.stock_wholesale_value,
     0
   );
 
@@ -43,8 +43,8 @@ const InfoCards = ({ products }) => {
         color="bg-blue-100"
       />
       <InfoCard
-        title="Total Selling Value"
-        value={`$${totalSellingValue.toLocaleString()}`}
+        title="Total Wholesale Value"
+        value={`$${totalWholesaleValue.toLocaleString()}`}
         color="bg-green-100"
       />
       <InfoCard

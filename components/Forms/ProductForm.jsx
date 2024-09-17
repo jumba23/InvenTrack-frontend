@@ -17,6 +17,7 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material";
+import { useSupplier } from "@/utils/hooks/useSupplier";
 
 /**
  * ProductForm Component
@@ -43,6 +44,8 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
   } = useForm({
     defaultValues: initialData || {},
   });
+
+  const { suppliers } = useSupplier();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -242,28 +245,35 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
               />
             </Grid>
 
-            {/* Supplier ID */}
+            {/* Supplier Dropdown */}
             <Grid item xs={3}>
               <Controller
                 name="supplier_id"
                 control={control}
                 defaultValue=""
                 rules={{
-                  required: "Supplier ID is required",
-                  validate: (value) =>
-                    (Number.isInteger(Number(value)) && Number(value) > 0) ||
-                    "Supplier ID must be a positive integer",
+                  required: "Supplier is required",
                 }}
                 render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Supplier ID"
-                    type="number"
+                  <FormControl
                     fullWidth
                     size="small"
                     error={!!errors.supplier_id}
-                    helperText={errors.supplier_id?.message}
-                  />
+                  >
+                    <InputLabel>Supplier</InputLabel>
+                    <Select {...field} label="Supplier">
+                      {suppliers.map((supplier) => (
+                        <MenuItem key={supplier.id} value={supplier.id}>
+                          {supplier.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.supplier_id && (
+                      <Typography variant="caption" color="error">
+                        {errors.supplier_id.message}
+                      </Typography>
+                    )}
+                  </FormControl>
                 )}
               />
             </Grid>

@@ -187,25 +187,25 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
               />
             </Grid>
 
-            {/* Selling Price per Unit */}
+            {/* Wholesale Price per Unit */}
             <Grid item xs={3}>
               <Controller
-                name="selling_price_per_unit"
+                name="wholesale_price_per_unit"
                 control={control}
                 defaultValue=""
                 rules={{
-                  required: "Selling price is required",
+                  required: "Wholesale price is required",
                   min: { value: 0, message: "Price must be positive" },
                 }}
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label="Selling Price per Unit"
+                    label="Wholesale Price per Unit"
                     type="number"
                     fullWidth
                     size="small"
-                    error={!!errors.selling_price_per_unit}
-                    helperText={errors.selling_price_per_unit?.message}
+                    error={!!errors.wholesale_price_per_unit}
+                    helperText={errors.wholesale_price_per_unit?.message}
                   />
                 )}
               />
@@ -307,7 +307,7 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
 
             {/* Storage Locations */}
             {/* Office 1 */}
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Controller
                 name="quantity_office_1"
                 control={control}
@@ -331,7 +331,7 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
             </Grid>
 
             {/* Office 8 */}
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Controller
                 name="quantity_office_8"
                 control={control}
@@ -355,7 +355,7 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
             </Grid>
 
             {/* Home */}
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Controller
                 name="quantity_home"
                 control={control}
@@ -377,9 +377,32 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
                 )}
               />
             </Grid>
+            {/* Shelf */}
+            <Grid item xs={3}>
+              <Controller
+                name="display_shelf"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: "Office shelf is required",
+                  min: { value: 0, message: "Quantity must be non-negative" },
+                }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Shelf"
+                    type="number"
+                    fullWidth
+                    size="small"
+                    error={!!errors.display_shelf}
+                    helperText={errors.display_shelf?.message}
+                  />
+                )}
+              />
+            </Grid>
 
             {/* Reorder Point */}
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Controller
                 name="reorder_point"
                 control={control}

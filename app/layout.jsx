@@ -2,6 +2,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { RouteGuard } from "@/utils/RouteGuard";
 import ProfileInitializer from "@/components/ZustandInitializers/ProfileInitializer";
 import ProductInitializer from "@/components/ZustandInitializers/ProductInitializer";
+import SupplierInitializer from "@/components/ZustandInitializers/SupplierInitializer";
 import "./globals.css";
 
 // Metadata for the application.
@@ -55,7 +56,9 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <RouteGuard>
             <ProfileInitializer>
-              <ProductInitializer>{children}</ProductInitializer>
+              <SupplierInitializer>
+                <ProductInitializer>{children}</ProductInitializer>
+              </SupplierInitializer>
             </ProfileInitializer>
           </RouteGuard>
         </AuthProvider>

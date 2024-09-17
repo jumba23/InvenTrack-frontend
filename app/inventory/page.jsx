@@ -171,13 +171,20 @@ const InventoryPage = () => {
       headerAlign: "center",
     },
     {
-      field: "retail_price_per_unit", // Updated column, swapping with Selling Price
-      headerName: "Retail Price",
-      width: 120,
+      field: "display_shelf", // New column for Home
+      headerName: "Shelf",
+      width: 80,
       align: "center",
       headerAlign: "center",
-      valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Added proper null check
     },
+    // {
+    //   field: "wholesale_price_per_unit", // Updated column, swapping with Selling Price
+    //   headerName: "Wholesale Price",
+    //   width: 120,
+    //   align: "center",
+    //   headerAlign: "center",
+    //   valueFormatter: ({ value }) => `$${value.toFixed(2)}`, // Added proper null check
+    // },
 
     {
       field: "reorder_point",
@@ -187,8 +194,8 @@ const InventoryPage = () => {
       headerAlign: "center",
     },
     {
-      field: "stock_retail_value", // Use stock_retail_value directly from the database
-      headerName: "Stock Retail Value",
+      field: "stock_wholesale_value", // Use stock_retail_value directly from the database
+      headerName: "Wholesale Value",
       width: 140,
       align: "center",
       headerAlign: "center",
@@ -237,10 +244,11 @@ const InventoryPage = () => {
     quantity_office_1: product.quantity_office_1,
     quantity_office_8: product.quantity_office_8,
     quantity_home: product.quantity_home,
+    display_shelf: product.display_shelf,
     reorder_point: product.reorder_point,
-    retail_price_per_unit: product.retail_price_per_unit,
+    wholesale_price_per_unit: product.retail_price_per_unit,
     total_quantity: product.total_quantity,
-    stock_retail_value: product.stock_retail_value,
+    stock_wholesale_value: product.stock_retail_value,
     status: product.status,
   }));
 

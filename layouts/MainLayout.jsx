@@ -1,18 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import LogoutModal from "@/components/Modals/LogoutModal";
 
-/** ======================================== SUMMARY ========================================
- * MainLayout serves as the primary layout component for authenticated users.
- * It structures the main user interface of the application, including a header, sidebar, main content area, and footer.
- * This layout is displayed once a user is authenticated, providing access to the application's core features and content.
+/**
+ * MainLayout Component
  *
- * Structure:
+ * This component serves as the primary layout for authenticated users in the InvenTrack application.
+ * It provides a responsive design that adapts to both desktop and mobile views.
+ *
+ * Features:
+ * - Responsive sidebar that transforms into a drawer on mobile devices
+ * - Header with a toggle button for the mobile sidebar
+ * - Main content area that adjusts based on the sidebar state
+ * - Footer that stays at the bottom of the page
+ *
+ * * Structure:
  * - The layout is organized as a horizontal flex container to accommodate the sidebar and the main content area side by side.
  * - The Header component is displayed at the top of the layout, providing navigation links, application branding,
  *   and user-related information or actions.
@@ -25,26 +32,49 @@ import LogoutModal from "@/components/Modals/LogoutModal";
  * - A LogoutModal is conditionally rendered based on the `showLogoutModal` state from the AuthContext. This modal
  *   can be triggered by user actions to confirm logout intentions.
  *
- * Usage:
- * - This component should wrap the main content of authenticated sections of the application. When defining
- *   routes or pages that require user authentication, wrap the content with MainLayout to ensure consistency
- *   in appearance and functionality across the user's session.
- * - The `children` prop allows for flexibility in rendering different components or pages within this unified layout,
- *   facilitating a cohesive user experience.
- * ==========================================================================================*/
-
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - The main content to be rendered within the layout
+ */
 const MainLayout = ({ children }) => {
   const { showLogoutModal } = useAuth();
+  const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <>
       {showLogoutModal && <LogoutModal />}
-      <div className="flex flex-row h-screen">
-        <Sidebar />
-        <div className="flex flex-col w-full h-full">
-          <Header />
-          <div className="flex-grow overflow-auto PageContent">{children}</div>
-          <Footer />
+      <div className="flex flex-col h-screen">
+        <Header toggleSidebar={toggleSidebar} isMobile={isMobile} />
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar
+            isOpen={!isMobile || sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            isMobile={isMobile}
+          />
+          <main
+            className={`flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 transition-all duration-300 ${
+              isMobile && sidebarOpen ? "ml-64" : ""
+            }`}
+          >
+            <div className="container px-6 py-8 mx-auto">{children}</div>
+          </main>
         </div>
+        <Footer />
       </div>
     </>
   );

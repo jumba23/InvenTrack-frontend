@@ -61,21 +61,22 @@ const MainLayout = ({ children }) => {
       <div className="flex flex-col h-screen">
         <Header toggleSidebar={toggleSidebar} isMobile={isMobile} />
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar
-            isOpen={!isMobile || sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            isMobile={isMobile}
-          />
-          <main
-            className={`flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 transition-all duration-300 ${
-              isMobile && sidebarOpen ? "ml-64" : ""
-            }`}
-          >
+          {!isMobile && (
+            <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
+          )}
+          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
             <div className="container px-6 py-8 mx-auto">{children}</div>
           </main>
         </div>
         <Footer />
       </div>
+      {isMobile && (
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          isMobile={true}
+        />
+      )}
     </>
   );
 };

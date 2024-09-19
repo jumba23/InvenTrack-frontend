@@ -21,10 +21,10 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     { label: "Reports", path: "/reports", icon: "/images/reports.png" },
   ];
 
-  const sidebarContent = (
+  const mainSidebarContent = (
     <>
       {isMobile && (
-        <div className="flex items-center h-20 px-4 border-b">
+        <div className="flex items-center h-20 px-6 border-b">
           <Image
             src="/images/logo.png"
             alt="InvenTrack Logo"
@@ -45,10 +45,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             key={item.path}
             href={item.path}
             className={classNames(
-              "flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors",
-              {
-                "bg-blue-50 text-blue-600": isCurrentRoute(item.path),
-              }
+              "flex items-center px-8 py-4 text-gray-700 hover:bg-gray-100 transition-colors"
             )}
             onClick={(e) => {
               e.preventDefault();
@@ -67,32 +64,34 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           </a>
         ))}
       </nav>
-
-      {/* Logout button */}
-      <button
-        onClick={() => {
-          toggleLogoutModal();
-          if (isMobile) onClose();
-        }}
-        className="flex items-center px-4 py-3 mb-6 font-medium text-gray-700 transition-colors text-m hover:bg-gray-100"
-      >
-        <Image
-          src="/images/logout.png"
-          alt="Logout icon"
-          width={25}
-          height={25}
-          className="mr-3"
-        />
-        Logout
-      </button>
     </>
+  );
+
+  const logoutButton = (
+    <button
+      onClick={() => {
+        toggleLogoutModal();
+        if (isMobile) onClose();
+      }}
+      className="flex items-center w-full px-8 pb-8 font-medium text-gray-700 transition-colors text-m hover:bg-gray-100"
+    >
+      <Image
+        src="/images/logout.png"
+        alt="Logout icon"
+        width={25}
+        height={25}
+        className="mr-3"
+      />
+      Logout
+    </button>
   );
 
   return (
     <>
       {!isMobile && (
-        <aside className="hidden bg-white shadow-md md:flex md:flex-col md:w-64 md:h-screen">
-          {sidebarContent}
+        <aside className="flex flex-col w-64 h-full bg-white shadow-md">
+          {mainSidebarContent}
+          {logoutButton}
         </aside>
       )}
 
@@ -104,11 +103,14 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           onClick={onClose}
         >
           <aside
-            className={`fixed top-0 left-0 w-64 h-full bg-white shadow-md transform transition-transform duration-300 ease-in-out ${
+            className={`fixed top-0 left-0 w-64 h-full bg-white shadow-md transform transition-transform duration-300 ease-in-out flex flex-col ${
               isOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            {sidebarContent}
+            <div className="flex-grow overflow-y-auto">
+              {mainSidebarContent}
+            </div>
+            {logoutButton}
           </aside>
         </div>
       )}

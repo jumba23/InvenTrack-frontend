@@ -99,7 +99,7 @@ const Header = ({ toggleSidebar, isMobile }) => {
   );
 
   return (
-    <header className="bg-white border-2">
+    <header className="sticky top-0 z-50 bg-white border-b-2 shadow-md">
       <div className={`container mx-auto py-2 ${isMobile ? "px-3" : "px-6"}`}>
         <div className="flex items-center justify-between">
           {isMobile && (

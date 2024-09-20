@@ -44,10 +44,8 @@ const MainLayout = ({ children }) => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
     handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -58,14 +56,18 @@ const MainLayout = ({ children }) => {
   return (
     <>
       {showLogoutModal && <LogoutModal />}
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col min-h-screen">
         <Header toggleSidebar={toggleSidebar} isMobile={isMobile} />
         <div className="flex flex-1 overflow-hidden">
           {!isMobile && (
-            <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
+            <div className="flex-shrink-0">
+              <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
+            </div>
           )}
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
-            <div className="container px-6 py-8 mx-auto">{children}</div>
+            <div className="container px-6 py-3 mx-auto md:py-8">
+              {children}
+            </div>
           </main>
         </div>
         <Footer />

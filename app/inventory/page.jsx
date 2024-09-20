@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useProduct } from "@/utils/hooks/useProduct";
 import InfoCards from "@/app/inventory/infoCards";
@@ -15,17 +15,22 @@ import {
   Button,
   Snackbar,
   Alert,
+  Pagination,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+
+const ITEMS_PER_PAGE = 20;
 
 /**
  * InventoryPage Component
  *
  * This component serves as the main inventory management page. It displays a list of products,
  * allows filtering by category, and provides functionality to add, edit, and delete products.
+ * It now includes a responsive design for mobile devices, displaying products as cards.
  *
  * Features:
- * - Displays products in a DataGrid
+ * - Displays products in a DataGrid for larger screens
+ * - Displays products as cards for mobile devices
  * - Filters products by category (Service or Retail)
  * - Allows adding new products
  * - Provides edit and delete functionality for existing products
@@ -52,6 +57,17 @@ const InventoryPage = () => {
   // Local state for delete confirmation dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if the screen is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // Adjust breakpoint as needed
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleEdit = (id) => {
     setIsNewProduct(false);
@@ -237,6 +253,15 @@ const InventoryPage = () => {
     return products;
   }, [products, selectedCategory]);
 
+  // Calculate total number of pages
+  const pageCount = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+
+  // Handle page change
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+    window.scrollTo(0, 0);
+  };
+
   // Prepare rows for DataGrid
   const rows = filteredProducts.map((product) => ({
     id: product.id,
@@ -251,6 +276,55 @@ const InventoryPage = () => {
     stock_wholesale_value: product.stock_retail_value,
     status: product.status,
   }));
+
+  // Render product cards for mobile devices
+  const renderProductCard = (product) => (
+    <div key={product.id} className="p-4 mb-4 bg-white rounded-lg shadow-md">
+      <h3 className="mb-2 text-lg font-semibold">{product.name}</h3>
+      <div className="grid grid-cols-2 gap-2 text-sm">
+        <div>Total Units: {product.total_quantity}</div>
+        <div>
+          Status:
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-bold ml-1
+            ${
+              product.status === "out"
+                ? "bg-red-500 text-white"
+                : product.status === "low"
+                ? "bg-yellow-500 text-black"
+                : "bg-green-500 text-white"
+            }`}
+          >
+            {product.status === "out"
+              ? "Out of Stock"
+              : product.status === "low"
+              ? "Low Stock"
+              : "In Stock"}
+          </span>
+        </div>
+        <div>Office 1: {product.quantity_office_1}</div>
+        <div>Office 8: {product.quantity_office_8}</div>
+        <div>Home: {product.quantity_home}</div>
+        <div>Shelf: {product.display_shelf}</div>
+        <div>Reorder at: {product.reorder_point}</div>
+        <div>Wholesale Value: ${product.stock_wholesale_value.toFixed(2)}</div>
+      </div>
+      <div className="flex justify-end mt-4 space-x-2">
+        <button
+          className="px-3 py-1 text-xs text-white transition-colors bg-blue-500 rounded hover:bg-blue-600"
+          onClick={() => handleEdit(product.id)}
+        >
+          Edit
+        </button>
+        <button
+          className="px-3 py-1 text-xs text-white transition-colors bg-red-500 rounded hover:bg-red-600"
+          onClick={() => handleDeleteClick(product.id)}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -291,25 +365,33 @@ const InventoryPage = () => {
             <LogoSpinner />
           ) : (
             <div className="flex-grow">
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5, 10]}
-                density="compact"
-                sx={{
-                  "& .MuiDataGrid-columnHeaders": {
-                    backgroundColor: "#dddddd",
-                    color: "#000000",
-                    fontSize: "0.875rem",
-                    fontWeight: "bold",
-                    borderBottom: "none",
-                  },
-                  "& .MuiDataGrid-cell": {
-                    fontSize: "0.875rem",
-                  },
-                }}
-              />
+              {isMobile ? (
+                <div className="mt-4">
+                  {filteredProducts.map(renderProductCard)}
+                </div>
+              ) : (
+                <div style={{ height: "calc(92vh - 250px)", width: "100%" }}>
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10]}
+                    density="compact"
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: "#dddddd",
+                        color: "#000000",
+                        fontSize: "0.875rem",
+                        fontWeight: "bold",
+                        borderBottom: "none",
+                      },
+                      "& .MuiDataGrid-cell": {
+                        fontSize: "0.875rem",
+                      },
+                    }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

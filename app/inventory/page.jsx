@@ -18,7 +18,7 @@ import {
   Pagination,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -354,6 +354,20 @@ const InventoryPage = () => {
     </div>
   );
 
+  const renderFAB = () => {
+    if (!isMobile) return null;
+
+    return (
+      <button
+        onClick={handleAddProduct}
+        className="fixed flex items-center justify-center text-white transition-colors duration-300 bg-blue-500 rounded-full shadow-lg bottom-6 right-6 w-14 h-14 focus:outline-none hover:bg-blue-600"
+        aria-label="Add New Product"
+      >
+        <Plus size={24} />
+      </button>
+    );
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="p-3">
@@ -361,7 +375,36 @@ const InventoryPage = () => {
       </div>
       <div className="flex flex-col flex-grow px-4 pb-2 bg-white rounded-lg shadow">
         <div className="flex justify-between px-1 py-4 border-b">
-          {/* ... (keep existing category and new product buttons) */}
+          <div className="space-x-2">
+            <button
+              className={`px-4 py-2 text-sm rounded transition-colors ${
+                selectedCategory === "Service"
+                  ? "text-white bg-blue-500"
+                  : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
+              }`}
+              onClick={() => handleCategoryChange("Service")}
+            >
+              Service
+            </button>
+            <button
+              className={`px-4 py-2 text-sm rounded transition-colors ${
+                selectedCategory === "Retail"
+                  ? "text-white bg-blue-500"
+                  : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
+              }`}
+              onClick={() => handleCategoryChange("Retail")}
+            >
+              Retail
+            </button>
+          </div>
+          {!isMobile && (
+            <button
+              className="px-2 py-2 text-sm text-white transition-colors bg-green-500 rounded hover:bg-green-600"
+              onClick={handleAddProduct}
+            >
+              New Product
+            </button>
+          )}
         </div>
         {loading ? (
           <div className="flex items-center justify-center flex-grow">
@@ -370,11 +413,13 @@ const InventoryPage = () => {
         ) : (
           <div className="flex-grow">
             {isMobile ? (
-              <div className="mt-4">
+              <div className="pb-20 mt-4">
+                {" "}
+                {/* Added padding-bottom for FAB */}
                 {filteredProducts.map(renderProductCard)}
               </div>
             ) : (
-              <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
+              <div style={{ height: "calc(92vh - 250px)", width: "100%" }}>
                 <DataGrid
                   rows={rows}
                   columns={columns}
@@ -400,6 +445,9 @@ const InventoryPage = () => {
         )}
       </div>
 
+      {renderFAB()}
+
+      {/* Pagination for mobile devices */}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}

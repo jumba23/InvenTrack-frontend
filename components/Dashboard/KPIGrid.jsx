@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "@/components/Cards/DashboardCard";
+import InfoCard from "./InfoCard";
 
 /**
  * KPIGrid Component
@@ -10,24 +11,30 @@ import Card from "@/components/Cards/DashboardCard";
  */
 const KPIGrid = () => {
   const kpis = [
-    { title: "Total Products", value: "1,234" },
-    { title: "Total Value", value: "$123,456" },
-    { title: "Low Stock", value: "23" },
-    { title: "Out of Stock", value: "5" },
-    { title: "Top Selling", value: "Product A" },
-    { title: "Least Selling", value: "Product Z" },
+    { title: "Total Products", value: "1,234", color: "bg-blue-100" },
+    { title: "Total Value", value: "$123,456", color: "bg-green-100" },
+    { title: "Low Stock", value: "23", color: "bg-yellow-100" },
+    { title: "Out of Stock", value: "5", color: "bg-red-100" },
+    { title: "Top Selling", value: "Product A", color: "bg-purple-100" },
+    { title: "Least Selling", value: "Product Z", color: "bg-pink-100" },
   ];
 
   return (
     <Card title="Product Stats">
+      {/* 
+        Grid layout: 
+        - 2 columns on small screens
+        - 3 columns on medium screens
+        - Adjust gap-4 to increase/decrease space between cards
+      */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {kpis.map((kpi, index) => (
-          <div key={index} className="p-4 bg-white rounded-lg shadow">
-            <h3 className="text-sm font-medium text-gray-500">{kpi.title}</h3>
-            <p className="mt-1 text-lg font-semibold text-gray-900">
-              {kpi.value}
-            </p>
-          </div>
+          <InfoCard
+            key={index}
+            title={kpi.title}
+            value={kpi.value}
+            color={kpi.color}
+          />
         ))}
       </div>
     </Card>

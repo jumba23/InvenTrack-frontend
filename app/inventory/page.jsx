@@ -63,21 +63,14 @@ const InventoryPage = () => {
   const [productToDelete, setProductToDelete] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [expandedCards, setExpandedCards] = useState({});
-  const [headerHeight, setHeaderHeight] = useState(0);
 
-  // Check if the screen is mobile and handle sticky header
+  // Check if the screen is mobile
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 768); // Adjust breakpoint as needed
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
-
-    const header = document.querySelector("header");
-    if (header) {
-      setHeaderHeight(header.offsetHeight);
-    }
-
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
@@ -314,8 +307,8 @@ const InventoryPage = () => {
 
   const renderStickyHeader = () => (
     <div
-      className="sticky z-10 transition-all duration-300 ease-in-out bg-white shadow-md"
-      style={{ top: `${headerHeight}px` }}
+      className="sticky z-40 bg-white shadow-md"
+      style={{ top: "64px" }} // Adjust this value to match your header height
     >
       <div className="flex items-center justify-between p-4">
         <div className="space-x-2">

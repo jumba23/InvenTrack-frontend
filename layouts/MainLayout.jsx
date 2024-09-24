@@ -56,7 +56,7 @@ const MainLayout = ({ children }) => {
   return (
     <>
       {showLogoutModal && <LogoutModal />}
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col h-screen overflow-hidden">
         <Header toggleSidebar={toggleSidebar} isMobile={isMobile} />
         <div className="flex flex-1 overflow-hidden">
           {!isMobile && (
@@ -64,8 +64,13 @@ const MainLayout = ({ children }) => {
               <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
             </div>
           )}
-          <main className="flex-1 w-full overflow-x-hidden overflow-y-auto bg-gray-100">
-            <div className="px-6 py-3 mx-auto md:py-8">{children}</div>
+          <main
+            className={`flex-1 w-full ${
+              isMobile ? "overflow-auto" : "overflow-hidden"
+            } bg-gray-100`}
+            style={{ height: "calc(100vh - 5rem - 1.5rem)" }}
+          >
+            <div className="h-full px-4 py-2 overflow-auto">{children}</div>
           </main>
         </div>
         <Footer />

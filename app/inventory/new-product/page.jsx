@@ -95,14 +95,13 @@ const NewProductPage = () => {
   }, [router]);
 
   return (
-    <div className="w-full h-full p-4 md:p-6 lg:p-8">
-      {/* Render ProductForm with submission and cancel handlers */}
+    <>
       <ProductForm
         onSubmit={handleFormSubmit}
         onCancel={handleFormClose}
         isNewProduct={true}
       />
-    </div>
+    </>
   );
 };
 

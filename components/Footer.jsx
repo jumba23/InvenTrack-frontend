@@ -21,7 +21,7 @@ const Footer = ({ className }) => {
 
   return (
     <footer
-      className={`sticky bottom-0 w-full  md:py-1 text-xs text-center border-t bg-white ${className}`}
+      className={`sticky bottom-0 w-full h-6 flex items-center justify-center text-xs text-center border-t bg-white ${className}`}
     >
       © {currentYear} SoftSolutions. All rights reserved
     </footer>

@@ -1,12 +1,12 @@
-import React from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 const LogoutModal = () => {
   const { toggleLogoutModal, logout } = useAuth();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="w-full max-w-md mx-4 transition-all duration-300 ease-in-out transform scale-95 bg-white rounded-lg shadow-xl hover:scale-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+      <div className="relative w-full max-w-md mx-4 bg-white rounded-lg shadow-xl">
         <div className="p-6">
           <h2 className="mb-4 text-2xl font-semibold text-gray-900">
             Confirm Logout

@@ -86,7 +86,7 @@ const InventoryOverview = () => {
   }, [products]);
 
   return (
-    <Card title="Inventory Overview">
+    <Card title="Inventory Overview" className="h-full">
       <div className="flex flex-col md:flex-row">
         <div className="w-full h-64 md:w-1/2">
           <DynamicBarChart data={chartData} options={chartOptions} />

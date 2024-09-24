@@ -32,8 +32,8 @@ const ProductAlerts = () => {
   };
 
   return (
-    <Card title="Product Alerts">
-      <ul className="space-y-2">
+    <Card title="Product Alerts" className="flex flex-col h-full">
+      <ul className="space-y-4">
         {alerts.map((alert, index) => (
           <li
             key={index}

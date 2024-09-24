@@ -30,7 +30,9 @@
 
 @layer utilities {
   .main-container {
-    min-height: calc(100vh - [height of header] - [height of footer]);
+    height: calc(100vh - 4rem - 2rem); /* 4rem for header, 2rem for footer */
+    min-height: calc(100vh - 4rem - 2rem);
+    overflow-y: auto;
   }
 }
 

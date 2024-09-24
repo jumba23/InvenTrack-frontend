@@ -99,36 +99,34 @@ const Header = ({ toggleSidebar, isMobile }) => {
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b-2 shadow-md">
-      <div className={`container mx-auto py-2 ${isMobile ? "px-3" : "px-6"}`}>
-        <div className="flex items-center justify-between">
-          {isMobile && (
-            <button
-              onClick={toggleSidebar}
-              className="mr-2 text-gray-500 hover:text-gray-800"
+    <header className="sticky top-0 z-40 h-20 bg-white border-b shadow-sm">
+      <div className="flex items-center justify-between h-full px-4">
+        {isMobile && (
+          <button
+            onClick={toggleSidebar}
+            className="mr-2 text-gray-500 hover:text-gray-800"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              </svg>
-            </button>
-          )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        )}
 
-          {renderLogo()}
-          {!isMobile && renderSearchBar()}
-          {isMobile && renderMobileSearch()}
-          {renderRightSection()}
-        </div>
+        {renderLogo()}
+        {!isMobile && renderSearchBar()}
+        {isMobile && renderMobileSearch()}
+        {renderRightSection()}
       </div>
     </header>
   );

@@ -64,10 +64,8 @@ const MainLayout = ({ children }) => {
               <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
             </div>
           )}
-          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
-            <div className="container px-6 py-3 mx-auto md:py-8">
-              {children}
-            </div>
+          <main className="flex-1 w-full overflow-x-hidden overflow-y-auto bg-gray-100">
+            <div className="px-6 py-3 mx-auto md:py-8">{children}</div>
           </main>
         </div>
         <Footer />

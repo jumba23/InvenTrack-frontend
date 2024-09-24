@@ -37,7 +37,7 @@ const RecentActivity = () => {
   ];
 
   return (
-    <Card title="Recent Activity">
+    <Card title="Recent Activity" className="flex flex-col h-full">
       <ul className="space-y-4">
         {activities.map((activity, index) => (
           <li key={index} className="flex items-start">

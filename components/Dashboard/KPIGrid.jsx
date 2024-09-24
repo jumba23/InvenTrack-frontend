@@ -20,22 +20,18 @@ const KPIGrid = () => {
   ];
 
   return (
-    <Card title="Product Stats">
-      {/* 
-        Grid layout: 
-        - 2 columns on small screens
-        - 3 columns on medium screens
-        - Adjust gap-4 to increase/decrease space between cards
-      */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {kpis.map((kpi, index) => (
-          <InfoCard
-            key={index}
-            title={kpi.title}
-            value={kpi.value}
-            color={kpi.color}
-          />
-        ))}
+    <Card title="Product Stats" className="flex flex-col h-full">
+      <div className="flex-1 overflow-auto">
+        <div className="grid grid-cols-2 gap-4 p-2 m-auto sm:grid-cols-3">
+          {kpis.map((kpi, index) => (
+            <InfoCard
+              key={index}
+              title={kpi.title}
+              value={kpi.value}
+              color={kpi.color}
+            />
+          ))}
+        </div>
       </div>
     </Card>
   );

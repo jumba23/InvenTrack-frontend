@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -15,26 +13,26 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useSupplier } from "@/utils/hooks/useSupplier";
 
 /**
  * ProductForm Component
  *
- * Purpose:
- * This form component is used for adding or editing products in the inventory.
- * It includes fields for product details, pricing, descriptions, category, and
- * storage locations. The form dynamically handles validation, submission, and
- * cancel actions.
+ * A responsive form component for adding or editing products in the inventory.
+ * It adapts to both desktop and mobile layouts, filling the available space
+ * and centering content for optimal user experience.
  *
- * Props:
  * @param {Object} initialData - The initial product data for editing (optional)
  * @param {Function} onSubmit - Callback function to handle form submission
  * @param {Function} onCancel - Callback function to handle form cancellation
  * @param {boolean} isNewProduct - Flag to indicate if this is a new product or being edited
- *
- * @component
  */
 const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
   const {
@@ -46,23 +44,19 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
   });
 
   const { suppliers } = useSupplier();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  /**
-   * Handles form submission with validation and error handling
-   * @param {Object} data - The form data to be submitted
-   */
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const onSubmitForm = async (data) => {
     setIsSubmitting(true);
-    setErrorMessage(null); // Clear previous error message
+    setErrorMessage(null);
     try {
-      // Pass only the error message string to setErrorMessage
       await onSubmit(data, (errorObj) => {
         if (errorObj && errorObj.message) {
-          console.log("Setting error message:", errorObj.message); // Now log the string message
-          setErrorMessage(errorObj.message); // Pass only the message, not the whole object
+          setErrorMessage(errorObj.message);
         }
       });
     } catch (error) {
@@ -75,11 +69,6 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
     }
   };
 
-  /**
-   * Closes the error message snackbar
-   * @param {Event} event - The close event
-   * @param {string} reason - The reason for closing
-   */
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -87,387 +76,372 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
     setErrorMessage(null);
   };
 
+  const renderField = (name, label, rules, type = "text", options = {}) => (
+    <Controller
+      name={name}
+      control={control}
+      rules={rules}
+      render={({ field }) => (
+        <TextField
+          {...field}
+          label={label}
+          type={type}
+          fullWidth
+          size="small"
+          error={!!errors[name]}
+          helperText={errors[name]?.message}
+          {...options}
+        />
+      )}
+    />
+  );
+
+  const formSections = [
+    {
+      title: "Basic Information",
+      fields: [
+        {
+          name: "name",
+          label: "Product Name",
+          rules: { required: "Product name is required" },
+        },
+        { name: "short_description", label: "Short Description", rules: {} },
+        {
+          name: "category_id",
+          label: "Category",
+          rules: { required: "Category is required" },
+        },
+        {
+          name: "supplier_id",
+          label: "Supplier",
+          rules: { required: "Supplier is required" },
+        },
+      ],
+    },
+    {
+      title: "Pricing",
+      fields: [
+        {
+          name: "retail_price_per_unit",
+          label: "Retail Price per Unit",
+          rules: { required: "Retail price is required" },
+          type: "number",
+        },
+        {
+          name: "wholesale_price_per_unit",
+          label: "Wholesale Price per Unit",
+          rules: { required: "Wholesale price is required" },
+          type: "number",
+        },
+      ],
+    },
+    {
+      title: "Storage Locations",
+      fields: [
+        {
+          name: "quantity_office_1",
+          label: "Office 1",
+          rules: { required: "Office 1 quantity is required" },
+          type: "number",
+        },
+        {
+          name: "quantity_office_8",
+          label: "Office 8",
+          rules: { required: "Office 8 quantity is required" },
+          type: "number",
+        },
+        {
+          name: "quantity_home",
+          label: "Home",
+          rules: { required: "Home quantity is required" },
+          type: "number",
+        },
+        {
+          name: "display_shelf",
+          label: "Shelf",
+          rules: { required: "Office shelf is required" },
+          type: "number",
+        },
+      ],
+    },
+    {
+      title: "Additional Information",
+      fields: [
+        {
+          name: "long_description",
+          label: "Long Description",
+          rules: {},
+          options: { multiline: true, rows: 3 },
+        },
+        {
+          name: "reorder_point",
+          label: "Reorder Point",
+          rules: { required: "Reorder point is required" },
+          type: "number",
+        },
+      ],
+    },
+  ];
+
   return (
-    <Card
+    <Box
       sx={{
-        width: "100%",
-        height: "100%",
         display: "flex",
         flexDirection: "column",
-        overflow: "hidden",
+        height: "100%",
+        width: "100%",
+        paddingX: 0.5,
+        paddingY: 4,
+        boxSizing: "border-box",
       }}
     >
-      <Box
+      <Card
         sx={{
-          p: 2,
-          flexGrow: 1,
-          overflowY: "auto",
+          width: "100%",
+          height: "100%",
           display: "flex",
           flexDirection: "column",
+          overflow: "hidden",
+          maxWidth: "800px",
+          margin: "0 auto",
         }}
       >
-        <Typography variant="h6" align="center" gutterBottom>
-          {isNewProduct ? "Add New Product" : "Edit Product"}
-        </Typography>
-
-        <form
-          onSubmit={handleSubmit(onSubmitForm)}
-          style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+        <Box
+          sx={{
+            p: 3,
+            flexGrow: 1,
+            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-            {/* Product Name */}
-            <Grid item xs={4}>
-              <Controller
-                name="name"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Product name is required",
-                  maxLength: {
-                    value: 255,
-                    message: "Name must be less than 255 characters",
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Product Name"
-                    fullWidth
-                    size="small"
-                    error={!!errors.name}
-                    helperText={errors.name?.message}
-                  />
-                )}
-              />
-            </Grid>
-            {/* Short Description */}
-            <Grid item xs={8}>
-              <Controller
-                name="short_description"
-                control={control}
-                defaultValue=""
-                rules={{
-                  maxLength: {
-                    value: 200,
-                    message:
-                      "Short description must be less than 200 characters",
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Short Description"
-                    fullWidth
-                    size="small"
-                    error={!!errors.short_description}
-                    helperText={errors.short_description?.message}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Retail Price per Unit */}
-            <Grid item xs={3}>
-              <Controller
-                name="retail_price_per_unit"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Retail price is required",
-                  min: { value: 0, message: "Price must be positive" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Retail Price per Unit"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    error={!!errors.retail_price_per_unit}
-                    helperText={errors.retail_price_per_unit?.message}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Wholesale Price per Unit */}
-            <Grid item xs={3}>
-              <Controller
-                name="wholesale_price_per_unit"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Wholesale price is required",
-                  min: { value: 0, message: "Price must be positive" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Wholesale Price per Unit"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    error={!!errors.wholesale_price_per_unit}
-                    helperText={errors.wholesale_price_per_unit?.message}
-                  />
-                )}
-              />
-            </Grid>
-            {/* Category */}
-            <Grid item xs={3}>
-              <Controller
-                name="category_id"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Category is required",
-                  validate: (value) =>
-                    value === 1 || value === 2 || "Category must be 1 or 2",
-                }}
-                render={({ field }) => (
-                  <FormControl
-                    fullWidth
-                    size="small"
-                    error={!!errors.category_id}
-                  >
-                    <InputLabel>Category</InputLabel>
-                    <Select {...field} label="Category">
-                      <MenuItem value={1}>Service</MenuItem>
-                      <MenuItem value={2}>Retail</MenuItem>
-                    </Select>
-                    {errors.category_id && (
-                      <Typography variant="caption" color="error">
-                        {errors.category_id.message}
-                      </Typography>
-                    )}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-
-            {/* Supplier Dropdown */}
-            <Grid item xs={3}>
-              <Controller
-                name="supplier_id"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Supplier is required",
-                }}
-                render={({ field }) => (
-                  <FormControl
-                    fullWidth
-                    size="small"
-                    error={!!errors.supplier_id}
-                  >
-                    <InputLabel>Supplier</InputLabel>
-                    <Select {...field} label="Supplier">
-                      {suppliers.map((supplier) => (
-                        <MenuItem key={supplier.id} value={supplier.id}>
-                          {supplier.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors.supplier_id && (
-                      <Typography variant="caption" color="error">
-                        {errors.supplier_id.message}
-                      </Typography>
-                    )}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-
-            {/* Long Description */}
-            <Grid item xs={12}>
-              <Controller
-                name="long_description"
-                control={control}
-                defaultValue=""
-                rules={{
-                  maxLength: {
-                    value: 2000,
-                    message:
-                      "Long description must be less than 2000 characters",
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Long Description"
-                    fullWidth
-                    size="small"
-                    multiline
-                    rows={3}
-                    error={!!errors.long_description}
-                    helperText={errors.long_description?.message}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Divider for Storage Locations */}
-            <Grid item xs={12}>
-              <Divider sx={{ my: 2 }}>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Storage Locations
-                </Typography>
-              </Divider>
-            </Grid>
-
-            {/* Storage Locations */}
-            {/* Office 1 */}
-            <Grid item xs={3}>
-              <Controller
-                name="quantity_office_1"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Office 1 quantity is required",
-                  min: { value: 0, message: "Quantity must be non-negative" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Office 1"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    error={!!errors.quantity_office_1}
-                    helperText={errors.quantity_office_1?.message}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Office 8 */}
-            <Grid item xs={3}>
-              <Controller
-                name="quantity_office_8"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Office 8 quantity is required",
-                  min: { value: 0, message: "Quantity must be non-negative" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Office 8"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    error={!!errors.quantity_office_8}
-                    helperText={errors.quantity_office_8?.message}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Home */}
-            <Grid item xs={3}>
-              <Controller
-                name="quantity_home"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Home quantity is required",
-                  min: { value: 0, message: "Quantity must be non-negative" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Home"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    error={!!errors.quantity_home}
-                    helperText={errors.quantity_home?.message}
-                  />
-                )}
-              />
-            </Grid>
-            {/* Shelf */}
-            <Grid item xs={3}>
-              <Controller
-                name="display_shelf"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Office shelf is required",
-                  min: { value: 0, message: "Quantity must be non-negative" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Shelf"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    error={!!errors.display_shelf}
-                    helperText={errors.display_shelf?.message}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Reorder Point */}
-            <Grid item xs={3}>
-              <Controller
-                name="reorder_point"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Reorder point is required",
-                  min: {
-                    value: 0,
-                    message: "Reorder point must be non-negative",
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Reorder Point"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    error={!!errors.reorder_point}
-                    helperText={errors.reorder_point?.message}
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-
-          {/* Form Action Buttons */}
-          <Box
-            sx={{
-              mt: "auto",
-              pt: 2,
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: 1,
-            }}
+          <Typography variant="h5" align="center" gutterBottom sx={{ mb: 4 }}>
+            {isNewProduct ? "Add New Product" : "Edit Product"}
+          </Typography>
+          <form
+            onSubmit={handleSubmit(onSubmitForm)}
+            style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
           >
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={onCancel}
-              disabled={isSubmitting}
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
             >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="outlined"
-              color="primary"
-              disabled={isSubmitting}
-            >
-              {isNewProduct ? "Add Product" : "Update Product"}
-            </Button>
-          </Box>
-        </form>
-      </Box>
+              {isMobile ? (
+                // Mobile layout
+                formSections.map((section, index) => (
+                  <Accordion
+                    key={index}
+                    defaultExpanded={index === 0}
+                    sx={{ mb: 2 }}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography variant="subtitle1">
+                        {section.title}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Grid container spacing={2}>
+                        {section.fields.map((field) => (
+                          <Grid item xs={12} key={field.name}>
+                            {field.name === "category_id" ? (
+                              <Controller
+                                name="category_id"
+                                control={control}
+                                rules={field.rules}
+                                render={({ field }) => (
+                                  <FormControl
+                                    fullWidth
+                                    size="small"
+                                    error={!!errors.category_id}
+                                  >
+                                    <InputLabel>Category</InputLabel>
+                                    <Select {...field} label="Category">
+                                      <MenuItem value={1}>Service</MenuItem>
+                                      <MenuItem value={2}>Retail</MenuItem>
+                                    </Select>
+                                    {errors.category_id && (
+                                      <Typography
+                                        variant="caption"
+                                        color="error"
+                                      >
+                                        {errors.category_id.message}
+                                      </Typography>
+                                    )}
+                                  </FormControl>
+                                )}
+                              />
+                            ) : field.name === "supplier_id" ? (
+                              <Controller
+                                name="supplier_id"
+                                control={control}
+                                rules={field.rules}
+                                render={({ field }) => (
+                                  <FormControl
+                                    fullWidth
+                                    size="small"
+                                    error={!!errors.supplier_id}
+                                  >
+                                    <InputLabel>Supplier</InputLabel>
+                                    <Select {...field} label="Supplier">
+                                      {suppliers.map((supplier) => (
+                                        <MenuItem
+                                          key={supplier.id}
+                                          value={supplier.id}
+                                        >
+                                          {supplier.name}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                    {errors.supplier_id && (
+                                      <Typography
+                                        variant="caption"
+                                        color="error"
+                                      >
+                                        {errors.supplier_id.message}
+                                      </Typography>
+                                    )}
+                                  </FormControl>
+                                )}
+                              />
+                            ) : (
+                              renderField(
+                                field.name,
+                                field.label,
+                                field.rules,
+                                field.type,
+                                field.options
+                              )
+                            )}
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </AccordionDetails>
+                  </Accordion>
+                ))
+              ) : (
+                // Desktop layout
+                <Grid container spacing={3} sx={{ mb: 4 }}>
+                  {formSections.map((section, sectionIndex) => (
+                    <React.Fragment key={sectionIndex}>
+                      <Grid item xs={12}>
+                        <Typography
+                          variant="subtitle1"
+                          gutterBottom
+                          sx={{
+                            fontWeight: "bold",
+                            mt: sectionIndex > 0 ? 4 : 0,
+                          }}
+                        >
+                          {section.title}
+                        </Typography>
+                      </Grid>
+                      {section.fields.map((field) => (
+                        <Grid item xs={6} key={field.name}>
+                          {field.name === "category_id" ? (
+                            <Controller
+                              name="category_id"
+                              control={control}
+                              rules={field.rules}
+                              render={({ field }) => (
+                                <FormControl
+                                  fullWidth
+                                  size="small"
+                                  error={!!errors.category_id}
+                                >
+                                  <InputLabel>Category</InputLabel>
+                                  <Select {...field} label="Category">
+                                    <MenuItem value={1}>Service</MenuItem>
+                                    <MenuItem value={2}>Retail</MenuItem>
+                                  </Select>
+                                  {errors.category_id && (
+                                    <Typography variant="caption" color="error">
+                                      {errors.category_id.message}
+                                    </Typography>
+                                  )}
+                                </FormControl>
+                              )}
+                            />
+                          ) : field.name === "supplier_id" ? (
+                            <Controller
+                              name="supplier_id"
+                              control={control}
+                              rules={field.rules}
+                              render={({ field }) => (
+                                <FormControl
+                                  fullWidth
+                                  size="small"
+                                  error={!!errors.supplier_id}
+                                >
+                                  <InputLabel>Supplier</InputLabel>
+                                  <Select {...field} label="Supplier">
+                                    {suppliers.map((supplier) => (
+                                      <MenuItem
+                                        key={supplier.id}
+                                        value={supplier.id}
+                                      >
+                                        {supplier.name}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                  {errors.supplier_id && (
+                                    <Typography variant="caption" color="error">
+                                      {errors.supplier_id.message}
+                                    </Typography>
+                                  )}
+                                </FormControl>
+                              )}
+                            />
+                          ) : (
+                            renderField(
+                              field.name,
+                              field.label,
+                              field.rules,
+                              field.type,
+                              field.options
+                            )
+                          )}
+                        </Grid>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </Grid>
+              )}
+
+              {/* Form Action Buttons */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: 2,
+                  mt: 4,
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={onCancel}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  color="primary"
+                  disabled={isSubmitting}
+                >
+                  {isNewProduct ? "Add Product" : "Update Product"}
+                </Button>
+              </Box>
+            </Box>
+          </form>
+        </Box>
+      </Card>
+
       {/* Snackbar for Error Messages */}
       <Snackbar
         open={!!errorMessage}
@@ -482,7 +456,7 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </Card>
+    </Box>
   );
 };
 

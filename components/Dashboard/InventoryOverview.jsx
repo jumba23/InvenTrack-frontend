@@ -1,42 +1,95 @@
-import React from "react";
-import { Bar } from "react-chartjs-2";
+import React, { useMemo } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import dynamic from "next/dynamic";
 import Card from "@/components/Cards/DashboardCard";
+import { useProduct } from "@/utils/hooks/useProduct";
+import { useSupplier } from "@/utils/hooks/useSupplier";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const DynamicBarChart = dynamic(
+  () => import("react-chartjs-2").then((mod) => mod.Bar),
+  {
+    ssr: false,
+  }
+);
 
 /**
  * InventoryOverview Component
  *
- * Displays an overview of the inventory, including a chart and top products.
+ * Displays an overview of the inventory, including a chart of products by supplier
+ * and top products by value.
  *
  * @component
  */
 const InventoryOverview = () => {
-  const chartData = {
-    labels: ["Category A", "Category B", "Category C", "Category D"],
-    datasets: [
-      {
-        label: "Number of Products",
-        data: [12, 19, 3, 5],
-        backgroundColor: ["#4B5563", "#60A5FA", "#34D399", "#F87171"],
+  const { products } = useProduct();
+  const { suppliers } = useSupplier();
+
+  const chartData = useMemo(() => {
+    const supplierProductCounts = suppliers.map((supplier) => {
+      const count = products.filter(
+        (product) => product.supplier_id === supplier.id
+      ).length;
+      return { supplier: supplier.name, count };
+    });
+
+    return {
+      labels: supplierProductCounts.map((item) => item.supplier),
+      datasets: [
+        {
+          label: "Number of Products",
+          data: supplierProductCounts.map((item) => item.count),
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+        },
+      ],
+    };
+  }, [products, suppliers]);
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
       },
-    ],
+      title: {
+        display: true,
+        text: "Products by Supplier",
+      },
+    },
   };
 
-  const topProducts = [
-    { name: "Product A", value: "$1,234" },
-    { name: "Product B", value: "$987" },
-    { name: "Product C", value: "$765" },
-    { name: "Product D", value: "$543" },
-    { name: "Product E", value: "$321" },
-  ];
+  const topProducts = useMemo(() => {
+    return products
+      .sort((a, b) => b.stock_retail_value - a.stock_retail_value)
+      .slice(0, 5)
+      .map((product) => ({
+        name: product.name,
+        value: `$${product.stock_retail_value.toFixed(2)}`,
+      }));
+  }, [products]);
 
   return (
     <Card title="Inventory Overview">
       <div className="flex flex-col md:flex-row">
-        <div className="w-full md:w-1/2">
-          <Bar
-            data={chartData}
-            options={{ responsive: true, maintainAspectRatio: false }}
-          />
+        <div className="w-full h-64 md:w-1/2">
+          <DynamicBarChart data={chartData} options={chartOptions} />
         </div>
         <div className="w-full mt-4 md:w-1/2 md:mt-0 md:ml-4">
           <h3 className="mb-2 text-lg font-semibold">

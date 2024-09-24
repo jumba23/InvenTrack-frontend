@@ -23,8 +23,8 @@ const QuickActions = () => {
   ];
 
   return (
-    <Card title="Quick Actions">
-      <div className="grid grid-cols-2 gap-2">
+    <Card title="Quick Actions" className="flex flex-col h-full">
+      <div className="grid gap-4 grid-row-4">
         {actions.map((action, index) => (
           <button
             key={index}

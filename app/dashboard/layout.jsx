@@ -1,10 +1,7 @@
-// app/dashboard/layout.js
-import MainLayout from "@/layouts/MainLayout";
+// app/inventory/layout.js
 
-export default function DashboardLayout({ children }) {
-  return (
-    <MainLayout>
-      <div className="h-full overflow-hidden">{children}</div>
-    </MainLayout>
-  );
+import PageLayout from "@/layouts/PageLayout";
+
+export default function InventoryLayout({ children }) {
+  return <PageLayout>{children}</PageLayout>;
 }

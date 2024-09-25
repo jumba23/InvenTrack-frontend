@@ -1,10 +1,7 @@
 // app/inventory/layout.js
-import MainLayout from "@/layouts/MainLayout";
+
+import PageLayout from "@/layouts/PageLayout";
 
 export default function InventoryLayout({ children }) {
-  return (
-    <MainLayout>
-      <div className="h-full overflow-hidden">{children}</div>
-    </MainLayout>
-  );
+  return <PageLayout>{children}</PageLayout>;
 }

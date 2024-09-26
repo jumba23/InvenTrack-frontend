@@ -8,6 +8,17 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountMenu from "@/components/AccountSettings/AccountMenu";
 import { useProfile } from "@/utils/hooks/useProfile";
 
+/**
+ * Header Component
+ *
+ * The Header component serves as the top navigation bar for the application.
+ * It includes the application logo, search bar, notification icons, and user account settings.
+ *
+ * @param {Object} props
+ * @param {Function} props.toggleSidebar - Function to toggle the sidebar visibility
+ * @param {boolean} props.isMobile - Flag indicating if the current viewport is mobile-sized
+ */
+
 const Header = ({ toggleSidebar, isMobile }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);

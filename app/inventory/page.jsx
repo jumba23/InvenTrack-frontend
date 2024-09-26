@@ -6,25 +6,14 @@ import { useProduct } from "@/utils/hooks/useProduct";
 import InfoCards from "@/app/inventory/infoCards";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
 import { deleteProduct } from "@/utils/api/productService";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-  Snackbar,
-  Alert,
-  Pagination,
-} from "@mui/material";
+
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
-import ProductCard from "@/components/Cards/ProductCard";
 import { Plus } from "lucide-react";
-import ProductDataGrid from "@/components/Inventory/ProductDataGrid";
-import CategoryFilter from "@/components/Inventory/CategoryFilter";
-import ProductCardList from "@/components/Inventory/ProductCardList";
-import DeleteConfirmationDialog from "@/components/Dialogs/DeleteConfirmationDialog";
+import ProductDataGrid from "@/components/Inventory/ProductList/ProductDataGrid";
+import CategoryFilter from "@/components/Inventory/Filters/CategoryFilter";
+import ProductCardList from "@/components/Inventory/ProductList/ProductCardList";
+import DeleteConfirmationDialog from "@/components/Inventory/Modals/DeleteConfirmationDialog";
 import NotificationSnackbar from "@/components/Notifications/NotificationSnackbar";
 
 /**

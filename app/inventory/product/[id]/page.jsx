@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
-import ProductForm from "@/components/Forms/ProductForm";
+import { ProductForm } from "@/components/Forms/ProductForm";
 import { useProduct } from "@/utils/hooks/useProduct";
 import { fetchProductById, updateProduct } from "@/utils/api/productService";
 import { Snackbar, Alert } from "@mui/material";

@@ -49,9 +49,9 @@ The project follows the Next.js 14.2.7 folder structure and uses a modular appro
 frontend/
 ├── app/
 │   ├── dashboard/
+│   │    ├── layout.jsx
 │   │    └── page.jsx
 │   ├── inventory/
-│   │    ├── page.jsx
 │   │    ├── new-product/
 │   │    │   └── page.jsx
 │   │    ├── product/
@@ -82,15 +82,33 @@ frontend/
 │   ├── AccountSettings/
 │   │   ├── SettingsDialog.jsx
 │   │   └── AccountMenu.jsx
+│   ├── Cards/
+│   │   ├── DashboardCard.jsx
+│   │   └── ProductCard.jsx
+│   ├── Dashboard/
+│   │   ├── InfoCard.jsx
+│   │   ├── InventoryOverview.jsx
+│   │   ├── ProductAlerts.jsx
+│   │   ├── QuickActions.jsx
+│   │   ├── RecentActivity.jsx
+│   │   └── KPIGrid.jsx
+│   ├── Dialogs/
+│   │   └── DeleteConfirmationDialog.jsx
 │   ├── Forms/
 │   │   ├── OrderForm.jsx
 │   │   ├── ProductForm.jsx
 │   │   └── SupplierForm.jsx
+│   ├── Inventory/
+│   │   ├── CategoryFilter.jsx
+│   │   ├── ProductCardList.jsx
+│   │   └── ProductDataGrid.jsx
 │   ├── LandingPage/
 │   │   ├── LandingPageHeader.jsx
 │   │   └── LandingMain.jsx
 │   ├── Modals/
 │   │   └── LogoutModal.jsx
+│   ├── Notifications/
+│   │   └── NotificationSnackbar.jsx
 │   ├── Spinners/
 │   │   ├── Spinner.jsx
 │   │   └── LogoSpinner.jsx
@@ -105,10 +123,12 @@ frontend/
 │   └── AuthContext.jsx
 ├── layouts/
 │   ├── LandingPageLayout.jsx
+│   ├── PagePageLayout.jsx
 │   └── MainLayout.jsx
 ├── public/
 │   └── images/
 ├── stores/
+│   ├── supplierStore.js
 │   ├── productStore.js
 │   └── profileStore.js
 ├── utils/

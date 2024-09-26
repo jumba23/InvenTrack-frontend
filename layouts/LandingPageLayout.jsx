@@ -1,7 +1,7 @@
 import React from "react";
-import Footer from "@/components/Footer";
-import LandingHeader from "@/components/LandingPage/LandingHeader";
-import LandingMain from "@/components/LandingPage/LandingMain";
+import Footer from "@/components/MainPageComponents/Footer";
+import LandingHeader from "@/components/LandingPageComponents/LandingHeader";
+import LandingMain from "@/components/LandingPageComponents/LandingMain";
 
 /**
  * LandingPageLayout Component

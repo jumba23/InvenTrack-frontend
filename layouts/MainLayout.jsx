@@ -4,9 +4,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import Footer from "@/components/Footer";
+import Header from "@/components/MainPageComponents/Header";
+import Sidebar from "@/components/MainPageComponents/Sidebar";
+import Footer from "@/components/MainPageComponents/Footer";
 import LogoutModal from "@/components/Modals/LogoutModal";
 
 /**

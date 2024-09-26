@@ -1,7 +1,7 @@
 // components/Inventory/ProductCardList.jsx
 
 import React from "react";
-import ProductCard from "@/components/Cards/ProductCard";
+import ProductCard from "@/components/Inventory/ProductCard/ProductCard";
 
 /**
  * ProductCardList Component

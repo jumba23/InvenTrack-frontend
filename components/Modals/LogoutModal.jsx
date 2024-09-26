@@ -1,4 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
+import CancelButton from "../Buttons/CancelButton";
+import SubmitButton from "../Buttons/SubmitButton";
 
 const LogoutModal = () => {
   const { toggleLogoutModal, logout } = useAuth();
@@ -16,18 +18,18 @@ const LogoutModal = () => {
             to access your account.
           </p>
           <div className="flex justify-end space-x-3">
-            <button
+            <CancelButton
               onClick={toggleLogoutModal}
-              className="px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              className="w-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 bg-gray-100 rounded-md sm:w-auto hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
               Cancel
-            </button>
-            <button
+            </CancelButton>
+            <SubmitButton
               onClick={logout}
-              className="px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              className="w-full px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-red-600 rounded-md sm:w-auto hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               Logout
-            </button>
+            </SubmitButton>
           </div>
         </div>
       </div>

@@ -9,6 +9,8 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
+import CancelButton from "@/components/Buttons/CancelButton";
+import SubmitButton from "@/components/Buttons/SubmitButton";
 
 /**
  * DeleteConfirmationDialog Component
@@ -31,12 +33,12 @@ const DeleteConfirmationDialog = ({ open, onClose, onConfirm }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <CancelButton onClick={onClose} className="w-full sm:w-auto">
           Cancel
-        </Button>
-        <Button onClick={onConfirm} color="secondary" autoFocus>
+        </CancelButton>
+        <SubmitButton onClick={onConfirm} className="w-full sm:w-auto">
           Delete
-        </Button>
+        </SubmitButton>
       </DialogActions>
     </Dialog>
   );

@@ -22,6 +22,8 @@ import { useRef } from "react";
 import ProductCard from "@/components/Cards/ProductCard";
 import { Plus } from "lucide-react";
 import ProductDataGrid from "@/components/Inventory/ProductDataGrid";
+import CategoryFilter from "@/components/Inventory/CategoryFilter";
+import ProductCardList from "@/components/Inventory/ProductCardList";
 
 /**
  * InventoryPage Component
@@ -172,33 +174,12 @@ const InventoryPage = () => {
   );
 
   const renderStickyHeader = () => (
-    <div
-      className="sticky z-40 bg-white shadow-md"
-      style={{ top: "64px" }} // Adjust this value to match your header height
-    >
+    <div className="sticky z-40 bg-white shadow-md" style={{ top: "64px" }}>
       <div className="flex items-center justify-between p-4">
-        <div className="space-x-2">
-          <button
-            className={`px-4 py-2 text-sm rounded transition-colors ${
-              selectedCategory === "Service"
-                ? "text-white bg-blue-500"
-                : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
-            }`}
-            onClick={() => handleCategoryChange("Service")}
-          >
-            Service
-          </button>
-          <button
-            className={`px-4 py-2 text-sm rounded transition-colors ${
-              selectedCategory === "Retail"
-                ? "text-white bg-blue-500"
-                : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
-            }`}
-            onClick={() => handleCategoryChange("Retail")}
-          >
-            Retail
-          </button>
-        </div>
+        <CategoryFilter
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+        />
       </div>
     </div>
   );
@@ -209,7 +190,7 @@ const InventoryPage = () => {
     return (
       <button
         onClick={handleAddProduct}
-        className="fixed z-50 flex items-center justify-center text-white transition-colors duration-300 bg-blue-500 rounded-full shadow-lg bottom-6 right-6 w-14 h-14 focus:outline-none hover:bg-blue-600" // Add z-50 here
+        className="fixed z-50 flex items-center justify-center text-white transition-colors duration-300 bg-blue-500 rounded-full shadow-lg bottom-6 right-6 w-14 h-14 focus:outline-none hover:bg-blue-600"
         aria-label="Add New Product"
       >
         <Plus size={24} />
@@ -226,29 +207,11 @@ const InventoryPage = () => {
       <div className="flex-grow overflow-auto">
         <div className="px-4 pb-2 bg-white rounded-lg shadow">
           {!isMobile && (
-            <div className="flex items-center justify-between h-16 ">
-              <div className="flex items-center space-x-2">
-                <button
-                  className={`px-4 py-2 text-sm rounded transition-colors ${
-                    selectedCategory === "Service"
-                      ? "text-white bg-blue-500"
-                      : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
-                  }`}
-                  onClick={() => handleCategoryChange("Service")}
-                >
-                  Service
-                </button>
-                <button
-                  className={`px-4 py-2 text-sm rounded transition-colors ${
-                    selectedCategory === "Retail"
-                      ? "text-white bg-blue-500"
-                      : "text-blue-500 bg-white border border-blue-500 hover:bg-blue-50"
-                  }`}
-                  onClick={() => handleCategoryChange("Retail")}
-                >
-                  Retail
-                </button>
-              </div>
+            <div className="flex items-center justify-between h-16">
+              <CategoryFilter
+                selectedCategory={selectedCategory}
+                onCategoryChange={handleCategoryChange}
+              />
               <button
                 className="px-2 py-2 text-sm text-white transition-colors bg-green-500 rounded hover:bg-green-600"
                 onClick={handleAddProduct}
@@ -264,7 +227,13 @@ const InventoryPage = () => {
           ) : (
             <div className="flex-grow">
               {isMobile ? (
-                renderProductCards()
+                <ProductCardList
+                  products={filteredProducts}
+                  expandedCards={expandedCards}
+                  onToggleExpand={toggleCardExpansion}
+                  onEdit={handleEdit}
+                  onDelete={handleDeleteClick}
+                />
               ) : (
                 <ProductDataGrid
                   rows={rows}

@@ -35,6 +35,8 @@ import { useProfile } from "@/utils/hooks/useProfile";
 import { useForm, Controller } from "react-hook-form";
 import { updateUserProfile } from "@/utils/api/profileService";
 import { handleApiError } from "@/utils/api/errorHandling";
+import CancelButton from "../Buttons/CancelButton";
+import SubmitButton from "../Buttons/SubmitButton";
 
 export default function SettingsDialog({ open, onClose }) {
   const { profile, setProfile, updateImage } = useProfile();
@@ -215,17 +217,20 @@ export default function SettingsDialog({ open, onClose }) {
             )}
           />
           <DialogActions>
-            <Button
+            <CancelButton
               onClick={handleClose}
               disabled={loading}
-              variant="outlined"
-              color="secondary"
+              className="w-full sm:w-auto"
             >
               Cancel
-            </Button>
-            <Button type="submit" variant="outlined" disabled={loading}>
+            </CancelButton>
+            <SubmitButton
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
               {loading ? <CircularProgress size={24} /> : "Save"}
-            </Button>
+            </SubmitButton>
           </DialogActions>
         </form>
       </DialogContent>

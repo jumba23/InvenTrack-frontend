@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Alert from "@mui/material/Alert";
 import { useAuthError } from "@/utils/hooks/Errors";
+import SubmitButton from "@/components/Buttons/SubmitButton";
 
 // ========================= SUMMARY =========================
 // This component is a login form that allows users to sign in
@@ -196,7 +197,7 @@ const LoginForm = () => {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <button
+            <SubmitButton
               type="submit"
               className={`w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
@@ -204,7 +205,7 @@ const LoginForm = () => {
               disabled={isLoading}
             >
               {isLoading ? "Signing In..." : "Sign In"}
-            </button>
+            </SubmitButton>
             <Grid container>
               <Grid item xs>
                 <Link href="/forgot-password" variant="body2">

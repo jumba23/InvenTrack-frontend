@@ -3,7 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import ProductForm from "@/components/Forms/ProductForm";
+import { ProductForm } from "@/components/Forms/ProductForm";
 import { useProduct } from "@/utils/hooks/useProduct";
 import { addProduct } from "@/utils/api/productService";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "@/components/Cards/DashboardCard";
+import Card from "./DashboardCard";
 
 /**
  * ProductAlerts Component

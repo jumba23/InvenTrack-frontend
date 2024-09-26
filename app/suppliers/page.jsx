@@ -5,11 +5,7 @@ import React from "react";
 
 const SuppliersPage = () => {
   // useRequireAuth("/suppliers");
-  return (
-    <MainLayout>
-      <div>Suppliers Page ... under construction</div>
-    </MainLayout>
-  );
+  return <div>Suppliers Page ... under construction</div>;
 };
 
 export default SuppliersPage;

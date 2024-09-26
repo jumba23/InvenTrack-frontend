@@ -9,7 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import dynamic from "next/dynamic";
-import Card from "@/components/Cards/DashboardCard";
+import Card from "./DashboardCard";
 import { useProduct } from "@/utils/hooks/useProduct";
 import { useSupplier } from "@/utils/hooks/useSupplier";
 

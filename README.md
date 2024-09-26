@@ -82,9 +82,9 @@ frontend/
 │   ├── AccountSettings/
 │   │   ├── SettingsDialog.jsx
 │   │   └── AccountMenu.jsx
-│   ├── Cards/
-│   │   ├── DashboardCard.jsx
-│   │   └── ProductCard.jsx
+│   ├── Buttons/
+│   │   ├── CancelButton.jsx
+│   │   └── SubmitButton.jsx
 │   ├── Dashboard/
 │   │   ├── InfoCard.jsx
 │   │   ├── InventoryOverview.jsx
@@ -92,19 +92,34 @@ frontend/
 │   │   ├── QuickActions.jsx
 │   │   ├── RecentActivity.jsx
 │   │   └── KPIGrid.jsx
-│   ├── Dialogs/
-│   │   └── DeleteConfirmationDialog.jsx
 │   ├── Forms/
-│   │   ├── OrderForm.jsx
-│   │   ├── ProductForm.jsx
-│   │   └── SupplierForm.jsx
+│   │   ├── OrderForm/
+│   │   │   ├── Index.js
+│   │   │   └── OrderFormComponent.jsx
+│   │   ├── ProductForm/
+│   │   │   ├── Index.js
+│   │   │   ├── ProductFormComponent.jsx
+│   │   │   ├── FormField.jsx
+│   │   │   ├── FormActions.jsx
+│   │   │   └── FormSection.jsx
+│   │   └── SupplierForm/
 │   ├── Inventory/
-│   │   ├── CategoryFilter.jsx
-│   │   ├── ProductCardList.jsx
-│   │   └── ProductDataGrid.jsx
-│   ├── LandingPage/
+│   │   ├── Filters/
+│   │   │   └── CategoryFilter.jsx
+│   │   ├── Modals/
+│   │   │   └── DeleteConfirmationDialog.jsx
+│   │   ├── ProductCard/
+│   │   │   └── ProductCard.jsx
+│   │   ├── ProductList/
+│   │   │   ├── ProductCardList.jsx
+│   │   │   └── ProductDataGrid.jsx
+│   ├── LandingPageComponents/
 │   │   ├── LandingPageHeader.jsx
 │   │   └── LandingMain.jsx
+│   ├── MainPageComponents/
+│   │   ├── Footer.jsx
+│   │   ├── Header.jsx
+│   │   └── Sidebar.jsx
 │   ├── Modals/
 │   │   └── LogoutModal.jsx
 │   ├── Notifications/
@@ -112,18 +127,15 @@ frontend/
 │   ├── Spinners/
 │   │   ├── Spinner.jsx
 │   │   └── LogoSpinner.jsx
-│   ├── ZustandInitializers/
-│   │   ├── ProductInitializer.js
-│   │   ├── SupplierInitializer.js
-│   │   └── ProfileInitializer.js
-│   ├── Footer.jsx
-│   ├── Header.jsx
-│   ├── Sidebar.jsx
+│   └── ZustandInitializers/
+│       ├── ProductInitializer.js
+│       ├── SupplierInitializer.js
+│       └── ProfileInitializer.js
 ├── context/
 │   └── AuthContext.jsx
 ├── layouts/
 │   ├── LandingPageLayout.jsx
-│   ├── PagePageLayout.jsx
+│   ├── PageLayout.jsx
 │   └── MainLayout.jsx
 ├── public/
 │   └── images/
@@ -162,11 +174,15 @@ frontend/
 
 - `app/`: Contains Next.js pages and routing structure.
 - `components/`: Reusable React components.
+  - **Buttons**: Houses the styled `CancelButton.jsx` and `SubmitButton.jsx` with consistent sizing and styling.
+  - **Forms**: Contains reusable form components for various actions such as `OrderForm`, `ProductForm`, and `SupplierForm`.
+  - **Inventory**: Handles inventory-specific components, like product filtering, product cards, and product data grids.
 - `context/`: React Context providers for authentication state management.
 - `stores/`: Zustand stores for global state management.
 - `layouts/`: Custom layout components.
 - `utils/`: Utility functions, API services, and custom hooks.
-- `public/`: Static assets.
+- `public/`: Static assets like images.
+- `zustandInitializers/`: Initialization of Zustand stores for products, suppliers, and profiles.
 
 ## Key Features
 
@@ -215,7 +231,10 @@ Authentication state is managed using the React Context API in `AuthContext.jsx`
 
 The application implements a JWT-based authentication system with session cookies:
 
-- **Initial Check**: On app mount, `AuthProvider` validates the user token by making a request to the backend.
+- \*\*Initial Check
+
+\*\*: On app mount, `AuthProvider` validates the user token by making a request to the backend.
+
 - **Token Validation**: The backend verifies the JWT stored in HTTP-only cookies.
 - **Login Process**:
   - The frontend sends login credentials to the backend.
@@ -305,5 +324,3 @@ A comprehensive testing strategy is planned to ensure application reliability:
 4. **Performance Audits**: Regularly perform performance audits to identify and fix bottlenecks.
 5. **Feature Expansion**: Expand the application's capabilities, such as adding more detailed reporting or advanced inventory analytics.
 6. **State Management Enhancements**: Explore the use of selectors in Zustand to optimize performance and potentially split stores for better scalability.
-
----

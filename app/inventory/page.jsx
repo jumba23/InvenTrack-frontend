@@ -24,6 +24,8 @@ import { Plus } from "lucide-react";
 import ProductDataGrid from "@/components/Inventory/ProductDataGrid";
 import CategoryFilter from "@/components/Inventory/CategoryFilter";
 import ProductCardList from "@/components/Inventory/ProductCardList";
+import DeleteConfirmationDialog from "@/components/Dialogs/DeleteConfirmationDialog";
+import NotificationSnackbar from "@/components/Notifications/NotificationSnackbar";
 
 /**
  * InventoryPage Component
@@ -75,16 +77,19 @@ const InventoryPage = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Handle edit product
   const handleEdit = (id) => {
     setIsNewProduct(false);
     router.push(`/inventory/product/${id}`);
   };
 
+  // Handle delete product
   const handleDeleteClick = (id) => {
     setProductToDelete(id);
     setDeleteDialogOpen(true);
   };
 
+  // Handle delete confirmation
   const handleDelete = async () => {
     if (!productToDelete) return;
 
@@ -112,17 +117,14 @@ const InventoryPage = () => {
     }
   };
 
+  // Handle add product
   const handleAddProduct = () => {
     router.push("/inventory/new-product");
   };
 
+  // Handle category change
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-  };
-
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") return;
-    setSnackbar({ open: false, message: "", severity: "success" });
   };
 
   // Filter products based on selected category
@@ -150,6 +152,7 @@ const InventoryPage = () => {
     status: product.status,
   }));
 
+  // Toggle card expansion - Mobile view
   const toggleCardExpansion = (productId) => {
     setExpandedCards((prev) => ({
       ...prev,
@@ -157,24 +160,13 @@ const InventoryPage = () => {
     }));
   };
 
-  // Render product cards for mobile devices
-  const renderProductCards = () => (
-    <div className="pb-20 mt-4">
-      {filteredProducts.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          expanded={expandedCards[product.id]}
-          onToggleExpand={toggleCardExpansion}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-        />
-      ))}
-    </div>
-  );
-
+  // Render sticky header for mobile view
   const renderStickyHeader = () => (
-    <div className="sticky z-40 bg-white shadow-md" style={{ top: "64px" }}>
+    <div
+      className="sticky z-40 bg-white shadow-md"
+      style={{ top: "64px" }}
+      ref={stickyHeaderRef}
+    >
       <div className="flex items-center justify-between p-4">
         <CategoryFilter
           selectedCategory={selectedCategory}
@@ -184,6 +176,13 @@ const InventoryPage = () => {
     </div>
   );
 
+  // Handle closing the snackbar
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar({ open: false, message: "", severity: "success" });
+  };
+
+  // Render floating action button for mobile view
   const renderFAB = () => {
     if (!isMobile) return null;
 
@@ -201,11 +200,13 @@ const InventoryPage = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="p-3">
+        {/* Info Cards */}
         <InfoCards products={filteredProducts} />
       </div>
       {isMobile && renderStickyHeader()}
       <div className="flex-grow overflow-auto">
         <div className="px-4 pb-2 bg-white rounded-lg shadow">
+          {/* Desktop View */}
           {!isMobile && (
             <div className="flex items-center justify-between h-16">
               <CategoryFilter
@@ -226,6 +227,7 @@ const InventoryPage = () => {
             </div>
           ) : (
             <div className="flex-grow">
+              {/* Card list for mobile */}
               {isMobile ? (
                 <ProductCardList
                   products={filteredProducts}
@@ -246,44 +248,23 @@ const InventoryPage = () => {
         </div>
       </div>
 
+      {/* Floating Action Button */}
       {renderFAB()}
 
-      {/* Pagination for mobile devices */}
-      <Dialog
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-      >
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this product? This action cannot be
-            undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} color="secondary" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={handleDelete}
+      />
 
-      {/* Snackbar for success/error messages */}
-      <Snackbar
+      {/* Notification Snackbar */}
+      <NotificationSnackbar
         open={snackbar.open}
-        autoHideDuration={6000}
+        message={snackbar.message}
+        severity={snackbar.severity}
         onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      />
     </div>
   );
 };

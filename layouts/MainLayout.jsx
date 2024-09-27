@@ -72,7 +72,7 @@ const MainLayout = ({ children }) => {
             } bg-gray-100`}
             style={{ height: "calc(100vh - 5rem - 1.5rem)" }}
           >
-            <div className="h-full px-4 py-2 overflow-auto">{children}</div>
+            <div className="h-full px-4 py-4 overflow-auto">{children}</div>
           </main>
         </div>
         <Footer />

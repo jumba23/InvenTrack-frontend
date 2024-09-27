@@ -9,11 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.4.2",
     "@mui/icons-material": "^5.14.18",
-    "@mui/material": "^5.14.18",
+    "@mui/material": "^5.16.7",
     "@mui/system": "^5.14.18",
     "@mui/x-data-grid": "^6.18.1",
     "@supabase/auth-ui-react": "^0.4.5",

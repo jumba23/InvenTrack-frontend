@@ -32,7 +32,20 @@ const useSupplierStore = create(
           set({ loading: false });
         }
       },
-
+      // Load more suppliers
+      loadMoreSuppliers: async () => {
+        set({ loading: true });
+        try {
+          const moreSuppliers = await fetchMoreSuppliers(); // Implement this API call
+          set((state) => ({
+            suppliers: [...state.suppliers, ...moreSuppliers],
+          }));
+        } catch (error) {
+          console.error("Failed to load more suppliers", error);
+        } finally {
+          set({ loading: false });
+        }
+      },
       addSupplier: (supplier) =>
         set((state) => ({ suppliers: [...state.suppliers, supplier] })),
       updateSupplier: (updatedSupplier) =>

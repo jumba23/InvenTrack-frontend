@@ -103,6 +103,11 @@ frontend/
 │   │   │   ├── FormActions.jsx
 │   │   │   └── FormSection.jsx
 │   │   └── SupplierForm/
+│   │       ├── FormActions.jsx           // Form buttons (Submit, Cancel)
+│   │       ├── FormField.jsx             // Individual input fields (name, contact, etc.)
+│   │       ├── FormSection.jsx           // Wrapper for logical form sections (details, address)
+│   │       ├── index.js                  // Main entry point for the form
+│   │       └── SupplierFormComponent.jsx // Full form component
 │   ├── Inventory/
 │   │   ├── Filters/
 │   │   │   └── CategoryFilter.jsx

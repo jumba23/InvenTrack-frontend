@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
 import { useProduct } from "@/utils/hooks/useProduct";
 import InfoCards from "@/app/inventory/infoCards";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";

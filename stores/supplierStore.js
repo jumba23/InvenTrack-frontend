@@ -15,15 +15,32 @@ const useSupplierStore = create(
       suppliers: [],
       loading: false,
       error: null,
+      renderForm: false,
+      isNewSupplier: true,
 
+      // Snackbar state
+      snackbar: {
+        open: false,
+        message: "",
+        severity: "success", // Can be 'success', 'error', 'info', 'warning'
+      },
+
+      //Actions
       setSuppliers: (suppliers) => set({ suppliers }),
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
 
+      setRenderForm: (render) => set({ renderForm: render }),
+      setIsNewSupplier: (isNew) => set({ isNewSupplier: isNew }),
+
+      // Snackbar actions
+      setSnackbar: (snackbar) => set({ snackbar }),
+
+      // load suppliers
       loadSuppliers: async () => {
         set({ loading: true });
         try {
-          const data = await fetchSuppliers();
+          const data = await fetchSuppliers(); //API call to get supplier data
           set({ suppliers: data, error: null });
         } catch (error) {
           console.error("Failed to load suppliers:", error);
@@ -32,34 +49,16 @@ const useSupplierStore = create(
           set({ loading: false });
         }
       },
-      // Load more suppliers
-      loadMoreSuppliers: async () => {
-        set({ loading: true });
-        try {
-          const moreSuppliers = await fetchMoreSuppliers(); // Implement this API call
-          set((state) => ({
-            suppliers: [...state.suppliers, ...moreSuppliers],
-          }));
-        } catch (error) {
-          console.error("Failed to load more suppliers", error);
-        } finally {
-          set({ loading: false });
-        }
-      },
-      addSupplier: (supplier) =>
-        set((state) => ({ suppliers: [...state.suppliers, supplier] })),
-      updateSupplier: (updatedSupplier) =>
-        set((state) => ({
-          suppliers: state.suppliers.map((s) =>
-            s.id === updatedSupplier.id ? updatedSupplier : s
-          ),
-        })),
-      deleteSupplier: (supplierId) =>
-        set((state) => ({
-          suppliers: state.suppliers.filter((s) => s.id !== supplierId),
-        })),
 
-      reset: () => set({ suppliers: [], loading: false, error: null }),
+      reset: () =>
+        set({
+          suppliers: [],
+          loading: false,
+          error: null,
+          renderForm: false,
+          isNewSupplier: true,
+          snackbar: { open: false, message: "", severity: "success" }, // Reset snackbar state
+        }),
     }),
     {
       name: "supplier-storage",

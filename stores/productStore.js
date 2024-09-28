@@ -1,3 +1,5 @@
+//stores/productStore.js
+
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { fetchProducts } from "@/utils/api/productService";
@@ -46,7 +48,7 @@ const useProductStore = create(
       loadProducts: async () => {
         set({ loading: true });
         try {
-          const data = await fetchProducts();
+          const data = await fetchProducts(); // API call to get product data
           set({ products: data, error: null });
         } catch (error) {
           console.error("Failed to load products:", error);

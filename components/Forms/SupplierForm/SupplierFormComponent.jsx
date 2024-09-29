@@ -121,31 +121,34 @@ const SupplierForm = ({ initialData, onSubmit, onCancel, isNewSupplier }) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
+        height: "100%", // Set height to 100vh for full viewport height
         width: "100%",
         paddingX: 0.5,
         paddingY: 4,
         boxSizing: "border-box",
+        justifyContent: "center", // Center content vertically
+        alignItems: "center", // Center content horizontally
       }}
     >
       <Card
         sx={{
           width: "100%",
-          height: "100%",
+          maxWidth: "800px",
+          height: "auto", // Set to 'auto' so the card adjusts to its content height
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          maxWidth: "800px",
           margin: "0 auto",
         }}
       >
         <Box
           sx={{
             p: 3,
-            flexGrow: 1,
-            overflowY: "auto",
+            width: "100%",
             display: "flex",
             flexDirection: "column",
+            alignItems: "center", // Center items horizontally within Box
+            justifyContent: "center", // Center items vertically within Box
           }}
         >
           <Typography variant="h5" align="center" gutterBottom sx={{ mb: 4 }}>

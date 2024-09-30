@@ -37,8 +37,8 @@ const EditProductPage = () => {
     loading,
     setLoading,
     setError,
-    snackbar, // Zustand snackbar state
-    setSnackbar, // Zustand function to set snackbar state
+    snackbar,
+    setSnackbar,
   } = useProduct();
   const [productData, setProductData] = useState(null);
   const [isFetched, setIsFetched] = useState(false);

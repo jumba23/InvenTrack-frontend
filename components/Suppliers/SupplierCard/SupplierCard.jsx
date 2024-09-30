@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useSwipeable } from "react-swipeable"; // Swipeable for mobile actions (optional)
-import { ChevronDown, ChevronUp, Edit, Trash2 } from "lucide-react"; // Icons for edit and delete actions
+import { ChevronDown, ChevronUp } from "lucide-react"; // Icons for edit and delete actions
 
 const SupplierCard = ({
   supplier,
@@ -13,7 +13,7 @@ const SupplierCard = ({
 }) => {
   // Swipe handlers (optional) for swiping actions like edit/delete
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => onDelete(supplier.id),
+    // onSwipedLeft: () => onDelete(supplier.id),
     onSwipedRight: () => onEdit(supplier.id),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,

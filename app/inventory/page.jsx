@@ -14,6 +14,7 @@ import CategoryFilter from "@/components/Inventory/Filters/CategoryFilter";
 import ProductCardList from "@/components/Inventory/ProductList/ProductCardList";
 import ProductDeleteConfirmationDialog from "@/components/Inventory/Modals/ProductDeleteConfirmationDialog";
 import NotificationSnackbar from "@/components/Notifications/NotificationSnackbar";
+import { set } from "react-hook-form";
 
 /**
  * InventoryPage Component
@@ -51,7 +52,8 @@ const InventoryPage = () => {
 
   // Local state for delete confirmation dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
+  const [productToDeleteId, setProductToDeleteId] = useState(null);
+  const [productName, setProductName] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [expandedCards, setExpandedCards] = useState({});
 
@@ -73,18 +75,22 @@ const InventoryPage = () => {
 
   // Handle delete product
   const handleDeleteClick = (id) => {
-    setProductToDelete(id);
+    setProductToDeleteId(id);
+    const productName = products.find((product) => product.id === id).name;
+    setProductName(productName);
     setDeleteDialogOpen(true);
   };
 
-  // Handle delete confirmation
+  // Handle delete confirmation - API call
   const handleDelete = async () => {
-    if (!productToDelete) return;
+    if (!productToDeleteId) return;
 
     try {
       setLoading(true);
-      await deleteProduct(productToDelete);
-      setProducts(products.filter((product) => product.id !== productToDelete));
+      await deleteProduct(productToDeleteId);
+      setProducts(
+        products.filter((product) => product.id !== productToDeleteId)
+      );
       setSnackbar({
         open: true,
         message: "Product deleted successfully",
@@ -101,7 +107,7 @@ const InventoryPage = () => {
     } finally {
       setLoading(false);
       setDeleteDialogOpen(false);
-      setProductToDelete(null);
+      setProductToDeleteId(null);
     }
   };
 
@@ -245,6 +251,7 @@ const InventoryPage = () => {
 
       {/* Delete Confirmation Dialog */}
       <ProductDeleteConfirmationDialog
+        productName={productName}
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDelete}

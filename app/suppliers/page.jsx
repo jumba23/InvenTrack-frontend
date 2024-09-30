@@ -8,7 +8,6 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@mui/material";
 import NotificationSnackbar from "@/components/Notifications/NotificationSnackbar";
-import { useRef } from "react";
 import SupplierDeleteConfirmationDialog from "@/components/Suppliers/Modals/SupplierDeleteConfirmationDialog";
 import { useSupplier } from "@/utils/hooks/useSupplier";
 import { deleteSupplier } from "@/utils/api/supplierServices";

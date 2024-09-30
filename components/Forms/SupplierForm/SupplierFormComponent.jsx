@@ -47,7 +47,7 @@ const SupplierForm = ({ initialData, onSubmit, onCancel, isNewSupplier }) => {
   // Handle form submission
   const onSubmitForm = async (data) => {
     setIsSubmitting(true);
-    // setNotification({ open: false, message: "", severity: "success" });
+    setNotification({ open: false, message: "", severity: "success" });
     try {
       await onSubmit(data, (errorObj) => {
         if (errorObj && errorObj.message) {
@@ -178,7 +178,7 @@ const SupplierForm = ({ initialData, onSubmit, onCancel, isNewSupplier }) => {
               <FormActions
                 onCancel={onCancel}
                 isSubmitting={isSubmitting}
-                isNewProduct={isNewSupplier}
+                isNewSupplier={isNewSupplier}
               />
             </Box>
           </form>

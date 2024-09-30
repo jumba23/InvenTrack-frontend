@@ -9,6 +9,10 @@ import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@mui/material";
 import NotificationSnackbar from "@/components/Notifications/NotificationSnackbar";
 import { useRef } from "react";
+import SupplierDeleteConfirmationDialog from "@/components/Suppliers/Modals/SupplierDeleteConfirmationDialog";
+import { useSupplier } from "@/utils/hooks/useSupplier";
+import { deleteSupplier } from "@/utils/api/supplierServices";
+import LogoSpinner from "@/components/Spinners/LogoSpinner";
 
 /**
  *  SuppliersPage Component
@@ -21,12 +25,68 @@ import { useRef } from "react";
 
 const SuppliersPage = () => {
   const router = useRouter();
-  const { suppliers } = useSupplierStore();
+
+  // Use the useSupplier hook to access the Zustand store
+  const {
+    suppliers,
+    setIsNewSupplier,
+    setSuppliers,
+    setLoading,
+    loading,
+    setError,
+    snackbar,
+    setSnackbar,
+  } = useSupplier();
+
+  // Local state for delete confirmation dialog
   const [expandedCards, setExpandedCards] = useState({});
-  const observerRef = useRef(null); // Ref to detect scrolling to the bottom
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [supplierToDelete, setSupplierToDelete] = useState(null);
 
   // Using useMediaQuery to detect if the screen size is mobile or desktop
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // Handle edit product
+  const handleEdit = (id) => {
+    setIsNewSupplier(false);
+    router.push(`/suppliers/supplier/${id}`);
+  };
+
+  // Handle delete product
+  const handleDeleteClick = (id) => {
+    setSupplierToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  // Handle delete confirmation
+  const handleDelete = async () => {
+    if (!supplierToDelete) return;
+
+    try {
+      setLoading(true);
+      await deleteSupplier(supplierToDelete);
+      setSuppliers(
+        suppliers.filter((supplier) => supplier.id !== supplierToDelete)
+      );
+      setSnackbar({
+        open: true,
+        message: "Supplier deleted successfully",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting supplier:", error);
+      setError("Failed to delete supplier");
+      setSnackbar({
+        open: true,
+        message: "Failed to delete suppler",
+        severity: "error",
+      });
+    } finally {
+      setLoading(false);
+      setDeleteDialogOpen(false);
+      setSupplierToDelete(null);
+    }
+  };
 
   // Handle adding a new supplier
   const handleAddSupplier = () => {
@@ -41,11 +101,22 @@ const SuppliersPage = () => {
     }));
   };
 
-  // Prepare rows for the DataGrid (for desktop view)
+  /**
+   * Prepare the rows for the DataGrid (for desktop view).
+   * 
+   * 1. We use `useMemo` to optimize performance by memoizing the computed `rows` array.
+   * 2. The dependency array `[suppliers]` ensures that `rows` is only recomputed when the `suppliers` state changes.
+   * 3. This avoids unnecessary recomputation and renders, enhancing the efficiency of the component.
+   *
+   * `suppliers.map(...)` iterates over each supplier in the array and constructs a new object for each row
+   * with specific properties required by the DataGrid:
+   *   - `id`: A unique identifier for each row, which is crucial for the DataGrid to identify each row element.
+   *   - Other properties like `name`, `contact_person`, `phone`, etc., which will be displayed in the DataGrid columns.
+   */
   const rows = useMemo(
     () =>
-      suppliers.map((supplier) => ({
-        id: supplier.id,
+      suppliers.map((supplier, index) => ({
+        id: supplier.id, // Unique ID of each supplier (must be present and unique for each row).
         name: supplier.name,
         contact_person: supplier.contact_person,
         phone: supplier.phone,
@@ -53,8 +124,35 @@ const SuppliersPage = () => {
         stock_wholesale_value: supplier.stock_wholesale_value,
         stock_retail_value: supplier.stock_retail_value,
       })),
-    [suppliers]
+    [suppliers] // Recompute rows only if the `suppliers` array changes.
   );
+
+  /**
+   * Filter out rows that do not have a valid `id`.
+   * 
+   * 1. The `filteredRows` is also memoized using `useMemo`, with `rows` as its dependency.
+   *    This ensures that `filteredRows` is only recomputed when the `rows` array changes, avoiding unnecessary re-renders.
+   * 
+   * 2. The `.filter(row => row.id)` function is used to ensure that only rows with a valid `id` are included in the final array.
+   * 
+   * Why is this necessary?
+   * - The DataGrid component requires that each row has a unique and valid `id` property. 
+   * - During some state transitions or updates, there might be cases where some rows are temporarily incomplete
+   *   (e.g., missing `id` due to asynchronous updates or partially populated data). 
+   * - This `filter` step prevents such incomplete rows from being passed to the DataGrid, which could otherwise cause errors.
+   * - By using `filter`, we ensure that the DataGrid only receives well-formed rows, preventing runtime errors.
+   */
+  const filteredRows = useMemo(() => {
+    return rows.filter((row) => row.id); // Filter out any rows that do not have a valid `id` property.
+  }, [rows]); // Recompute `filteredRows` only if `rows` changes.
+
+  return (
+    <div style={{ height: 400, width: '100%' }}>
+      {/* Use `filteredRows` instead of `rows` to ensure that the DataGrid only renders rows with valid IDs */}
+      <SupplierDataGrid rows={filteredRows} />
+    </div>
+  );
+};
 
   // Render floating action button (FAB) for mobile
   const renderFAB = () => {
@@ -72,10 +170,10 @@ const SuppliersPage = () => {
   };
 
   // Handle closing the snackbar
-  // const handleCloseSnackbar = (event, reason) => {
-  //   if (reason === "clickaway") return;
-  //   setSnackbar({ open: false, message: "", severity: "success" });
-  // };
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar({ open: false, message: "", severity: "success" });
+  };
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -93,6 +191,12 @@ const SuppliersPage = () => {
             </div>
           )}
 
+          {loading && (
+            <div className="flex items-center justify-center flex-grow">
+              <LogoSpinner />
+            </div>
+          )}
+
           {/* Render Cards for Mobile View */}
           {isMobile ? (
             <div className="h-full overflow-y-auto">
@@ -105,7 +209,11 @@ const SuppliersPage = () => {
           ) : (
             /* Render DataGrid for Desktop View */
             <div className="p-4">
-              <SupplierDataGrid rows={rows} />
+              <SupplierDataGrid
+                rows={filteredRows}
+                onEdit={handleEdit}
+                onDelete={handleDeleteClick}
+              />
             </div>
           )}
         </div>
@@ -113,6 +221,21 @@ const SuppliersPage = () => {
 
       {/* Floating Action Button for Mobile */}
       {renderFAB()}
+
+      {/* Delete Confirmation Dialog */}
+      <SupplierDeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+      />
+
+      {/* Notification Snackbar */}
+      <NotificationSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={handleCloseSnackbar}
+      />
     </div>
   );
 };

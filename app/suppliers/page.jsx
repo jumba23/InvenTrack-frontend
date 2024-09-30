@@ -103,7 +103,7 @@ const SuppliersPage = () => {
 
   /**
    * Prepare the rows for the DataGrid (for desktop view).
-   * 
+   *
    * 1. We use `useMemo` to optimize performance by memoizing the computed `rows` array.
    * 2. The dependency array `[suppliers]` ensures that `rows` is only recomputed when the `suppliers` state changes.
    * 3. This avoids unnecessary recomputation and renders, enhancing the efficiency of the component.
@@ -129,30 +129,22 @@ const SuppliersPage = () => {
 
   /**
    * Filter out rows that do not have a valid `id`.
-   * 
+   *
    * 1. The `filteredRows` is also memoized using `useMemo`, with `rows` as its dependency.
    *    This ensures that `filteredRows` is only recomputed when the `rows` array changes, avoiding unnecessary re-renders.
-   * 
+   *
    * 2. The `.filter(row => row.id)` function is used to ensure that only rows with a valid `id` are included in the final array.
-   * 
+   *
    * Why is this necessary?
-   * - The DataGrid component requires that each row has a unique and valid `id` property. 
+   * - The DataGrid component requires that each row has a unique and valid `id` property.
    * - During some state transitions or updates, there might be cases where some rows are temporarily incomplete
-   *   (e.g., missing `id` due to asynchronous updates or partially populated data). 
+   *   (e.g., missing `id` due to asynchronous updates or partially populated data).
    * - This `filter` step prevents such incomplete rows from being passed to the DataGrid, which could otherwise cause errors.
    * - By using `filter`, we ensure that the DataGrid only receives well-formed rows, preventing runtime errors.
    */
   const filteredRows = useMemo(() => {
     return rows.filter((row) => row.id); // Filter out any rows that do not have a valid `id` property.
   }, [rows]); // Recompute `filteredRows` only if `rows` changes.
-
-  return (
-    <div style={{ height: 400, width: '100%' }}>
-      {/* Use `filteredRows` instead of `rows` to ensure that the DataGrid only renders rows with valid IDs */}
-      <SupplierDataGrid rows={filteredRows} />
-    </div>
-  );
-};
 
   // Render floating action button (FAB) for mobile
   const renderFAB = () => {

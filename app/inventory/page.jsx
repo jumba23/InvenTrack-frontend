@@ -12,7 +12,7 @@ import { Plus } from "lucide-react";
 import ProductDataGrid from "@/components/Inventory/ProductList/ProductDataGrid";
 import CategoryFilter from "@/components/Inventory/Filters/CategoryFilter";
 import ProductCardList from "@/components/Inventory/ProductList/ProductCardList";
-import DeleteConfirmationDialog from "@/components/Inventory/Modals/DeleteConfirmationDialog";
+import ProductDeleteConfirmationDialog from "@/components/Inventory/Modals/ProductDeleteConfirmationDialog";
 import NotificationSnackbar from "@/components/Notifications/NotificationSnackbar";
 
 /**
@@ -126,19 +126,23 @@ const InventoryPage = () => {
   }, [products, selectedCategory]);
 
   // Prepare rows for DataGrid
-  const rows = filteredProducts.map((product) => ({
-    id: product.id,
-    name: product.name,
-    quantity_office_1: product.quantity_office_1,
-    quantity_office_8: product.quantity_office_8,
-    quantity_home: product.quantity_home,
-    display_shelf: product.display_shelf,
-    reorder_point: product.reorder_point,
-    wholesale_price_per_unit: product.retail_price_per_unit,
-    total_quantity: product.total_quantity,
-    stock_wholesale_value: product.stock_retail_value,
-    status: product.status,
-  }));
+  const rows = useMemo(
+    () =>
+      filteredProducts.map((product) => ({
+        id: product.id,
+        name: product.name,
+        quantity_office_1: product.quantity_office_1,
+        quantity_office_8: product.quantity_office_8,
+        quantity_home: product.quantity_home,
+        display_shelf: product.display_shelf,
+        reorder_point: product.reorder_point,
+        wholesale_price_per_unit: product.retail_price_per_unit,
+        total_quantity: product.total_quantity,
+        stock_wholesale_value: product.stock_retail_value,
+        status: product.status,
+      })),
+    [filteredProducts]
+  );
 
   // Toggle card expansion - Mobile view
   const toggleCardExpansion = (productId) => {
@@ -240,7 +244,7 @@ const InventoryPage = () => {
       {renderFAB()}
 
       {/* Delete Confirmation Dialog */}
-      <DeleteConfirmationDialog
+      <ProductDeleteConfirmationDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDelete}

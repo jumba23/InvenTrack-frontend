@@ -3,7 +3,7 @@
 import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
-const SupplierDataGrid = ({ rows }) => {
+const SupplierDataGrid = ({ rows, onEdit, onDelete }) => {
   const columns = [
     { field: "name", headerName: "Supplier", width: 150 },
     { field: "contact_person", headerName: "Contact", width: 150 },

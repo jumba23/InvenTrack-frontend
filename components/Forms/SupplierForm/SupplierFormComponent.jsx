@@ -6,8 +6,6 @@ import {
   Grid,
   useMediaQuery,
   useTheme,
-  TextField,
-  Alert,
 } from "@mui/material";
 
 import { NotificationSnackbar } from "../ProductForm";
@@ -49,7 +47,7 @@ const SupplierForm = ({ initialData, onSubmit, onCancel, isNewSupplier }) => {
   // Handle form submission
   const onSubmitForm = async (data) => {
     setIsSubmitting(true);
-    setNotification({ open: false, message: "", severity: "success" });
+    // setNotification({ open: false, message: "", severity: "success" });
     try {
       await onSubmit(data, (errorObj) => {
         if (errorObj && errorObj.message) {
@@ -91,26 +89,22 @@ const SupplierForm = ({ initialData, onSubmit, onCancel, isNewSupplier }) => {
         {
           name: "name",
           label: "Supplier Name",
-          required: true,
-          error: errors.name,
+          rules: { required: "Supplier name is required" },
         },
         {
           name: "contact_person",
           label: "Contact Person",
-          required: false,
-          error: errors.contact_person,
+          rules: {},
         },
         {
           name: "phone",
           label: "Phone Number",
-          required: true,
-          error: errors.phone,
+          rules: {},
         },
         {
           name: "email",
           label: "Email Address",
-          required: false,
-          error: errors.email,
+          rules: {},
         },
       ],
     },
@@ -155,25 +149,39 @@ const SupplierForm = ({ initialData, onSubmit, onCancel, isNewSupplier }) => {
             {isNewSupplier ? "Add New Supplier" : "Edit Supplier"}
           </Typography>
 
-          {/* Render form sections */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            {formSections.map((section, index) => (
-              <FormSection
-                key={index}
-                section={section}
-                control={control}
-                errors={errors}
-                isMobile={isMobile}
-              />
-            ))}
-          </Grid>
+          <form
+            onSubmit={handleSubmit(onSubmitForm)}
+            style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+          >
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              {/* Render form sections */}
+              <Grid container spacing={3} sx={{ mb: 4 }}>
+                {formSections.map((section, index) => (
+                  <FormSection
+                    key={index}
+                    section={section}
+                    control={control}
+                    errors={errors}
+                    isMobile={isMobile}
+                  />
+                ))}
+              </Grid>
 
-          {/* Form action buttons */}
-          <FormActions
-            onCancel={onCancel}
-            isSubmitting={isSubmitting}
-            isNewProduct={isNewSupplier}
-          />
+              {/* Form action buttons */}
+              <FormActions
+                onCancel={onCancel}
+                isSubmitting={isSubmitting}
+                isNewProduct={isNewSupplier}
+              />
+            </Box>
+          </form>
         </Box>
       </Card>
 

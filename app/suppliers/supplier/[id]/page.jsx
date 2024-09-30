@@ -43,7 +43,6 @@ const EditSupplierPage = () => {
       try {
         setLoading(true);
         const data = await fetchSupplierById(params.id);
-        console.log("Supplier data", data);
         setSupplierData(data);
         setIsFetched(true); // Mark as fetched to avoid re-fetching
       } catch (error) {
@@ -71,7 +70,6 @@ const EditSupplierPage = () => {
    */
   const handleFormSubmit = useCallback(
     async (updatedData, setErrorMessage) => {
-      console.log("Updated data", updatedData);
       if (!params.id) {
         setErrorMessage("Supplier ID is missing.");
         return;

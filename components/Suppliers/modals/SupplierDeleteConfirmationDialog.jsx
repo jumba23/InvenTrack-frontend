@@ -21,14 +21,32 @@ import SubmitButton from "@/components/Buttons/SubmitButton";
  * @param {function} onClose - Function to handle closing the dialog
  * @param {function} onConfirm - Function to handle confirming the deletion
  */
-const SupplierDeleteConfirmationDialog = ({ open, onClose, onConfirm }) => {
+const SupplierDeleteConfirmationDialog = ({
+  open,
+  onClose,
+  onConfirm,
+  supplierName,
+}) => {
+  /**
+   * Function to capitalize each word in the string.
+   * E.g., "test product" => "Test Product"
+   */
+  const capitalizeWords = (str) => {
+    return str.replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Confirm Delete</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Are you sure you want to delete this supplier? This action cannot be
-          undone.
+          {/* Capitalize product name and style it with bold */}
+          Are you sure you want to delete{" "}
+          <strong>{capitalizeWords(supplierName)}</strong> supplier?
+          {/* Add a line break */}
+          <br />
+          {/* Add styles for the secondary message */}
+          This action cannot be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

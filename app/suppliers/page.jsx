@@ -41,7 +41,8 @@ const SuppliersPage = () => {
   // Local state for delete confirmation dialog
   const [expandedCards, setExpandedCards] = useState({});
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [supplierToDelete, setSupplierToDelete] = useState(null);
+  const [supplierName, setSupplierName] = useState("");
+  const [supplierToDeleteId, setSupplierToDeleteId] = useState(null);
 
   // Using useMediaQuery to detect if the screen size is mobile or desktop
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -54,19 +55,21 @@ const SuppliersPage = () => {
 
   // Handle delete product
   const handleDeleteClick = (id) => {
-    setSupplierToDelete(id);
+    setSupplierToDeleteId(id);
+    const supplierName = suppliers.find((supplier) => supplier.id === id);
+    setSupplierName(supplierName.name);
     setDeleteDialogOpen(true);
   };
 
   // Handle delete confirmation
   const handleDelete = async () => {
-    if (!supplierToDelete) return;
+    if (!supplierToDeleteId) return;
 
     try {
       setLoading(true);
-      await deleteSupplier(supplierToDelete);
+      await deleteSupplier(supplierToDeleteId);
       setSuppliers(
-        suppliers.filter((supplier) => supplier.id !== supplierToDelete)
+        suppliers.filter((supplier) => supplier.id !== supplierToDeleteId)
       );
       setSnackbar({
         open: true,
@@ -84,7 +87,7 @@ const SuppliersPage = () => {
     } finally {
       setLoading(false);
       setDeleteDialogOpen(false);
-      setSupplierToDelete(null);
+      setSupplierToDeleteId(null);
     }
   };
 
@@ -146,6 +149,14 @@ const SuppliersPage = () => {
     return rows.filter((row) => row.id); // Filter out any rows that do not have a valid `id` property.
   }, [rows]); // Recompute `filteredRows` only if `rows` changes.
 
+  /**
+   * Filter the suppliers to ensure only valid suppliers are displayed in the card list.
+   * Similar to the filteredRows logic, we want to ensure that only suppliers with valid `id` and necessary properties are shown.
+   */
+  const filteredSuppliers = useMemo(() => {
+    return suppliers.filter((supplier) => supplier.id && supplier.name);
+  }, [suppliers]);
+
   // Render floating action button (FAB) for mobile
   const renderFAB = () => {
     if (!isMobile) return null;
@@ -193,9 +204,11 @@ const SuppliersPage = () => {
           {isMobile ? (
             <div className="h-full overflow-y-auto">
               <SupplierCardList
-                suppliers={suppliers}
+                suppliers={filteredSuppliers}
                 expandedCards={expandedCards}
                 onToggleExpand={toggleCardExpansion}
+                onEdit={handleEdit}
+                onDelete={handleDeleteClick}
               />
             </div>
           ) : (
@@ -217,6 +230,7 @@ const SuppliersPage = () => {
       {/* Delete Confirmation Dialog */}
       <SupplierDeleteConfirmationDialog
         open={deleteDialogOpen}
+        supplierName={supplierName}
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDelete}
       />

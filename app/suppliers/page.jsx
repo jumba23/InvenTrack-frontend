@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import useSupplierStore from "@/stores/supplierStore";
 import SupplierCardList from "@/components/Suppliers/SupplierList/SupplierCardList";
 import SupplierDataGrid from "@/components/Suppliers/SupplierList/SupplierDataGrid";
 import { Plus } from "lucide-react";
@@ -12,6 +11,7 @@ import SupplierDeleteConfirmationDialog from "@/components/Suppliers/Modals/Supp
 import { useSupplier } from "@/utils/hooks/useSupplier";
 import { deleteSupplier } from "@/utils/api/supplierServices";
 import LogoSpinner from "@/components/Spinners/LogoSpinner";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 
 /**
  *  SuppliersPage Component
@@ -121,7 +121,7 @@ const SuppliersPage = () => {
         id: supplier.id, // Unique ID of each supplier (must be present and unique for each row).
         name: supplier.name,
         contact_person: supplier.contact_person,
-        phone: supplier.phone,
+        phone: formatPhoneNumber(supplier.phone),
         total_quantity: supplier.total_quantity,
         stock_wholesale_value: supplier.stock_wholesale_value,
         stock_retail_value: supplier.stock_retail_value,
@@ -153,7 +153,12 @@ const SuppliersPage = () => {
    * Similar to the filteredRows logic, we want to ensure that only suppliers with valid `id` and necessary properties are shown.
    */
   const filteredSuppliers = useMemo(() => {
-    return suppliers.filter((supplier) => supplier.id && supplier.name);
+    return suppliers
+      .filter((supplier) => supplier.id && supplier.name)
+      .map((supplier) => ({
+        ...supplier,
+        phone: formatPhoneNumber(supplier.phone),
+      }));
   }, [suppliers]);
 
   // Render floating action button (FAB) for mobile

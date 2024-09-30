@@ -36,7 +36,12 @@ const SupplierCard = ({
 
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div>Contact: {supplier.contact_person || "N/A"}</div>
-        <div>Phone: {supplier.phone || "N/A"}</div>
+        {/* Render clickable phone number for mobile view */}
+        <div>
+          <a href={`tel:${supplier.phone}`} className="text-blue-500 underline">
+            {supplier.phone}
+          </a>
+        </div>
       </div>
 
       {expanded && (

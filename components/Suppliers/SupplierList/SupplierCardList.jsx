@@ -1,7 +1,13 @@
 import React from "react";
 import SupplierCard from "../SupplierCard/SupplierCard";
 
-const SupplierCardList = ({ suppliers, expandedCards, onToggleExpand }) => {
+const SupplierCardList = ({
+  suppliers,
+  expandedCards,
+  onToggleExpand,
+  onEdit,
+  onDelete,
+}) => {
   return (
     <div className="pb-20 mt-4">
       {suppliers.map((supplier) => (
@@ -10,6 +16,8 @@ const SupplierCardList = ({ suppliers, expandedCards, onToggleExpand }) => {
           supplier={supplier}
           expanded={expandedCards[supplier.id]}
           onToggleExpand={onToggleExpand}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       ))}
     </div>

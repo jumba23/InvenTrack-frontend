@@ -10,7 +10,7 @@ const ProductCard = ({
   onDelete,
 }) => {
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => onDelete(product.id),
+    // onSwipedLeft: () => onDelete(product.id),
     onSwipedRight: () => onEdit(product.id),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,

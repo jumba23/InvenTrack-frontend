@@ -72,7 +72,7 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
   // Handle form submission
   const onSubmitForm = async (data) => {
     setIsSubmitting(true);
-    setNotification({ open: false, message: "", severity: "success" });
+    // setNotification({ open: false, message: "", severity: "success" });
     try {
       await onSubmit(data, (errorObj) => {
         if (errorObj && errorObj.message) {

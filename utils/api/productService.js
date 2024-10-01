@@ -1,3 +1,5 @@
+//utils/api/productService.js
+
 import axiosClient from "./axiosClient";
 import { handleApiError } from "./errorHandling";
 

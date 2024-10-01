@@ -1,3 +1,5 @@
+// components/Inventory/ProductCard/ProductCard.jsx
+
 import React from "react";
 import { useSwipeable } from "react-swipeable";
 import { ChevronDown, ChevronUp, Edit, Trash2 } from "lucide-react";

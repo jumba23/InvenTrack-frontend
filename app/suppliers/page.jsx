@@ -122,6 +122,7 @@ const SuppliersPage = () => {
         name: supplier.name,
         contact_person: supplier.contact_person,
         phone: formatPhoneNumber(supplier.phone),
+        email: supplier.email,
         total_quantity: supplier.total_quantity,
         stock_wholesale_value: supplier.stock_wholesale_value,
         stock_retail_value: supplier.stock_retail_value,

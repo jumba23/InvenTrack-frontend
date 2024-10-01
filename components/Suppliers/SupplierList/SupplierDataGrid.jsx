@@ -8,7 +8,17 @@ const SupplierDataGrid = ({ rows, onEdit, onDelete }) => {
     { field: "name", headerName: "Supplier", minWidth: 150, flex: 1 },
     { field: "contact_person", headerName: "Contact", minWidth: 150, flex: 1 },
     { field: "phone", headerName: "Phone", minWidth: 120, flex: 1 },
-    { field: "email", headerName: "Email", minWidth: 120, flex: 1 },
+    {
+      field: "email",
+      headerName: "Email",
+      minWidth: 150,
+      flex: 1,
+      renderCell: (params) => (
+        <a href={`mailto:${params.value}`} className="text-blue-500 underline">
+          {params.value || "N/A"}
+        </a>
+      ),
+    },
     {
       field: "total_quantity",
       headerName: "Total Quantity",

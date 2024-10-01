@@ -16,6 +16,8 @@ import SubmitButton from "@/components/Buttons/SubmitButton";
  *
  * This component renders a confirmation dialog for deleting a supplier.
  * It provides options to confirm or cancel the deletion action.
+ * If a custom message is provided, it will be shown instead of the default message.
+ * The dialog is controlled by the `open` prop, which determines whether it is visible.
  *
  * @param {boolean} open - Whether the dialog is open
  * @param {function} onClose - Function to handle closing the dialog

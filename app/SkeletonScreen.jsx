@@ -1,3 +1,5 @@
+//app/SkeletonScreen.jsx
+
 import React from "react";
 
 const SkeletonScreen = () => {

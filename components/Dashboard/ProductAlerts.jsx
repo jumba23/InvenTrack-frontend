@@ -1,3 +1,5 @@
+//components/Dashboard/ProductAlerts.jsx
+
 import React from "react";
 import Card from "./DashboardCard";
 

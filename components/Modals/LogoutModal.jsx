@@ -1,3 +1,5 @@
+//components/Modals/LogoutModal.jsx
+
 import { useAuth } from "@/context/AuthContext";
 import CancelButton from "../Buttons/CancelButton";
 import SubmitButton from "../Buttons/SubmitButton";

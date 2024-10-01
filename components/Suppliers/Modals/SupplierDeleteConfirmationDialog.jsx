@@ -1,4 +1,4 @@
-// components/Dialogs/DeleteConfirmationDialog.jsx
+// components/Dialogs/SupplierDeleteConfirmationDialog.jsx
 
 import React from "react";
 import {
@@ -12,25 +12,25 @@ import CancelButton from "@/components/Buttons/CancelButton";
 import SubmitButton from "@/components/Buttons/SubmitButton";
 
 /**
- * DeleteConfirmationDialog Component
+ * SupplierDeleteConfirmationDialog Component
  *
- * This component renders a confirmation dialog for deleting a product.
+ * This component renders a confirmation dialog for deleting a supplier.
  * It provides options to confirm or cancel the deletion action.
  *
  * @param {boolean} open - Whether the dialog is open
  * @param {function} onClose - Function to handle closing the dialog
  * @param {function} onConfirm - Function to handle confirming the deletion
+ * @param {string} supplierName - The name of the supplier being deleted
+ * @param {string} customMessage - Custom message to show in the dialog
  */
 const SupplierDeleteConfirmationDialog = ({
   open,
   onClose,
   onConfirm,
   supplierName,
+  customMessage,
 }) => {
-  /**
-   * Function to capitalize each word in the string.
-   * E.g., "test product" => "Test Product"
-   */
+  // Function to capitalize each word in the string (helper function)
   const capitalizeWords = (str) => {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
   };
@@ -40,22 +40,39 @@ const SupplierDeleteConfirmationDialog = ({
       <DialogTitle>Confirm Delete</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          {/* Capitalize product name and style it with bold */}
-          Are you sure you want to delete{" "}
-          <strong>{capitalizeWords(supplierName)}</strong> supplier?
-          {/* Add a line break */}
-          <br />
-          {/* Add styles for the secondary message */}
-          This action cannot be undone.
+          {/* If a custom message is provided, show that instead of the default message */}
+          {customMessage ? (
+            <span className="text-red-600">{customMessage}</span>
+          ) : (
+            <>
+              {/* Capitalize product name and style it with bold */}
+              Are you sure you want to delete{" "}
+              <strong>{capitalizeWords(supplierName)}</strong> supplier?
+              {/* Add a line break */}
+              <br />
+              {/* Add styles for the secondary message */}
+              This action cannot be undone.
+            </>
+          )}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <CancelButton onClick={onClose} className="w-full sm:w-auto">
-          Cancel
-        </CancelButton>
-        <SubmitButton onClick={onConfirm} className="w-full sm:w-auto">
-          Delete
-        </SubmitButton>
+        {/* If a custom message is present, show a single "OK" button */}
+        {customMessage ? (
+          <SubmitButton onClick={onClose} className="w-full sm:w-auto">
+            OK
+          </SubmitButton>
+        ) : (
+          <>
+            {/* Original Cancel and Delete buttons */}
+            <CancelButton onClick={onClose} className="w-full sm:w-auto">
+              Cancel
+            </CancelButton>
+            <SubmitButton onClick={onConfirm} className="w-full sm:w-auto">
+              Delete
+            </SubmitButton>
+          </>
+        )}
       </DialogActions>
     </Dialog>
   );

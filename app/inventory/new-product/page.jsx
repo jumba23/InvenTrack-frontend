@@ -1,4 +1,5 @@
-// NewProductPage.jsx
+//app/inventory/new-product/NewProductPage.jsx
+
 "use client";
 
 import { useRouter } from "next/navigation";

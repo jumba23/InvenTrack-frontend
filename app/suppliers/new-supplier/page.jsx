@@ -1,3 +1,5 @@
+//app/suppliers/new-supplier/page.jsx
+
 "use client";
 
 import React, { useCallback } from "react";

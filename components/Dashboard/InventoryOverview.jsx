@@ -1,3 +1,5 @@
+//components/Dashboard/InventoryOverview.jsx
+
 import React, { useMemo } from "react";
 import {
   Chart as ChartJS,

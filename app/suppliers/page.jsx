@@ -42,22 +42,37 @@ const SuppliersPage = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [supplierName, setSupplierName] = useState("");
   const [supplierToDeleteId, setSupplierToDeleteId] = useState(null);
+  const [customMessage, setCustomMessage] = useState("");
 
   // Using useMediaQuery to detect if the screen size is mobile or desktop
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // Handle edit product
+  // Handle edit supplier
   const handleEdit = (id) => {
     setIsNewSupplier(false);
     router.push(`/suppliers/supplier/${id}`);
   };
 
-  // Handle delete product
+  // Handle delete supplier click
   const handleDeleteClick = (id) => {
-    setSupplierToDeleteId(id);
-    const supplierName = suppliers.find((supplier) => supplier.id === id);
-    setSupplierName(supplierName.name);
-    setDeleteDialogOpen(true);
+    const supplier = suppliers.find((supplier) => supplier.id === id);
+
+    // Check if total_quantity is greater than 0
+    if (supplier.total_quantity > 0) {
+      // If supplier cannot be deleted, show custom dialog message
+      setSupplierToDeleteId(null);
+      setSupplierName(supplier.name);
+      setCustomMessage(
+        `You are not able to delete ${supplier.name} since we still have their product(s). Please remove product(s) first.`
+      );
+      setDeleteDialogOpen(true);
+    } else {
+      // If supplier can be deleted, proceed with normal deletion process
+      setSupplierToDeleteId(id);
+      setSupplierName(supplier.name);
+      setCustomMessage(""); // Reset custom message
+      setDeleteDialogOpen(true);
+    }
   };
 
   // Handle delete confirmation
@@ -236,6 +251,7 @@ const SuppliersPage = () => {
       <SupplierDeleteConfirmationDialog
         open={deleteDialogOpen}
         supplierName={supplierName}
+        customMessage={customMessage}
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDelete}
       />

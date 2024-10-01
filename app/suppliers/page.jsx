@@ -53,7 +53,7 @@ const SuppliersPage = () => {
     router.push(`/suppliers/supplier/${id}`);
   };
 
-  // Handle delete supplier click
+  // Handle delete supplier click - DELETE button click
   const handleDeleteClick = (id) => {
     const supplier = suppliers.find((supplier) => supplier.id === id);
 
@@ -75,7 +75,7 @@ const SuppliersPage = () => {
     }
   };
 
-  // Handle delete confirmation
+  // Handle delete confirmation - Delete Confirmation Dialog
   const handleDelete = async () => {
     if (!supplierToDeleteId) return;
 

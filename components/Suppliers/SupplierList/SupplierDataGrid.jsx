@@ -5,9 +5,10 @@ import { DataGrid } from "@mui/x-data-grid";
 
 const SupplierDataGrid = ({ rows, onEdit, onDelete }) => {
   const columns = [
-    { field: "name", headerName: "Supplier", width: 150 },
-    { field: "contact_person", headerName: "Contact", width: 150 },
-    { field: "phone", headerName: "Phone", width: 120 },
+    { field: "name", headerName: "Supplier", minWidth: 150, flex: 1 },
+    { field: "contact_person", headerName: "Contact", minWidth: 150, flex: 1 },
+    { field: "phone", headerName: "Phone", minWidth: 120, flex: 1 },
+    { field: "email", headerName: "Email", minWidth: 120, flex: 1 },
     {
       field: "total_quantity",
       headerName: "Total Quantity",
@@ -58,6 +59,7 @@ const SupplierDataGrid = ({ rows, onEdit, onDelete }) => {
         columns={columns}
         pageSize={5}
         sx={{
+          flexGrow: 1, // Allow the DataGrid to grow within its container
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#dddddd",
             color: "#000000",

@@ -1,3 +1,5 @@
+//components/AccountSettings/SettingsDialog.jsx
+
 /**
  * SettingsDialog Component
  *

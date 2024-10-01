@@ -1,3 +1,5 @@
+//components/Dashboard/QuickActions.jsx
+
 import React from "react";
 import Card from "./DashboardCard";
 

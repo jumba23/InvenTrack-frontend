@@ -1,3 +1,5 @@
+//components/Suppliers/SupplierList/SupplierCardList.jsx
+
 import React from "react";
 import SupplierCard from "../SupplierCard/SupplierCard";
 

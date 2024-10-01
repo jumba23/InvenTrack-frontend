@@ -1,3 +1,5 @@
+//layouts/LandingPageLayout.jsx
+
 import React from "react";
 import Footer from "@/components/MainPageComponents/Footer";
 import LandingHeader from "@/components/LandingPageComponents/LandingHeader";

@@ -1,3 +1,5 @@
+//utils/hooks/useProfile.js
+
 import useProfileStore from "@/stores/profileStore";
 
 /**

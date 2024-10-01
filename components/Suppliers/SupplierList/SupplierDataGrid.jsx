@@ -13,11 +13,22 @@ const SupplierDataGrid = ({ rows, onEdit, onDelete }) => {
       headerName: "Email",
       minWidth: 150,
       flex: 1,
-      renderCell: (params) => (
-        <a href={`mailto:${params.value}`} className="text-blue-500 underline">
-          {params.value || "N/A"}
-        </a>
-      ),
+      renderCell: (params) => {
+        return (
+          <>
+            {params.value ? (
+              <a
+                href={`mailto:${params.value}`}
+                className="text-blue-500 underline"
+              >
+                {params.value}
+              </a>
+            ) : (
+              <span>N/A</span>
+            )}
+          </>
+        );
+      },
     },
     {
       field: "total_quantity",

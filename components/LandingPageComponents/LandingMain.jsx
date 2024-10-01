@@ -1,3 +1,5 @@
+//components/LandingPageComponents/LandingMain.jsx
+
 import Image from "next/image";
 import React from "react";
 

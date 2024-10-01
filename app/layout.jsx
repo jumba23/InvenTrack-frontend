@@ -1,3 +1,5 @@
+//app/layout.jsx
+
 import { AuthProvider } from "@/context/AuthContext";
 import { RouteGuard } from "@/utils/RouteGuard";
 import ProfileInitializer from "@/components/ZustandInitializers/ProfileInitializer";

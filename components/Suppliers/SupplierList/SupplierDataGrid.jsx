@@ -3,7 +3,33 @@
 import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
+/**
+ * SupplierDataGrid Component
+ *
+ * This component renders a data grid using the Material UI DataGrid component to display supplier information.
+ * It provides a structured view of supplier data with features such as pagination, formatting, and interactive buttons.
+ *
+ * Props:
+ * - `rows` (array): An array of supplier objects, each representing a row in the data grid.
+ * - `onEdit` (function): A callback function to handle editing a supplier. It accepts the supplier's `id` as a parameter.
+ * - `onDelete` (function): A callback function to handle deleting a supplier. It accepts the supplier's `id` as a parameter.
+ *
+ * The component configures a set of columns, each corresponding to a property of the supplier object. It also adds custom formatting and actions.
+ * The email column is rendered as a clickable mailto link if an email is present.
+ */
+
 const SupplierDataGrid = ({ rows, onEdit, onDelete }) => {
+  /**
+   * Define columns for the DataGrid.
+   *
+   * Each object in the `columns` array represents a column configuration in the grid. The key properties are:
+   * - `field`: The property name from the `rows` data used as the column's identifier.
+   * - `headerName`: The label text displayed in the column header.
+   * - `minWidth`: Sets the minimum width of the column.
+   * - `flex`: Allows the column to grow and shrink relative to other columns, ensuring a flexible layout.
+   * - `renderCell`: A custom rendering function to control how the cell content is displayed.
+   */
+
   const columns = [
     { field: "name", headerName: "Supplier", minWidth: 150, flex: 1 },
     { field: "contact_person", headerName: "Contact", minWidth: 150, flex: 1 },

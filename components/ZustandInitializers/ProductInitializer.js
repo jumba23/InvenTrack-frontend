@@ -1,3 +1,5 @@
+//components/ZustandInitializers/ProductInitializer.js
+
 "use client";
 
 import { useEffect } from "react";

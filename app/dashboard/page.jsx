@@ -1,3 +1,5 @@
+//app/dashboard/page.jsx
+
 "use client";
 
 import KPIGrid from "@/components/Dashboard/KPIGrid";

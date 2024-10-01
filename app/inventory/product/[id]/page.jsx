@@ -1,3 +1,5 @@
+//app/inventory/product/[id]/page.jsx
+
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";

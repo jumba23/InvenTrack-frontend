@@ -1,3 +1,5 @@
+//components/LandingPageComponents/LandingHeader.jsx
+
 import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -36,7 +38,7 @@ const LandingHeader = ({ className }) => {
           height={40}
           className="w-auto h-auto"
         />
-        <h1 className="ml-2 text-xl font-semibold text-blue-600  sm:block">
+        <h1 className="ml-2 text-xl font-semibold text-blue-600 sm:block">
           InvenTrack
         </h1>
       </div>

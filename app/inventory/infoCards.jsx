@@ -1,3 +1,5 @@
+//app/inventory/infoCards.jsx
+
 import React from "react";
 
 /**

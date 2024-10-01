@@ -1,3 +1,5 @@
+//components/Dashboard/InfoCard.jsx
+
 /**
  * InfoCard Component
  *

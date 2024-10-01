@@ -1,4 +1,5 @@
 // utils/api/errorHandling.js
+
 import { ErrorTypes } from "../errorTypes";
 
 /**

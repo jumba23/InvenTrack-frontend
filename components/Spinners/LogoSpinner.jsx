@@ -1,4 +1,4 @@
-// components/LogoSpinner.jsx
+// components/Spinners/LogoSpinner.jsx
 import React from "react";
 import Image from "next/image"; // Replace with <img> if not using Next.js
 import { Box } from "@mui/material";

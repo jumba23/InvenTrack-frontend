@@ -8,6 +8,12 @@ import { fetchSuppliers } from "@/utils/api/supplierServices";
  * Supplier Store
  *
  * This Zustand store manages the state for suppliers in the application.
+ * It provides actions to load suppliers from the API and update the store state.
+ * The store also manages the loading and error states for the supplier data.
+ * The store uses persisted state to store the supplier data in local storage.
+ * The store also manages the state for rendering the supplier form and snackbar messages.
+ *
+ *
  */
 const useSupplierStore = create(
   persist(

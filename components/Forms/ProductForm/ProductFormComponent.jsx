@@ -1,3 +1,5 @@
+// components/Inventory/ProductCard/ProductCard.jsx
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {

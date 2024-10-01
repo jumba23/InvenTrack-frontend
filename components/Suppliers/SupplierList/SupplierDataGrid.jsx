@@ -79,6 +79,7 @@ const SupplierDataGrid = ({ rows, onEdit, onDelete }) => {
         rows={rows}
         columns={columns}
         pageSize={5}
+        density="compact"
         sx={{
           flexGrow: 1, // Allow the DataGrid to grow within its container
           "& .MuiDataGrid-columnHeaders": {

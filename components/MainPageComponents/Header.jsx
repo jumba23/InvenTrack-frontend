@@ -1,8 +1,11 @@
+//components/MainPageComponents/Header.jsx
+
 "use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
 import { IconButton, Badge } from "@mui/material";
+
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountMenu from "@/components/AccountSettings/AccountMenu";

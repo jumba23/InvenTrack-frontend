@@ -53,24 +53,30 @@ frontend/
 │   │    └── page.jsx
 │   ├── inventory/
 │   │    ├── new-product/
-│   │    │   └── page.jsx
+│   │    │   └── page.jsx                         // Add new product page
 │   │    ├── product/
 │   │    │    └── [id]/
-│   │    │        └── page.jsx
+│   │    │        └── page.jsx                    // Edit product page
 │   │    ├── infoCards.jsx
 │   │    ├── layout.jsx
-│   │    └── page.jsx
+│   │    └── page.jsx                             // Main inventory page
 │   ├── orders/
 │   │    └── page.jsx
 │   ├── reports/
 │   │    └── page.jsx
 │   ├── suppliers/
-│   │    └── page.jsx
+│   │    ├── new-supplier/
+│   │    │   └── page.jsx                         // Add new supplier page
+│   │    ├── supplier/
+│   │    │    └── [id]/
+│   │    │        └── page.jsx                    // Edit supplier page
+│   │    ├── layout.jsx
+│   │    └── page.jsx                             // Main suppliers page
 │   ├── user/
 │   │   ├── login/
-│   │   │    └── page.jsx
+│   │   │    └── page.jsx                        // Login page
 │   │   └── signup/
-│   │        └── page.jsx
+│   │        └── page.jsx                        // Signup page
 │   ├── favicon.ico
 │   ├── globals.css
 │   ├── not-found.jsx
@@ -80,11 +86,11 @@ frontend/
 │   └── page.jsx
 ├── components/
 │   ├── AccountSettings/
-│   │   ├── SettingsDialog.jsx
-│   │   └── AccountMenu.jsx
+│   │   ├── SettingsDialog.jsx                   // Dialog for updating user settings
+│   │   └── AccountMenu.jsx                      // Dropdown menu for user account actions
 │   ├── Buttons/
-│   │   ├── CancelButton.jsx
-│   │   └── SubmitButton.jsx
+│   │   ├── CancelButton.jsx                     // Cancel button with consistent styling
+│   │   └── SubmitButton.jsx                     // Submit button with consistent styling
 │   ├── Dashboard/
 │   │   ├── InfoCard.jsx
 │   │   ├── InventoryOverview.jsx
@@ -94,30 +100,30 @@ frontend/
 │   │   └── KPIGrid.jsx
 │   ├── Forms/
 │   │   ├── OrderForm/
-│   │   │   ├── Index.js
+│   │   │   ├── index.js
 │   │   │   └── OrderFormComponent.jsx
 │   │   ├── ProductForm/
-│   │   │   ├── Index.js
-│   │   │   ├── ProductFormComponent.jsx
-│   │   │   ├── FormField.jsx
-│   │   │   ├── FormActions.jsx
-│   │   │   └── FormSection.jsx
+│   │   │   ├── index.js                         // Main entry point for the form
+│   │   │   ├── ProductFormComponent.jsx         // Full form component
+│   │   │   ├── FormField.jsx                    // Individual input fields (name, price, etc.)
+│   │   │   ├── FormActions.jsx                  // Form buttons (Submit, Cancel)
+│   │   │   └── FormSection.jsx                  // Wrapper for logical form sections (details, pricing)
 │   │   └── SupplierForm/
-│   │       ├── FormActions.jsx           // Form buttons (Submit, Cancel)
-│   │       ├── FormField.jsx             // Individual input fields (name, contact, etc.)
-│   │       ├── FormSection.jsx           // Wrapper for logical form sections (details, address)
-│   │       ├── index.js                  // Main entry point for the form
-│   │       └── SupplierFormComponent.jsx // Full form component
+│   │       ├── FormActions.jsx                  // Form buttons (Submit, Cancel)
+│   │       ├── FormField.jsx                    // Individual input fields (name, contact, etc.)
+│   │       ├── FormSection.jsx                  // Wrapper for logical form sections (details, address)
+│   │       ├── index.js                         // Main entry point for the form
+│   │       └── SupplierFormComponent.jsx        // Full form component
 │   ├── Inventory/
 │   │   ├── Filters/
-│   │   │   └── CategoryFilter.jsx
+│   │   │   └── CategoryFilter.jsx               // Filter by product category (service or retail)
 │   │   ├── Modals/
-│   │   │   └── DeleteConfirmationDialog.jsx
+│   │   │   └── DeleteConfirmationDialog.jsx     // Confirmation dialog for deleting products
 │   │   ├── ProductCard/
-│   │   │   └── ProductCard.jsx
-│   │   ├── ProductList/
-│   │   │   ├── ProductCardList.jsx
-│   │   │   └── ProductDataGrid.jsx
+│   │   │   └── ProductCard.jsx                  // Individual product card
+│   │   └── ProductList/
+│   │       ├── ProductCardList.jsx              // List of product cards - For mobile view
+│   │       └── ProductDataGrid.jsx              // Data grid for displaying product information - For desktop view
 │   ├── LandingPageComponents/
 │   │   ├── LandingPageHeader.jsx
 │   │   └── LandingMain.jsx
@@ -126,46 +132,55 @@ frontend/
 │   │   ├── Header.jsx
 │   │   └── Sidebar.jsx
 │   ├── Modals/
-│   │   └── LogoutModal.jsx
+│   │   ├── ConfirmationDialog.jsx              // Generic confirmation dialog
+│   │   └── LogoutModal.jsx                     // Modal for logging out
 │   ├── Notifications/
-│   │   └── NotificationSnackbar.jsx
+│   │   └── NotificationSnackbar.jsx            // Snackbar for displaying notifications
 │   ├── Spinners/
 │   │   ├── Spinner.jsx
 │   │   └── LogoSpinner.jsx
+│   ├── Suppliers/
+│   │   ├── Modals/
+│   │   │   └── SupplierDeleteConfirmationDialog.jsx
+│   │   ├── SupplierCard/
+│   │   │   └── SupplierCard.jsx
+│   │   └── SupplierList/
+│   │       ├── SupplierCardList.jsx
+│   │       └── SupplierDataGrid.jsx
 │   └── ZustandInitializers/
-│       ├── ProductInitializer.js
-│       ├── SupplierInitializer.js
-│       └── ProfileInitializer.js
+│       ├── ProductInitializer.js             // Initialize product store
+│       ├── SupplierInitializer.js            // Initialize supplier store
+│       └── ProfileInitializer.js             // Initialize profile store
 ├── context/
-│   └── AuthContext.jsx
+│   └── AuthContext.jsx                       // Authentication context provider
 ├── layouts/
-│   ├── LandingPageLayout.jsx
-│   ├── PageLayout.jsx
-│   └── MainLayout.jsx
+│   ├── LandingPageLayout.jsx                 // Layout for the landing page - Unauthenticated users
+│   ├── PageLayout.jsx                        // Layout for authenticated users - passing MainLayout as children
+│   └── MainLayout.jsx                        // Main layout for the application
 ├── public/
 │   └── images/
 ├── stores/
-│   ├── supplierStore.js
-│   ├── productStore.js
-│   └── profileStore.js
+│   ├── supplierStore.js                      // Setting up supplier store with Zustand
+│   ├── productStore.js                       // Setting up product store with Zustand
+│   └── profileStore.js                       // Setting up profile store with Zustand
 ├── utils/
 │   ├── api/
-│   │   ├── authService.js
-│   │   ├── productService.js
-│   │   ├── profileService.js
-│   │   ├── supplierService.js
-│   │   ├── axiosClient.js
-│   │   └── errorHandling.js
-│   ├── errorTypes.js
+│   │   ├── authService.js                    // Authentication service
+│   │   ├── productService.js                 // Product service CRUD operations
+│   │   ├── profileService.js                 // Profile service CRUD operations
+│   │   ├── supplierService.js                // Supplier service CRUD operations
+│   │   ├── axiosClient.js                    // Axios client configuration
+│   │   └── errorHandling.js                  // Error handling module
+│   ├── errorTypes.js                         // Error types for consistent error handling
 │   ├── hooks/
 │   │   ├── Errors/
 │   │   │   ├── index.js
-│   │   │   ├── useAuthError.js
-│   │   │   └── useError.js
-│   │   ├── useProduct.js
-│   │   ├── useSupplier.js
-│   │   └── useProfile.js
-│   └── RouteGuard.js
+│   │   │   ├── useAuthError.js               // Custom hook for handling authentication errors
+│   │   │   └── useError.js                   // Custom hook for handling API errors
+│   │   ├── useProduct.js                     // Custom hook for zustand product store
+│   │   ├── useSupplier.js                    // Custom hook for zustand supplier store
+│   │   └── useProfile.js                     // Custom hook for zustand profile store
+│   └── RouteGuard.js                         // Route guard for protected routes
 ├── .env.local
 ├── .eslintrc.json
 ├── next.config.js

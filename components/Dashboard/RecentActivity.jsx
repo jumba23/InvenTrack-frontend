@@ -1,3 +1,5 @@
+//components/Dashboard/RecentActivity.jsx
+
 import React from "react";
 import Card from "./DashboardCard";
 

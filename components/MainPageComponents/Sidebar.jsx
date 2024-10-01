@@ -1,4 +1,4 @@
-// components/Sidebar.jsx
+// components/MainPageComponents/Sidebar.jsx
 "use client";
 
 import Image from "next/image";

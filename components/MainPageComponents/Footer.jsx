@@ -1,3 +1,5 @@
+//components/MainPageComponents/Footer.jsx
+
 import React from "react";
 
 /**

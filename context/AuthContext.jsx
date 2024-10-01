@@ -13,7 +13,6 @@ import { userLogout, validateUser, userLogin } from "@/utils/api/authService";
 import { useRouter } from "next/navigation";
 import useProductStore from "@/stores/productStore";
 import useProfileStore from "@/stores/profileStore";
-import { handleApiError } from "@/utils/api/errorHandling";
 
 /**
  * ===================================== SUMMARY =====================================

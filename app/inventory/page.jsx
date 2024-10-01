@@ -1,3 +1,5 @@
+//app/inventory/page.jsx
+
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -14,7 +16,6 @@ import CategoryFilter from "@/components/Inventory/Filters/CategoryFilter";
 import ProductCardList from "@/components/Inventory/ProductList/ProductCardList";
 import ProductDeleteConfirmationDialog from "@/components/Inventory/Modals/ProductDeleteConfirmationDialog";
 import NotificationSnackbar from "@/components/Notifications/NotificationSnackbar";
-import { set } from "react-hook-form";
 
 /**
  * InventoryPage Component

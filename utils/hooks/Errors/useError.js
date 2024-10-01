@@ -1,4 +1,4 @@
-// hooks/useError.js
+// utils/hooks/Errors/useError.js
 
 import { useState, useCallback } from "react";
 import { handleApiError } from "@/utils/api/errorHandling";

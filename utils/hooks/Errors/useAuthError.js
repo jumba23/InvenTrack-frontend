@@ -1,16 +1,25 @@
 // utils/hooks/Errors/useAuthError.js
 
 import { useState, useCallback } from "react";
-import { handleApiError } from "@/utils/api/errorHandling";
+import {
+  handleApiError,
+  getUserFriendlyErrorMessage,
+} from "@/utils/api/errorHandling";
 
 export const useAuthError = () => {
   const [authError, setAuthError] = useState(null);
 
   const handleAuthError = useCallback((error) => {
+    // If error is already processed, just set it
+    if (error.type && error.statusCode) {
+      setAuthError(error);
+      return error;
+    }
+
     const errorObj = handleApiError(
       error,
-      () => {
-        setAuthError(error);
+      (errorObj) => {
+        setAuthError(errorObj);
       },
       {
         invalidCredentials:
@@ -27,5 +36,14 @@ export const useAuthError = () => {
     setAuthError(null);
   }, []);
 
-  return { authError, handleAuthError, clearAuthError };
+  const getUserFriendlyAuthError = useCallback(() => {
+    return authError ? getUserFriendlyErrorMessage(authError) : null;
+  }, [authError]);
+
+  return {
+    authError,
+    handleAuthError,
+    clearAuthError,
+    getUserFriendlyAuthError,
+  };
 };

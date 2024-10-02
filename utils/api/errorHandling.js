@@ -5,12 +5,12 @@ import { ErrorTypes } from "../errorTypes";
 /**
  * errorHandling.js
  *
- * This module provides utility functions for handling API errors in a consistent manner.
- * It includes functions to process error responses and set appropriate error messages,
- * with special handling for authentication errors.
+ * This module provides utility functions for handling API errors in a consistent manner,
+ * aligning with the backend's ApiError structure and handling.
  *
  * Key features:
  * - Handles various types of API errors (network errors, response errors, authentication errors, unexpected errors)
+ * - Aligns with backend ApiError structure
  * - Provides detailed error messages for different scenarios
  * - Allows customization of error messages
  * - Special handling for authentication-related errors
@@ -40,12 +40,14 @@ const logError = (error, additionalInfo = {}) => {
  *
  * @param {string} type - The type of error.
  * @param {string} message - The error message.
+ * @param {number} statusCode - The HTTP status code.
  * @param {Object} [details] - Additional details about the error.
- * @returns {Object} An error object with type, message, timestamp, and optional details.
+ * @returns {Object} An error object with type, message, statusCode, timestamp, and optional details.
  */
-const createErrorObject = (type, message, details = null) => ({
+const createErrorObject = (type, message, statusCode, details = null) => ({
   type,
   message,
+  statusCode,
   details,
   timestamp: new Date().toISOString(),
 });
@@ -56,47 +58,48 @@ const createErrorObject = (type, message, details = null) => ({
  * @param {Error} error - The error object caught from an API call.
  * @param {Function} setErrorMsg - A function to set the error message in the component state.
  * @param {Object} [customMessages] - Optional custom error messages.
- * @returns {Object} An error object with type and message.
- */ export const handleApiError = (error, setErrorMsg, customMessages = {}) => {
+ * @returns {Object} An error object with type, message, and statusCode.
+ */
+export const handleApiError = (error, setErrorMsg, customMessages = {}) => {
   logError(error);
 
-  let errorObj = {
-    type: "UNEXPECTED_ERROR",
-    message: "An unexpected error occurred.",
-  };
+  // Check if the error is already an ApiError
+  if (error.type && error.statusCode) {
+    console.log("Error is already processed:", error);
+    if (typeof setErrorMsg === "function") {
+      setErrorMsg(error);
+    }
+    return error;
+  }
+
+  let errorObj = createErrorObject(
+    ErrorTypes.UNEXPECTED_ERROR,
+    "An unexpected error occurred.",
+    500
+  );
 
   if (error.response) {
-    const status = error.response.status;
-    if (status === 400) {
-      errorObj = {
-        type: "INVALID_CREDENTIALS",
-        message:
-          error.response.data?.error ||
-          customMessages.invalidCredentials ||
-          "Invalid login credentials. Please check your email and password.",
-      };
-    } else if (status === 401 || status === 403) {
-      errorObj = handleAuthError(error.response, customMessages);
-    } else if (error.response.data && error.response.data.error) {
+    const { status, data } = error.response;
+
+    // Check if the error response matches the backend ApiError structure
+    if (data && data.error) {
       errorObj = createErrorObject(
-        ErrorTypes.API_ERROR,
-        error.response.data.error,
-        { status }
+        mapStatusToErrorType(status),
+        data.error.message || "An error occurred",
+        status,
+        data.error.details
       );
     } else {
-      errorObj = createErrorObject(
-        ErrorTypes.SERVER_ERROR,
-        customMessages.serverError || `Server error: ${status}`,
-        { status }
-      );
+      // Fallback to existing error handling
+      errorObj = handleLegacyError(error, status, customMessages);
     }
   } else if (error.request) {
-    errorObj = {
-      type: "NETWORK_ERROR",
-      message:
-        customMessages.networkError ||
+    errorObj = createErrorObject(
+      ErrorTypes.NETWORK_ERROR,
+      customMessages.networkError ||
         "Network error. Please check your connection.",
-    };
+      0 // No status code for network errors
+    );
   }
 
   console.log("Error object created:", errorObj);
@@ -107,13 +110,65 @@ const createErrorObject = (type, message, details = null) => ({
 
   return errorObj;
 };
+
+/**
+ * Maps HTTP status codes to error types.
+ *
+ * @param {number} status - The HTTP status code.
+ * @returns {string} The corresponding error type.
+ */
+const mapStatusToErrorType = (status) => {
+  switch (status) {
+    case 400:
+      return ErrorTypes.VALIDATION_ERROR;
+    case 401:
+    case 403:
+      return ErrorTypes.AUTH_ERROR;
+    case 404:
+      return ErrorTypes.NOT_FOUND;
+    case 500:
+      return ErrorTypes.SERVER_ERROR;
+    default:
+      return ErrorTypes.API_ERROR;
+  }
+};
+
+/**
+ * Handles errors for legacy API responses that don't match the new ApiError structure.
+ *
+ * @param {Error} error - The original error object.
+ * @param {number} status - The HTTP status code.
+ * @param {Object} customMessages - Custom error messages.
+ * @returns {Object} An error object with type, message, and statusCode.
+ */
+const handleLegacyError = (error, status, customMessages) => {
+  if (status === 400) {
+    return createErrorObject(
+      ErrorTypes.VALIDATION_ERROR,
+      error.response.data?.error ||
+        customMessages.invalidInput ||
+        "Invalid input. Please check your data.",
+      status
+    );
+  } else if (status === 401 || status === 403) {
+    return handleAuthError(error.response, customMessages);
+  } else {
+    return createErrorObject(
+      ErrorTypes.SERVER_ERROR,
+      customMessages.serverError || `Server error: ${status}`,
+      status
+    );
+  }
+};
+
 /**
  * Handles authentication-specific errors.
  *
  * @param {Object} response - The error response object.
  * @param {Object} customMessages - Custom error messages.
- * @returns {Object} An error object with type and message.
- */ const handleAuthError = (response, customMessages) => {
+ * @returns {Object} An error object with type, message, and statusCode.
+ */
+const handleAuthError = (response, customMessages) => {
   const status = response.status;
   let message = customMessages.authError || "Authentication failed.";
 
@@ -129,29 +184,34 @@ const createErrorObject = (type, message, details = null) => ({
       "Access denied. You don't have permission to access this resource.";
   }
 
-  return { type: "AUTH_ERROR", message };
+  return createErrorObject(ErrorTypes.AUTH_ERROR, message, status);
 };
 
 /**
- * Generates a user-friendly error message based on the error code.
+ * Generates a user-friendly error message based on the error object.
  *
- * @param {string} errorCode - The error code received from the API.
+ * @param {Object} error - The error object returned by handleApiError.
  * @returns {string} A user-friendly error message.
  */
-export const getUserFriendlyErrorMessage = (errorCode) => {
+export const getUserFriendlyErrorMessage = (error) => {
   const errorMessages = {
-    INVALID_CREDENTIALS: "Invalid email or password. Please try again.",
-    USER_NOT_FOUND: "User not found. Please check your email or sign up.",
-    NETWORK_ERROR:
+    [ErrorTypes.VALIDATION_ERROR]: "Please check your input and try again.",
+    [ErrorTypes.AUTH_ERROR]:
+      "Authentication failed. Please try again or log in.",
+    [ErrorTypes.NOT_FOUND]: "The requested resource was not found.",
+    [ErrorTypes.NETWORK_ERROR]:
       "Unable to connect to the server. Please check your internet connection.",
-    SERVER_ERROR:
+    [ErrorTypes.SERVER_ERROR]:
       "We're experiencing technical difficulties. Please try again later.",
-    AUTH_ERROR: "Authentication failed. Please try again.",
-    // Add more error codes and messages as needed
+    [ErrorTypes.API_ERROR]:
+      "An error occurred while processing your request. Please try again.",
+    [ErrorTypes.UNEXPECTED_ERROR]:
+      "An unexpected error occurred. Please try again.",
   };
 
   return (
-    errorMessages[errorCode] ||
+    errorMessages[error.type] ||
+    error.message ||
     "An unexpected error occurred. Please try again."
   );
 };

@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import Alert from "@mui/material/Alert";
 import { useAuthError } from "@/utils/hooks/Errors";
 import SubmitButton from "@/components/Buttons/SubmitButton";
+import { getUserFriendlyErrorMessage } from "@/utils/api/errorHandling";
 
 // ========================= SUMMARY =========================
 // This component is a login form that allows users to sign in
@@ -66,7 +67,12 @@ const theme = createTheme({
 const LoginForm = () => {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
-  const { authError, handleAuthError, clearAuthError } = useAuthError();
+  const {
+    authError,
+    handleAuthError,
+    clearAuthError,
+    getUserFriendlyAuthError,
+  } = useAuthError();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -117,8 +123,15 @@ const LoginForm = () => {
       await login(email, password);
       // If login is successful, the useEffect hook will handle redirection
     } catch (error) {
-      console.error("Login error LOGIN PAGE:", error);
-      handleAuthError(error); // Using the new error handling function
+      console.error("Login error:", error);
+      const errorObj = handleAuthError(error);
+      // Log the detailed error object
+      console.log("Detailed error:", {
+        type: errorObj.type,
+        message: errorObj.message,
+        statusCode: errorObj.statusCode,
+        details: errorObj.details,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -158,7 +171,7 @@ const LoginForm = () => {
               onClose={clearAuthError}
               sx={{ mt: 2, width: "100%" }}
             >
-              {authError.message}
+              {authError.message || getUserFriendlyAuthError()}
             </Alert>
           )}
           <Box

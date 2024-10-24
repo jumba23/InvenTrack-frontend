@@ -11,6 +11,9 @@ import "./globals.css";
 export const metadata = {
   title: "InvenTrack",
   description: "Inventory Tracking System",
+  keywords: "inventory, tracking, management, supplies",
+  viewport: "width=device-width, initial-scale=1",
+  themeColor: "#ffffff",
 };
 
 /**
@@ -57,14 +60,18 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider>
           <RouteGuard>
-            <ProfileInitializer>
-              <SupplierInitializer>
-                <ProductInitializer>{children}</ProductInitializer>
-              </SupplierInitializer>
-            </ProfileInitializer>
+            <ZustandProviders>{children}</ZustandProviders>
           </RouteGuard>
         </AuthProvider>
       </body>
     </html>
   );
 }
+
+const ZustandProviders = ({ children }) => (
+  <ProfileInitializer>
+    <SupplierInitializer>
+      <ProductInitializer>{children}</ProductInitializer>
+    </SupplierInitializer>
+  </ProfileInitializer>
+);

@@ -1,7 +1,22 @@
 // components/MainPageComponents/Sidebar.jsx
 "use client";
 
+/**
+ * Sidebar Component
+ *
+ * A responsive sidebar navigation component that adapts between desktop and mobile views.
+ * Implements Next.js Link component for optimized client-side navigation without full page reloads.
+ *
+ * Features:
+ * - Responsive design with mobile drawer functionality
+ * - Client-side navigation using Next.js Link
+ * - Dynamic route highlighting
+ * - Smooth transitions and animations
+ * - Integrated logout functionality
+ */
+
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import classNames from "classnames";
@@ -9,10 +24,7 @@ import { useAuth } from "@/context/AuthContext";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const { toggleLogoutModal } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
-
-  const isCurrentRoute = (path) => pathname === path;
 
   const navItems = [
     { label: "Dashboard", path: "/dashboard", icon: "/images/home.png" },
@@ -40,19 +52,19 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
         </div>
       )}
 
-      {/* Navigation items */}
+      {/* Navigation items using Next.js Link for client-side navigation */}
       <nav className="flex-grow py-6 overflow-y-auto">
         {navItems.map((item) => (
-          <a
+          <Link
             key={item.path}
             href={item.path}
             className={classNames(
               "flex items-center px-8 py-4 text-gray-700 hover:bg-gray-100 transition-colors"
             )}
             onClick={(e) => {
-              e.preventDefault();
-              router.push(item.path);
-              if (isMobile) onClose();
+              if (isMobile) {
+                onClose();
+              }
             }}
           >
             <Image
@@ -63,7 +75,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
               className="mr-3"
             />
             <span className="font-medium text-m">{item.label}</span>
-          </a>
+          </Link>
         ))}
       </nav>
     </>

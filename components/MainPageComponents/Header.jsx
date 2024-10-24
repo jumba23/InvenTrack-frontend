@@ -41,6 +41,7 @@ const Header = ({ toggleSidebar, isMobile }) => {
         alt="InvenTrack Logo"
         width={isMobile ? 58 : 38}
         height={isMobile ? 58 : 38}
+        style={{ width: "auto", height: "auto" }}
         className="mr-2"
       />
       {!isMobile && (
@@ -48,7 +49,6 @@ const Header = ({ toggleSidebar, isMobile }) => {
       )}
     </div>
   );
-
   const renderSearchBar = () => (
     <div className="relative flex-grow max-w-xl mr-2">
       <input
@@ -145,5 +145,4 @@ const Header = ({ toggleSidebar, isMobile }) => {
     </header>
   );
 };
-
 export default Header;

@@ -31,6 +31,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             alt="InvenTrack Logo"
             width={38}
             height={38}
+            style={{ width: "auto", height: "auto" }}
             className="mr-2"
           />
           <span className="text-xl font-semibold text-blue-600">

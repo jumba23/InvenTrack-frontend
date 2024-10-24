@@ -57,7 +57,16 @@ const ProductForm = ({ initialData, onSubmit, onCancel, isNewProduct }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: initialData || {},
+    defaultValues: {
+      ...Object.fromEntries(
+        Object.entries(initialData || {}).map(([key, value]) => [
+          key,
+          value === null ? "" : value,
+        ])
+      ),
+      category_id: initialData?.category_id || "",
+      supplier_id: initialData?.supplier_id || "",
+    },
   });
 
   const { suppliers } = useSupplier();

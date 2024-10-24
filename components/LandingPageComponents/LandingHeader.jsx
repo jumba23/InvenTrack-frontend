@@ -36,6 +36,7 @@ const LandingHeader = ({ className }) => {
           alt="InvenTrack Logo"
           width={40}
           height={40}
+          style={{ width: "auto", height: "auto" }}
           className="w-auto h-auto"
         />
         <h1 className="ml-2 text-xl font-semibold text-blue-600 sm:block">

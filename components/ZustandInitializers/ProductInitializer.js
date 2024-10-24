@@ -1,8 +1,7 @@
 //components/ZustandInitializers/ProductInitializer.js
-
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useProduct } from "@/utils/hooks/useProduct";
 
 /**
@@ -18,10 +17,14 @@ import { useProduct } from "@/utils/hooks/useProduct";
  */
 export default function ProductInitializer({ children }) {
   const { loadProducts } = useProduct();
+  const mounted = useRef(false);
 
   useEffect(() => {
-    // Trigger initial product loading when the component mounts
-    loadProducts();
+    if (!mounted.current) {
+      // Initialize only once
+      mounted.current = true;
+      loadProducts();
+    }
   }, [loadProducts]);
 
   // Render children without modifying them

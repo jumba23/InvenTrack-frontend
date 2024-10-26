@@ -70,32 +70,6 @@ const MainLayout = ({ children }) => {
     setSidebarOpen((prev) => !prev);
   }, []);
 
-  // Memoize the header and sidebar components
-  const headerComponent = React.useMemo(
-    () => <Header toggleSidebar={toggleSidebar} isMobile={isMobile} />,
-    [isMobile, toggleSidebar]
-  );
-
-  const sidebarComponent = React.useMemo(
-    () => (
-      <>
-        {!isMobile && (
-          <div className="flex-shrink-0">
-            <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
-          </div>
-        )}
-        {isMobile && (
-          <Sidebar
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            isMobile={true}
-          />
-        )}
-      </>
-    ),
-    [isMobile, sidebarOpen]
-  );
-
   return (
     <>
       {showLogoutModal && <LogoutModal />}

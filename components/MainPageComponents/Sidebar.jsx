@@ -84,7 +84,7 @@ const Sidebar = memo(({ isOpen, onClose, isMobile }) => {
         toggleLogoutModal();
         if (isMobile) onClose();
       }}
-      className="flex items-center w-full px-8 pb-8 font-medium text-gray-700 transition-colors text-m hover:bg-gray-100"
+      className="flex items-center w-full px-8 py-4 font-medium text-gray-700 transition-colors text-m hover:bg-gray-100"
     >
       <Image
         src="/images/logout.png"
@@ -100,7 +100,7 @@ const Sidebar = memo(({ isOpen, onClose, isMobile }) => {
   return (
     <>
       {!isMobile && (
-        <aside className="flex flex-col w-64 h-full bg-white shadow-md">
+        <aside className="flex flex-col w-64 bg-white shadow-md">
           {mainSidebarContent}
           {logoutButton}
         </aside>

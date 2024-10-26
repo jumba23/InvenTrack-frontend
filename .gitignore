@@ -36,3 +36,9 @@ next-env.d.ts
 
 # Document files
 PROJECTSTRUCTURE.md
+
+# VS Code workspace files
+*.code-workspace
+.vscode/
+
+

@@ -17,22 +17,22 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { useRouter, usePathname } from "next/navigation";
+import React, { memo } from "react";
+import { usePathname } from "next/navigation";
 import classNames from "classnames";
 import { useAuth } from "@/context/AuthContext";
 
-const Sidebar = ({ isOpen, onClose, isMobile }) => {
+const navItems = [
+  { label: "Dashboard", path: "/dashboard", icon: "/images/home.png" },
+  { label: "Inventory", path: "/inventory", icon: "/images/inventory.png" },
+  { label: "Suppliers", path: "/suppliers", icon: "/images/supplier.png" },
+  { label: "Orders", path: "/orders", icon: "/images/orders.png" },
+  { label: "Reports", path: "/reports", icon: "/images/reports.png" },
+];
+
+const Sidebar = memo(({ isOpen, onClose, isMobile }) => {
   const { toggleLogoutModal } = useAuth();
   const pathname = usePathname();
-
-  const navItems = [
-    { label: "Dashboard", path: "/dashboard", icon: "/images/home.png" },
-    { label: "Inventory", path: "/inventory", icon: "/images/inventory.png" },
-    { label: "Suppliers", path: "/suppliers", icon: "/images/supplier.png" },
-    { label: "Orders", path: "/orders", icon: "/images/orders.png" },
-    { label: "Reports", path: "/reports", icon: "/images/reports.png" },
-  ];
 
   const mainSidebarContent = (
     <>
@@ -59,13 +59,10 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             key={item.path}
             href={item.path}
             className={classNames(
-              "flex items-center px-8 py-4 text-gray-700 hover:bg-gray-100 transition-colors"
+              "flex items-center px-8 py-4 text-gray-700 hover:bg-gray-100 transition-colors",
+              { "bg-gray-100": pathname === item.path }
             )}
-            onClick={(e) => {
-              if (isMobile) {
-                onClose();
-              }
-            }}
+            onClick={isMobile ? onClose : undefined}
           >
             <Image
               src={item.icon}
@@ -130,6 +127,8 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
       )}
     </>
   );
-};
+});
+
+Sidebar.displayName = "Sidebar";
 
 export default Sidebar;

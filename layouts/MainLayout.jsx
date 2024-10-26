@@ -1,14 +1,16 @@
-// layouts/MainLayout.jsx
-
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import Header from "@/components/MainPageComponents/Header";
 import Sidebar from "@/components/MainPageComponents/Sidebar";
 import Footer from "@/components/MainPageComponents/Footer";
-import LogoutModal from "@/components/Modals/LogoutModal";
+import dynamic from "next/dynamic";
+import { memo } from "react";
 
+const LogoutModal = dynamic(() => import("@/components/Modals/LogoutModal"), {
+  ssr: false,
+});
 /**
  * MainLayout Component
  *
@@ -42,30 +44,69 @@ const MainLayout = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleResize = useCallback(() => {
+    const mobileCheck = window.innerWidth < 768;
+    if (mobileCheck !== isMobile) {
+      setIsMobile(mobileCheck);
+    }
+  }, [isMobile]);
+
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    let resizeTimer;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(handleResize, 100);
+    };
+
+    window.addEventListener("resize", debouncedResize);
+    return () => {
+      window.removeEventListener("resize", debouncedResize);
+      clearTimeout(resizeTimer);
+    };
+  }, [handleResize]);
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev);
   }, []);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  // Memoize the header and sidebar components
+  const headerComponent = React.useMemo(
+    () => <Header toggleSidebar={toggleSidebar} isMobile={isMobile} />,
+    [isMobile, toggleSidebar]
+  );
+
+  const sidebarComponent = React.useMemo(
+    () => (
+      <>
+        {!isMobile && (
+          <div className="flex-shrink-0">
+            <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
+          </div>
+        )}
+        {isMobile && (
+          <Sidebar
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            isMobile={true}
+          />
+        )}
+      </>
+    ),
+    [isMobile, sidebarOpen]
+  );
 
   return (
     <>
       {showLogoutModal && <LogoutModal />}
       <div className="flex flex-col h-screen overflow-hidden">
-        <Header toggleSidebar={toggleSidebar} isMobile={isMobile} />
+        <MemoizedHeader toggleSidebar={toggleSidebar} isMobile={isMobile} />
         <div className="flex flex-1 overflow-hidden">
-          {!isMobile && (
-            <div className="flex-shrink-0">
-              <Sidebar isOpen={true} onClose={() => {}} isMobile={false} />
-            </div>
-          )}
+          <MemoizedSidebar
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            isMobile={isMobile}
+          />
           <main
             className={`flex-1 w-full ${
               isMobile ? "overflow-auto" : "overflow-hidden"
@@ -77,15 +118,19 @@ const MainLayout = ({ children }) => {
         </div>
         <Footer />
       </div>
-      {isMobile && (
-        <Sidebar
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          isMobile={true}
-        />
-      )}
     </>
   );
 };
 
 export default MainLayout;
+
+const MemoizedHeader = memo(Header, (prevProps, nextProps) => {
+  return prevProps.isMobile === nextProps.isMobile;
+});
+
+const MemoizedSidebar = memo(Sidebar, (prevProps, nextProps) => {
+  return (
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.isOpen === nextProps.isOpen
+  );
+});

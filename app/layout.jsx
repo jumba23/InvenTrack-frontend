@@ -67,7 +67,6 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
 const ZustandProviders = ({ children }) => (
   <ProfileInitializer>
     <SupplierInitializer>

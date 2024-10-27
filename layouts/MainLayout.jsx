@@ -18,23 +18,26 @@ const LogoutModal = dynamic(() => import("@/components/Modals/LogoutModal"), {
  * It provides a responsive design that adapts to both desktop and mobile views.
  *
  * Features:
- * - Responsive sidebar that transforms into a drawer on mobile devices
- * - Header with a toggle button for the mobile sidebar
- * - Main content area that adjusts based on the sidebar state
- * - Footer that stays at the bottom of the page
+ * - Horizontal flex container layout
+ * - Header component with navigation links and user information
+ * - Sidebar component for navigation across application sections
+ * - Main content area for dynamic rendering of child components
+ * - Footer component with additional links or information
+ *
  *
  * * Structure:
- * - The layout is organized as a horizontal flex container to accommodate the sidebar and the main content area side by side.
- * - The Header component is displayed at the top of the layout, providing navigation links, application branding,
- *   and user-related information or actions.
- * - The Sidebar component is placed on the left side, offering navigation across the different sections or features
- *   of the application.
- * - The main content area is dynamically filled with the `children` prop, allowing different pages or components
- *   to be rendered within this layout framework.
- * - The Footer component is displayed at the bottom of the layout, possibly containing copyright information,
- *   links to privacy policy, terms of use, or other resources.
- * - A LogoutModal is conditionally rendered based on the `showLogoutModal` state from the AuthContext. This modal
- *   can be triggered by user actions to confirm logout intentions.
+ * - Header: Top navigation bar with logo, search bar, and user account settings
+ * - Sidebar: Responsive navigation menu with dynamic route highlighting
+ * - Main Content: Dynamic content area for rendering child components
+ * - Footer: Bottom section with additional links or information
+ * - Logout Modal: Modal for user logout functionality
+ * - Responsive Design: Adapts to both desktop and mobile views
+ * - Client-Side Navigation: Utilizes Next.js Link for optimized client-side navigation
+ * - Dynamic Rendering: Supports dynamic rendering of child components
+ * - Logout Modal: Provides a modal for user logout functionality
+ * - Responsive Design: Adapts to both desktop and mobile views
+ * - Client-Side Navigation: Utilizes Next.js Link for optimized client-side navigation
+ *  *
  *
  * @param {Object} props
  * @param {React.ReactNode} props.children - The main content to be rendered within the layout

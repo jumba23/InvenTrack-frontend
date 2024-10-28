@@ -2,6 +2,8 @@
 
 import React from "react";
 
+// this is test comment
+
 /**
  * Footer Component
  *
